@@ -5,16 +5,17 @@ import sql from "@/db";
 interface ExtendedApiRequest extends NextApiRequest {
   body: {
     email: string;
-    plainPassword: string;
+    password: string;
   };
 }
 
 export default function handler(req: ExtendedApiRequest, res: NextApiResponse) {
-  const { method, body } = req;
+  const {
+    method,
+    body: { email, password: plainPassword },
+  } = req;
 
   const authenticate = async () => {
-    const { email, plainPassword } = body;
-
     const [user] = await sql`
       SELECT * FROM users
       WHERE email=${email}
@@ -22,7 +23,6 @@ export default function handler(req: ExtendedApiRequest, res: NextApiResponse) {
 
     if (user) {
       return res.status(400).json({
-        status: "error",
         message: "User already exists",
       });
     }
@@ -41,21 +41,30 @@ export default function handler(req: ExtendedApiRequest, res: NextApiResponse) {
 
     if (users.length > 0) {
       return res.status(200).json({
-        status: "success",
         message: "Your account has been created successfully",
       });
     }
 
     return res.status(500).json({
-      status: "success",
       message: "Something went wrong. Please try again later",
     });
   };
 
   switch (method) {
     case "POST":
+      if (!email) {
+        return res.status(400).json({
+          message: 'Required argument "email" was not provided',
+        });
+      }
+      if (!plainPassword) {
+        return res.status(400).json({
+          message: 'Required argument "password" was not provided',
+        });
+      }
+
       return authenticate();
     default:
-      return res.status(405);
+      return res.status(405).end();
   }
 }

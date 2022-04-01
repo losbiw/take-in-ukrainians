@@ -1,9 +1,5 @@
 import React from "react";
-import type {
-  GetServerSideProps,
-  GetServerSidePropsContext,
-  NextPage,
-} from "next";
+import type { GetServerSideProps, NextPage } from "next";
 
 const Home: NextPage = () => (
   <div>
@@ -11,14 +7,8 @@ const Home: NextPage = () => (
   </div>
 );
 
-export const getServerSideProps: GetServerSideProps = async (
-  ctx: GetServerSidePropsContext
-) => {
-  console.log(ctx.req.cookies);
-
-  return {
-    props: {},
-  };
-};
+export const getServerSideProps: GetServerSideProps = async () => ({
+  props: {},
+});
 
 export default Home;

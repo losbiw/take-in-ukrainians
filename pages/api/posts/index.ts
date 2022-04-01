@@ -3,12 +3,12 @@ import sql from "@/db";
 import ITEMS_PER_PAGE from "@/constants/posts";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  const getPosts = async (offset: number) => {
+  const getPosts = async (page: number = 0) => {
     const posts = await sql`
       SELECT * FROM posts
       ORDER BY post_id
       LIMIT ${ITEMS_PER_PAGE}
-      OFFSET ${offset}
+      OFFSET ${page * ITEMS_PER_PAGE}
     `;
 
     if (posts.length > 0) {
@@ -19,22 +19,18 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     }
 
     return res.status(404).json({
-      status: "error",
-      error: "There are no more publications",
+      message: "There are no more publications",
     });
   };
 
-  switch (req.method) {
-    case "GET":
-      if (typeof req.query.page !== "string") {
-        return res.status(401).json({
-          status: "error",
-          message: 'The "page" parameter type is invalid',
-        });
-      }
+  if (req.method === "GET") {
+    const pageParam = req.query.page;
+    const parsedPage = parseInt(pageParam as string, 10);
 
-      return getPosts(parseInt(req.query.page, 10));
-    default:
-      return res.status(405);
+    if (Number.isNaN(parsedPage)) return getPosts();
+
+    return getPosts(parsedPage);
   }
+
+  return res.status(405).end();
 }

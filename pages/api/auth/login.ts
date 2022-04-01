@@ -7,24 +7,24 @@ import sql from "@/db";
 interface ExtendedApiRequest extends NextApiRequest {
   body: {
     email: string;
-    plainPassword: string;
+    password: string;
   };
 }
 
 export default function handler(req: ExtendedApiRequest, res: NextApiResponse) {
-  const { method, body } = req;
+  const {
+    method,
+    body: { email, password: plainPassword },
+  } = req;
 
   const authenticate = async () => {
-    const { email, plainPassword } = body;
-
     const [user] = await sql`
-      SELECT password FROM users
+      SELECT password, user_id, is_admin FROM users
       WHERE email=${email}
     `;
 
     if (!user) {
       return res.status(400).json({
-        status: "error",
         message: "User doesn't exist",
       });
     }
@@ -35,7 +35,10 @@ export default function handler(req: ExtendedApiRequest, res: NextApiResponse) {
       .digest("hex");
 
     if (encryptedPassword === user.password) {
-      const token = jwt.sign({ email: user.email }, process.env.JWT_SECRET);
+      const token = jwt.sign(
+        { userId: user.user_id, isAdmin: user.is_admin },
+        process.env.JWT_SECRET
+      );
 
       return res
         .status(200)
@@ -56,15 +59,25 @@ export default function handler(req: ExtendedApiRequest, res: NextApiResponse) {
     }
 
     return res.status(401).json({
-      status: "error",
-      error: "Incorrect login or username",
+      message: "Incorrect login or username",
     });
   };
 
   switch (method) {
     case "POST":
+      if (!email) {
+        return res.status(400).json({
+          message: 'Required argument "email" was not provided',
+        });
+      }
+      if (!plainPassword) {
+        return res.status(400).json({
+          message: 'Required argument "password" was not provided',
+        });
+      }
+
       return authenticate();
     default:
-      return res.status(405);
+      return res.status(405).end();
   }
 }

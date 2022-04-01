@@ -42,8 +42,8 @@ const Login: NextPage = () => {
           },
         ]}
       >
-        <Link href="/signup">
-          <SignupLink href="/signup">
+        <Link href="/auth/signup">
+          <SignupLink href="/auth/signup">
             {t("login:dont_have_account")}{" "}
             <span className="highlited">{t("login:signup")}</span>
           </SignupLink>

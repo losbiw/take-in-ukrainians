@@ -4,14 +4,14 @@ import ITEMS_PER_PAGE from "@/constants/posts";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const getPostsCount = async () => {
-    const postsNumber = await sql`
-      SELECT COUNT(post_id)
+    const posts = await sql`
+      SELECT post_id
       FROM posts
     `;
 
     return res.status(200).json({
       status: "success",
-      pages: postsNumber.length / ITEMS_PER_PAGE,
+      pages: posts.length / ITEMS_PER_PAGE,
     });
   };
 
@@ -19,6 +19,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     case "GET":
       return getPostsCount();
     default:
-      return res.status(405);
+      return res.status(405).end();
   }
 }

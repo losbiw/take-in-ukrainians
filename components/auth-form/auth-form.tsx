@@ -78,24 +78,20 @@ const AuthForm: FC<Props> = ({
       method: "POST",
       body: JSON.stringify({
         email,
-        plainPassword: password,
+        password,
       }),
       headers: {
         "Content-Type": "application/json",
       },
     });
 
-    const json = await res.json();
+    if (res.ok) {
+      router.push("/dashboard");
+    } else {
+      const json = await res.json();
 
-    console.log(json);
-
-    // if (res.status === 200) {
-    //   router.push("/dashboard");
-    // } else {
-    //   const json = await res.json();
-
-    //   setError(json.error);
-    // }
+      setError(json.message);
+    }
   };
 
   return (
