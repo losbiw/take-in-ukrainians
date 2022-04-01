@@ -2,14 +2,16 @@
 import { NextApiResponse, NextApiRequest } from "next";
 import Post from "@/types/post";
 import sql from "@/db";
-import validateJWT from "@/helpers/jwt";
+import verifyJWT from "@/helpers/jwt";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { userId: JWTUserId } = await validateJWT();
+  const { userId: JWTUserId } = verifyJWT(req, res);
   const { postId } = req.query;
+
+  if (!JWTUserId) return res.redirect("/");
 
   const getPost = async () => {
     const [post] = await sql`

@@ -1,9 +1,25 @@
-const validateJWT = async () => {
-  const payload = await fetch("/api/auth/verify");
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { NextApiRequest, NextApiResponse } from "next";
 
-  const json = await payload.json();
+const verifyJWT = (req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    const { userId, isAdmin } = jwt.verify(
+      req.cookies.token,
+      process.env.JWT_SECRET
+    ) as JwtPayload;
 
-  return json;
+    return {
+      userId,
+      isAdmin,
+    };
+  } catch {
+    res.setHeader(
+      "Set-Cookie",
+      "token=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+    );
+
+    return {};
+  }
 };
 
-export default validateJWT;
+export default verifyJWT;

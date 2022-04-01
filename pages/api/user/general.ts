@@ -1,12 +1,14 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import sql from "@/db";
-import validateJWT from "@/helpers/jwt";
+import verifyJWT from "@/helpers/jwt";
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { userId: JWTUserId } = await validateJWT();
+  const { userId: JWTUserId } = verifyJWT(req, res);
+
+  if (!JWTUserId) return res.redirect("/");
 
   const getUser = async (userId: number) => {
     const [user] = await sql`
@@ -38,16 +40,16 @@ export default async function handler(
 
     const parsedId = parseInt(userId as string, 10);
 
-    if (JWTUserId !== parsedId) {
-      return res.status(401).json({
-        message: "You don't have access to this data",
-      });
-    }
-
     if (Number.isNaN(parsedId)) {
       return res.status(401).json({
         message:
           'Incorrent type of "userId" argument. Must be of type "number"',
+      });
+    }
+
+    if (JWTUserId !== parsedId) {
+      return res.status(401).json({
+        message: "You don't have access to this data",
       });
     }
 
