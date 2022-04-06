@@ -25,39 +25,39 @@ const LoginLink = styled.a`
 `;
 
 const Signup: NextPage = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("signup");
 
   return (
     <SplitScreen>
       <AuthForm
-        title={t("signup:signup")}
-        description={t("signup:create_account")}
+        title={t("signup")}
+        description={t("create_account")}
         formType="signup"
         fields={[
-          { type: "email", placeholder: t("signup:email"), key: "email" },
+          { type: "email", placeholder: t("email"), key: "email" },
           {
             type: "password",
-            placeholder: t("signup:password"),
+            placeholder: t("password"),
             key: "password",
           },
           {
             type: "password",
-            placeholder: t("signup:confirm_password"),
+            placeholder: t("confirm_password"),
             key: "passwordConfirmation",
           },
         ]}
       >
         <Link href="/auth/login">
           <LoginLink href="/auth/login">
-            {t("signup:already_have_account")}{" "}
-            <span className="highlited">{t("signup:login")}</span>
+            {t("already_have_account")}{" "}
+            <span className="highlited">{t("login")}</span>
           </LoginLink>
         </Link>
       </AuthForm>
 
       <Information
-        title={t("signup:everyone_hero")}
-        description={t("signup:become_a_hero")}
+        title={t("everyone_hero")}
+        description={t("become_a_hero")}
       />
     </SplitScreen>
   );

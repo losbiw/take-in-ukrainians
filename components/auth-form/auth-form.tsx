@@ -4,6 +4,8 @@ import { useRouter } from "next/router";
 import useTranslation from "next-translate/useTranslation";
 import colors from "@/constants/colors";
 import Input from "./input";
+import validateInputs, { AuthErrors } from "@/helpers/validateInputs";
+import renderErrors from "@/helpers/error";
 
 interface Field {
   type: React.HTMLInputTypeAttribute;
@@ -34,20 +36,44 @@ const Title = styled.h1`
 const Description = styled.p`
   color: ${colors.darkGrey};
   font-size: 1rem;
-  margin: 0 0 3.5rem;
-`;
-
-const Error = styled.p`
-  font-size: 0.9rem;
-  margin: 1rem 0 0;
-  color: ${colors.red};
+  margin: 0 0 2.5rem;
 `;
 
 const Submit = styled(Input)`
   background: ${colors.blue};
   font-weight: 500;
   color: ${colors.white};
-  margin-top: 2.5rem;
+  margin: 1.5rem 0 1.2rem;
+`;
+
+const RequirementContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 0.5rem;
+`;
+
+const Checkmark = styled.div<{ isComplete: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: ${({ isComplete }) => (isComplete ? colors.blue : colors.grey)};
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  margin-right: 0.9rem;
+  transition: 0.2s;
+
+  img {
+    width: 60%;
+    height: 60%;
+  }
+`;
+
+const PassRequirement = styled.p`
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: ${colors.grey};
+  margin: 0.3rem 0;
 `;
 
 const AuthForm: FC<Props> = ({
@@ -58,19 +84,26 @@ const AuthForm: FC<Props> = ({
   children,
 }) => {
   const router = useRouter();
-  const { t } = useTranslation();
+  const { t } = useTranslation("auth");
 
-  const [error, setError] = useState("");
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-    passwordConfirmation: "",
-  });
+  const [errors, setErrors] = useState<Partial<AuthErrors>>();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [passwordValidation, setPasswordValidation] = useState(
+    validateInputs.password("")
+  );
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const { email, password, passwordConfirmation } = formData;
+    const inputErrors = validateInputs.auth({
+      email,
+      password,
+      passwordConfirmation,
+    });
+
+    setErrors(inputErrors);
 
     if (formType === "signup" && password !== passwordConfirmation) return;
 
@@ -90,7 +123,7 @@ const AuthForm: FC<Props> = ({
     } else {
       const json = await res.json();
 
-      setError(json.message);
+      // setErrors(json.errors as AuthErrors); //TODO uncomment later
     }
   };
 
@@ -101,22 +134,42 @@ const AuthForm: FC<Props> = ({
 
       <form onSubmit={handleSubmit}>
         {fields.map(({ type, placeholder, key }) => (
-          <Input
-            key={placeholder}
-            type={type}
-            placeholder={placeholder}
-            onChange={(e) => {
-              const { value } = e.target;
+          <div key={placeholder}>
+            <Input
+              type={type}
+              placeholder={placeholder}
+              onChange={(e) => {
+                const { value } = e.target;
 
-              const formDataCopy = { ...formData };
-              formDataCopy[key] = value;
+                setErrors(undefined);
 
-              setFormData(formDataCopy);
-            }}
-          />
+                if (key === "email") setEmail(value);
+                else if (key === "password") {
+                  setPassword(value);
+
+                  setPasswordValidation(validateInputs.password(value));
+                } else if (key === "passwordConfirmation")
+                  setPasswordConfirmation(value);
+              }}
+            />
+            {key !== "password" &&
+              errors &&
+              renderErrors(errors, key, { t, namespace: "auth" })}
+          </div>
         ))}
 
-        {error.length > 0 && <Error>{t(error)}</Error>}
+        {Object.keys(passwordValidation).map((key) => (
+          <RequirementContainer>
+            <Checkmark
+              isComplete={
+                !passwordValidation[key as keyof typeof passwordValidation]
+              }
+            >
+              <img src="/assets/icons/checkmark.png" alt="checkmark" />
+            </Checkmark>
+            <PassRequirement>{t(key)}</PassRequirement>
+          </RequirementContainer>
+        ))}
 
         <Submit type="submit" value={title} />
 

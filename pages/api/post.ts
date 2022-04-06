@@ -8,7 +8,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { userId: JWTUserId } = verifyJWT(req, res);
+  const { userId: JWTUserId } = verifyJWT.server(req, res);
   const { postId } = req.query;
 
   if (!JWTUserId) return res.redirect("/");
@@ -32,7 +32,7 @@ export default async function handler(
   };
 
   const createPost = async (post: Omit<Post, "postId">) => {
-    const { title, city, userId, maxPeople, isOfferring } = post;
+    const { title, city, userId, maxPeople } = post;
 
     if (JWTUserId !== userId) {
       return res.status(401).json({
@@ -42,15 +42,15 @@ export default async function handler(
 
     const [result] = await sql`
       INSERT INTO
-      posts (title, city, author_id, max_people, is_offerring)
-      VALUES (${title}, ${city}, ${userId}, ${maxPeople}, ${isOfferring})
+      posts (title, city, author_id, max_people)
+      VALUES (${title}, ${city}, ${userId}, ${maxPeople})
     `;
 
     const [updatedAuthor] = await sql`
       UPDATE users 
-      SET post_ids = array_append(post_ids, ${result.postId as number})
+      SET posts_id = array_append(posts_id, ${result.postId as number})
       WHERE user_id=${userId}
-      RETURNING user_id, post_ids
+      RETURNING user_id, posts_id
     `;
 
     if (result && updatedAuthor) {
@@ -78,7 +78,7 @@ export default async function handler(
     `;
 
     if (existingPost) {
-      const { title, city, maxPeople, isOfferring, userId } = post;
+      const { title, city, maxPeople, userId } = post;
 
       if (JWTUserId !== userId) {
         return res.status(401).json({
@@ -91,7 +91,6 @@ export default async function handler(
         SET title=${title}
             city=${city}
             max_people=${maxPeople}
-            is_offerring=${isOfferring}
         WHERE post_id=${post.postId}
       `;
 

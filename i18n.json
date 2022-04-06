@@ -2,7 +2,9 @@
   "locales": ["en", "ua"],
   "defaultLocale": "en",
   "pages": {
-    "/login": ["login"],
-    "/signup": ["signup"]
+    "/": ["general", "home"],
+    "/auth/login": ["login", "auth"],
+    "/auth/signup": ["signup", "auth"],
+    "/dashboard/create": ["create_post"]
   }
 }

@@ -25,34 +25,34 @@ const SignupLink = styled.a`
 `;
 
 const Login: NextPage = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("login");
 
   return (
     <SplitScreen>
       <AuthForm
-        title={t("login:login")}
-        description={t("login:login_to_publish")}
+        title={t("login")}
+        description={t("login_to_publish")}
         formType="login"
         fields={[
-          { type: "email", placeholder: t("login:email"), key: "email" },
+          { type: "email", placeholder: t("email"), key: "email" },
           {
             type: "password",
-            placeholder: t("login:password"),
+            placeholder: t("password"),
             key: "password",
           },
         ]}
       >
         <Link href="/auth/signup">
           <SignupLink href="/auth/signup">
-            {t("login:dont_have_account")}{" "}
-            <span className="highlited">{t("login:signup")}</span>
+            {t("dont_have_account")}{" "}
+            <span className="highlited">{t("signup")}</span>
           </SignupLink>
         </Link>
       </AuthForm>
 
       <Information
-        title={t("login:couple_of_clicks")}
-        description={t("login:give_a_chance")}
+        title={t("couple_of_clicks")}
+        description={t("give_a_chance")}
       />
     </SplitScreen>
   );

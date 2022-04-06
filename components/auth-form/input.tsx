@@ -4,7 +4,7 @@ import colors from "@/constants/colors";
 const Input = styled.input`
   width: 100%;
   padding: 0.8rem 1.8rem;
-  margin-bottom: 1.2rem;
+  margin: 0.6rem 0;
   color: ${colors.black};
   border: 1px solid ${colors.grey};
   border-radius: 999px;

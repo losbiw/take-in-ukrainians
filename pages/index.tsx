@@ -1,9 +1,12 @@
 import React from "react";
 import type { GetServerSideProps, NextPage } from "next";
+import Nav from "@/components/nav/nav";
+import Banner from "@/components/banner/Banner";
 
 const Home: NextPage = () => (
   <div>
-    <h1>Hello world</h1>
+    <Nav />
+    <Banner />
   </div>
 );
 

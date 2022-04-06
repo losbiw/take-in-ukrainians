@@ -6,7 +6,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { userId: JWTUserId } = verifyJWT(req, res);
+  const { userId: JWTUserId } = verifyJWT.server(req, res);
 
   if (!JWTUserId) return res.redirect("/");
 

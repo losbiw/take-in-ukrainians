@@ -4,7 +4,7 @@ import verifyJWT from "@/helpers/jwt";
 export default function handle(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
     case "GET":
-      return verifyJWT(req, res);
+      return res.json(verifyJWT.server(req, res));
     default:
       return res.status(405);
   }
