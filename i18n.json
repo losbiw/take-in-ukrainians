@@ -2,9 +2,11 @@
   "locales": ["en", "ua"],
   "defaultLocale": "en",
   "pages": {
-    "/": ["general", "home"],
+    "/": ["general", "home", "post"],
+    "/dashboard": ["general"],
     "/auth/login": ["login", "auth"],
     "/auth/signup": ["signup", "auth"],
-    "/dashboard/create": ["create_post"]
+    "/dashboard/create": ["create_post"],
+    "/feed": ["post", "general"]
   }
 }

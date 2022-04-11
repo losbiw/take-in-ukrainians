@@ -6,6 +6,6 @@ export default function handle(req: NextApiRequest, res: NextApiResponse) {
     case "GET":
       return res.json(verifyJWT.server(req, res));
     default:
-      return res.status(405);
+      return res.status(405).end();
   }
 }

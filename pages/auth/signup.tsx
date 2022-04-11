@@ -1,28 +1,9 @@
 import React from "react";
 import { NextPage, GetServerSideProps } from "next";
 import useTranslation from "next-translate/useTranslation";
-import styled from "styled-components";
-import Link from "next/link";
 import SplitScreen from "@/components/auth-form/split-screen";
 import Information from "@/components/auth-form/information";
 import AuthForm from "@/components/auth-form/auth-form";
-import colors from "@/constants/colors";
-
-const LoginLink = styled.a`
-  font-size: 0.9rem;
-  color: ${colors.grey};
-  margin: 3rem 0 0;
-  transition: 0.1s;
-
-  &:hover {
-    color: ${colors.darkGrey};
-  }
-
-  & .highlited {
-    color: ${colors.blue};
-    text-decoration: underline;
-  }
-`;
 
 const Signup: NextPage = () => {
   const { t } = useTranslation("signup");
@@ -46,14 +27,12 @@ const Signup: NextPage = () => {
             key: "passwordConfirmation",
           },
         ]}
-      >
-        <Link href="/auth/login">
-          <LoginLink href="/auth/login">
-            {t("already_have_account")}{" "}
-            <span className="highlited">{t("login")}</span>
-          </LoginLink>
-        </Link>
-      </AuthForm>
+        authLink={{
+          text: t("already_have_account"),
+          highlited: t("login"),
+          href: "/auth/login",
+        }}
+      />
 
       <Information
         title={t("everyone_hero")}

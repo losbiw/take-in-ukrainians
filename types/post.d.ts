@@ -1,9 +1,9 @@
 export default interface Post {
-  postId: number;
-  userId: number;
+  post_id: number;
+  user_id: number;
   title: string;
   description: string;
   city: string; // TODO: change this to whatever ffs
-  maxPeople: number;
-  isOffering: boolean;
+  max_people: number;
+  is_offering: boolean;
 }

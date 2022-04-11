@@ -35,7 +35,8 @@ export default function handler(req: ExtendedApiRequest, res: NextApiResponse) {
 
     if (user) {
       return res.status(400).json({
-        message: "User exists already",
+        key: "signup:user_already_exists",
+        message: "User already exists",
       });
     }
 
@@ -51,14 +52,10 @@ export default function handler(req: ExtendedApiRequest, res: NextApiResponse) {
       RETURNING user_id, is_admin, email
     `;
 
-    const {
-      emai: returnedEmail,
-      user_id: userId,
-      is_admin: isAdmin,
-    } = returnedUser;
+    const { emai: returnedEmail, user_id, is_admin } = returnedUser;
 
-    if (userId) {
-      const token = jwt.sign({ userId, isAdmin }, process.env.JWT_SECRET, {
+    if (user_id) {
+      const token = jwt.sign({ user_id, is_admin }, process.env.JWT_SECRET, {
         expiresIn: "20m",
       });
 

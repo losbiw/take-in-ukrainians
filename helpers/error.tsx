@@ -1,6 +1,6 @@
 import React from "react";
 import { Translate } from "next-translate";
-import Error from "@/components/error";
+import Error from "@/components/general/error";
 
 interface GenericBase {
   [key: string]: {
@@ -13,7 +13,7 @@ const renderErrors = <T extends GenericBase>(
   category: keyof T,
   i18n: {
     t: Translate;
-    namespace: string;
+    namespace?: string;
   }
 ) => {
   const errorCategory = errorObj[category];
@@ -24,7 +24,12 @@ const renderErrors = <T extends GenericBase>(
         const errorCondition = errorCategory[key];
 
         if (errorCondition) {
-          return <Error key={key}>{i18n.t(`${i18n.namespace}:${key}`)}</Error>;
+          const { t, namespace } = i18n;
+          return (
+            <Error key={key}>
+              {t(`${namespace ? `${namespace}:` : ""}${key}`)}
+            </Error>
+          );
         }
 
         return undefined;

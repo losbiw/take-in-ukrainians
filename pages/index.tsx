@@ -1,14 +1,107 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import type { GetServerSideProps, NextPage } from "next";
+import useTranslation from "next-translate/useTranslation";
+import styled from "styled-components";
+import Link from "next/link";
 import Nav from "@/components/nav/nav";
 import Banner from "@/components/banner/Banner";
+import Page from "@/components/general/page";
+import server from "@/constants/server";
+import { Title as RawTitle } from "@/components/general/title";
+import Description from "@/components/general/description";
+import { InputStyles } from "@/components/inputs/input";
+import colors from "@/constants/colors";
+import PostsContainer from "@/components/posts/posts-container";
+import Post from "@/types/post";
+import Error from "@/components/general/error";
+import CitySearchBar from "@/components/CitySearchBar";
 
-const Home: NextPage = () => (
-  <div>
-    <Nav />
-    <Banner />
-  </div>
-);
+const Title = styled(RawTitle)`
+  margin: 4rem 0 2rem;
+  text-align: center;
+`;
+
+const SeeMoreLink = styled.a`
+  ${InputStyles}
+
+  display: block;
+  color: ${colors.white};
+  background-color: ${colors.blue};
+  font-weight: 500;
+  border: none;
+  margin: 2.5rem auto;
+  text-align: center;
+  width: 40%;
+`;
+
+const CitySearchContainer = styled.div`
+  width: 50%;
+  margin: 3rem auto;
+`;
+
+const Home: NextPage = () => {
+  const { t } = useTranslation("home");
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    // eslint-disable-next-line consistent-return
+    const fetchPosts = async () => {
+      const res = await fetch(`${server}/api/posts`);
+      const json = await res.json();
+
+      if (res.ok) {
+        return setPosts(json.posts);
+      }
+
+      setError(json.message);
+    };
+
+    fetchPosts();
+  }, []);
+
+  return (
+    <div>
+      <Nav />
+      <Banner />
+
+      <Page isNavIncluded={false}>
+        <Title>{t("if_youre_looking_for_a_place")}</Title>
+        <Description>{t("youre_not_alone")}</Description>
+
+        <CitySearchContainer>
+          <CitySearchBar />
+        </CitySearchContainer>
+
+        <PostsContainer
+          posts={posts.filter(({ is_offering }) => is_offering).slice(0, 6)}
+        />
+
+        {error && <Error>{error}</Error>}
+
+        <Link href="/feed?residence_only=false">
+          <SeeMoreLink href="/feed?residence_only=false">
+            {t("see_more_residences")}
+          </SeeMoreLink>
+        </Link>
+
+        <Title>{t("if_youre_looking_to_take_in")}</Title>
+
+        <PostsContainer
+          posts={posts.filter(({ is_offering }) => !is_offering).slice(0, 6)}
+        />
+
+        {error && <Error>{error}</Error>}
+
+        <Link href="/feed?residence_only=false">
+          <SeeMoreLink href="/feed?residence_only=false">
+            {t("see_more_refugees")}
+          </SeeMoreLink>
+        </Link>
+      </Page>
+    </div>
+  );
+};
 
 export const getServerSideProps: GetServerSideProps = async () => ({
   props: {},

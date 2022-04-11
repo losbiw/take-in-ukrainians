@@ -10,7 +10,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     `;
 
     return res.status(200).json({
-      status: "success",
       pages: posts.length / ITEMS_PER_PAGE,
     });
   };

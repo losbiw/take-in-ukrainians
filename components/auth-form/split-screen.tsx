@@ -7,7 +7,6 @@ const SplitContainer = styled.div`
 
   & > * {
     width: 50%;
-    height: 100vh;
   }
 `;
 

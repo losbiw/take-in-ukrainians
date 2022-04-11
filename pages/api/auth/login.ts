@@ -25,6 +25,7 @@ export default function handler(req: ExtendedApiRequest, res: NextApiResponse) {
 
     if (!user) {
       return res.status(400).json({
+        key: "login:user_doesnt_exist",
         message: "User doesn't exist",
       });
     }
@@ -35,10 +36,9 @@ export default function handler(req: ExtendedApiRequest, res: NextApiResponse) {
       .digest("hex");
 
     if (encryptedPassword === user.password) {
-      const token = jwt.sign(
-        { userId: user.user_id, isAdmin: user.is_admin },
-        process.env.JWT_SECRET
-      );
+      const { user_id, is_admin } = user;
+
+      const token = jwt.sign({ user_id, is_admin }, process.env.JWT_SECRET);
 
       return res
         .status(200)
@@ -53,13 +53,13 @@ export default function handler(req: ExtendedApiRequest, res: NextApiResponse) {
           })
         )
         .json({
-          status: "success",
           token,
         });
     }
 
     return res.status(401).json({
-      message: "Incorrect login or username",
+      key: "login:incorrent_data",
+      message: "Incorrect login or password",
     });
   };
 

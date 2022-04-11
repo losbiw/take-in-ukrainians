@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 import styled from "styled-components";
 import colors from "@/constants/colors";
+import { WhiteTitle } from "../general/title";
 
 interface Props {
   title: string;
@@ -8,15 +9,16 @@ interface Props {
 }
 
 const Container = styled.div`
-  position: relative;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
   background: ${colors.yellow};
-  background-size: cover;
-  background-position: center;
   padding: 6rem 0;
 
   & > * {
@@ -41,14 +43,6 @@ const TextContainer = styled.div`
   width: 60%;
 `;
 
-const Title = styled.h2`
-  text-align: center;
-  color: ${colors.white};
-  margin: 1.3rem 0;
-  font-size: 1.65rem;
-  font-weight: 600;
-`;
-
 const Description = styled.p`
   text-align: center;
   color: ${colors.white};
@@ -60,7 +54,7 @@ const Description = styled.p`
 const Information: FC<Props> = ({ title, description }) => (
   <Container>
     <TextContainer>
-      <Title>{title}</Title>
+      <WhiteTitle>{title}</WhiteTitle>
       <Description>{description}</Description>
     </TextContainer>
 

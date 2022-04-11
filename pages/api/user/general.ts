@@ -6,7 +6,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { userId: JWTUserId } = verifyJWT.server(req, res);
+  const { user_id: JWTUserId } = verifyJWT.server(req, res);
 
   if (!JWTUserId) return res.redirect("/");
 
@@ -19,7 +19,6 @@ export default async function handler(
 
     if (user) {
       return res.status(200).json({
-        status: "success",
         user,
       });
     }
@@ -30,20 +29,20 @@ export default async function handler(
   };
 
   if (req.method === "GET") {
-    const { userId } = req.query;
+    const { user_id } = req.query;
 
-    if (!userId) {
+    if (!user_id) {
       return res.status(401).json({
-        message: 'Required argument "userId" wasn\'t provided',
+        message: 'Required argument "user_id" wasn\'t provided',
       });
     }
 
-    const parsedId = parseInt(userId as string, 10);
+    const parsedId = parseInt(user_id as string, 10);
 
     if (Number.isNaN(parsedId)) {
       return res.status(401).json({
         message:
-          'Incorrent type of "userId" argument. Must be of type "number"',
+          'Incorrent type of "user_id" argument. Must be of type "number"',
       });
     }
 

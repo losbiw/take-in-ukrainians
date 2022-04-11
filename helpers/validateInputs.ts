@@ -1,6 +1,6 @@
 import Post from "@/types/post";
 
-type PostWithoutIDs = Omit<Post, "userId" | "postId">;
+type PostWithoutIDs = Omit<Post, "user_id" | "post_id">;
 
 type Errors<T> = {
   // eslint-disable-next-line no-unused-vars
@@ -9,6 +9,8 @@ type Errors<T> = {
   };
 };
 
+type ErrorTuple<T> = [boolean, Errors<T>];
+
 interface AuthInfo {
   email: string;
   password: string;
@@ -16,9 +18,35 @@ interface AuthInfo {
 }
 
 export type PostErrors = Errors<PostWithoutIDs>;
-export type AuthErrors = Errors<AuthInfo>;
+export type ValidationErrors = Errors<AuthInfo>;
 
-const validateAuth = ({ email, password, passwordConfirmation }: AuthInfo) => {
+const areErrorsPresent = (errors: Errors<any>) => {
+  let areErrors = false;
+
+  Object.keys(errors).forEach((errorType) => {
+    const errorCategory = errors[errorType];
+
+    Object.keys(errorCategory).forEach((key) => {
+      if (errorCategory[key]) {
+        areErrors = true;
+      }
+    });
+  });
+
+  return areErrors;
+};
+
+const validatePassword = (password: string) => ({
+  password_below_limit: password.length < 8,
+  password_doesnt_include_letters: !/(?=.*[a-zA-Z])/.test(password),
+  password_doesnt_include_numbers: !/(?=.*\d)/.test(password),
+});
+
+const validateAuth = ({
+  email,
+  password,
+  passwordConfirmation,
+}: AuthInfo): ErrorTuple<Omit<AuthInfo, "password">> => {
   const errors = {
     email: {
       email_invalid_format: !/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(
@@ -28,23 +56,20 @@ const validateAuth = ({ email, password, passwordConfirmation }: AuthInfo) => {
     passwordConfirmation: {
       passwords_dont_match: password !== passwordConfirmation,
     },
+    sever: {},
   };
 
-  return errors;
+  return [areErrorsPresent(errors), errors];
 };
-
-const validatePassword = (password: string) => ({
-  password_below_limit: password.length < 8,
-  password_doesnt_include_letters: !/(?=.*[a-zA-Z])/.test(password),
-  password_doesnt_include_numbers: !/(?=.*\d)/.test(password),
-});
 
 const validatePost = ({
   title,
   description,
-  maxPeople,
-  isOffering,
-}: PostWithoutIDs) => {
+  max_people,
+  is_offering,
+}: PostWithoutIDs): ErrorTuple<
+  Omit<PostWithoutIDs, "city" | "is_offering">
+> => {
   const errors = {
     title: {
       title_below_limit: title.length < 5,
@@ -53,13 +78,14 @@ const validatePost = ({
     description: {
       description_above_limit: description.length > 300,
     },
-    maxPeople: {
-      max_people_below_limit: isOffering && maxPeople < 1,
-      max_people_above_limit: maxPeople > 10,
+    max_people: {
+      max_people_below_limit: is_offering && max_people < 1,
+      max_people_above_limit: max_people > 10,
     },
+    server: {},
   };
 
-  return errors;
+  return [areErrorsPresent(errors), errors];
 };
 
 export default {

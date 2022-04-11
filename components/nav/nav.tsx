@@ -7,7 +7,7 @@ import colors from "@/constants/colors";
 
 const StyledNav = styled.nav`
   width: 90%;
-  max-width: 1240px;
+  max-width: 1280px;
   margin: 0.5rem auto;
   display: flex;
   align-items: center;
@@ -24,9 +24,10 @@ const StyledNav = styled.nav`
   }
 `;
 
-const Title = styled.h3`
+const TitleLink = styled.a`
   font-size: 1.2rem;
   margin: 0 1rem 0 0;
+  font-weight: 600;
   color: ${colors.blue};
 `;
 
@@ -47,7 +48,7 @@ const Menu = styled.div`
 
   a {
     margin: 0.3rem 0;
-    color: ${colors.black};
+    color: ${colors.darkGrey};
     transition: 0.15s;
     font-size: 0.9rem;
 
@@ -73,6 +74,11 @@ const DonateLink = styled.a`
   display: block;
   padding: 0.4rem 2rem;
   border-radius: 999px;
+  transition: 0.3s;
+
+  &:hover {
+    background-color: ${colors.darkGrey};
+  }
 
   ${breakpoints.md} {
     display: none;
@@ -105,9 +111,13 @@ const Nav: FC = () => {
 
   return (
     <StyledNav>
-      <Title>
-        Take in <Yellow>Ukrainians</Yellow>
-      </Title>
+      <div>
+        <Link href="/">
+          <TitleLink href="/">
+            Take in <Yellow>Ukrainians</Yellow>
+          </TitleLink>
+        </Link>
+      </div>
 
       <Menu>
         {links.map(({ placeholder, href }) => (

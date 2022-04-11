@@ -4,8 +4,10 @@ import styled from "styled-components";
 import Link from "next/link";
 import colors from "@/constants/colors";
 import breakpoints from "@/constants/breakpoints";
+import { WhiteTitle } from "../general/title";
 
 const Container = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -14,20 +16,31 @@ const Container = styled.div`
   background-size: cover;
   background-position: center;
   padding: 6rem 0;
+
+  * {
+    z-index: 0;
+  }
 `;
 
-const Title = styled.h1`
-  color: ${colors.white};
-  font-size: 1.6rem;
-  margin: 0 0 0.7rem;
+const Overlay = styled.div`
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(53, 55, 62, 0.5) 30.62%,
+    rgba(58, 60, 70, 0.15) 80%
+  );
 `;
 
 const Description = styled.p`
   color: ${colors.white};
   text-align: center;
   font-size: 1rem;
-  margin: 0.5rem 0 3rem;
-  max-width: 40%;
+  margin: 0 0 2.5rem;
+  max-width: 50%;
   line-height: 160%;
 `;
 
@@ -65,18 +78,20 @@ const Banner: FC = () => {
 
   return (
     <Container>
-      <Title>{t("never_too_late")}</Title>
+      <Overlay />
+
+      <WhiteTitle>{t("never_too_late")}</WhiteTitle>
       <Description>{t("during_europes_war")}</Description>
 
       <LinksContainer>
-        <Link href="/dashboard/create/offer">
-          <BlueLink href="/dashboard/create/offer">
+        <Link href="/dashboard/create?offer_type=residence">
+          <BlueLink href="/dashboard/create?offer_type=residence">
             {t("offer_residence")}
           </BlueLink>
         </Link>
 
-        <Link href="/dashboard/create/refugee">
-          <YellowLink href="/dashboard/create/refugee">
+        <Link href="/dashboard/create?offer_type=refugee">
+          <YellowLink href="/dashboard/create?offer_type=refugee">
             {t("find_a_place")}
           </YellowLink>
         </Link>

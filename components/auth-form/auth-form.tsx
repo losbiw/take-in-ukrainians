@@ -2,10 +2,25 @@ import React, { FC, useState } from "react";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 import useTranslation from "next-translate/useTranslation";
+import Link from "next/link";
 import colors from "@/constants/colors";
-import Input from "./input";
-import validateInputs, { AuthErrors } from "@/helpers/validateInputs";
+import Input from "../inputs/input";
+import validateInputs, { ValidationErrors } from "@/helpers/validateInputs";
 import renderErrors from "@/helpers/error";
+import { Title } from "../general/title";
+import AuthLink from "./auth-link";
+
+interface Errors extends ValidationErrors {
+  server: {
+    [key: string]: boolean;
+  };
+}
+
+interface AuthLinkInfo {
+  text: string;
+  highlited: string;
+  href: string;
+}
 
 interface Field {
   type: React.HTMLInputTypeAttribute;
@@ -18,32 +33,28 @@ interface Props {
   title: string;
   description: string;
   fields: Field[];
+  authLink: AuthLinkInfo;
 }
 
 const Container = styled.div`
-  padding: 0 9%;
+  min-height: 100vh;
+  padding: 5rem 9%;
   display: flex;
   flex-direction: column;
   justify-content: center;
 `;
 
-const Title = styled.h1`
-  color: ${colors.black};
-  font-size: 1.5rem;
-  margin: 0 0 1.5rem;
-`;
-
 const Description = styled.p`
   color: ${colors.darkGrey};
   font-size: 1rem;
-  margin: 0 0 2.5rem;
+  margin: 0 0 2rem;
 `;
 
 const Submit = styled(Input)`
   background: ${colors.blue};
   font-weight: 500;
   color: ${colors.white};
-  margin: 1.5rem 0 1.2rem;
+  margin: 2rem 0 1.2rem;
 `;
 
 const RequirementContainer = styled.div`
@@ -81,12 +92,12 @@ const AuthForm: FC<Props> = ({
   title,
   description,
   fields,
-  children,
+  authLink: { text: authText, href: authHref, highlited: authHighlited },
 }) => {
   const router = useRouter();
   const { t } = useTranslation("auth");
 
-  const [errors, setErrors] = useState<Partial<AuthErrors>>();
+  const [errors, setErrors] = useState<Partial<Errors>>();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
@@ -94,18 +105,20 @@ const AuthForm: FC<Props> = ({
     validateInputs.password("")
   );
 
+  // eslint-disable-next-line consistent-return
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const inputErrors = validateInputs.auth({
+    const [areErrorsPresent, inputErrors] = validateInputs.auth({
       email,
       password,
-      passwordConfirmation,
+      passwordConfirmation:
+        formType === "login" ? password : passwordConfirmation,
     });
 
-    setErrors(inputErrors);
-
-    if (formType === "signup" && password !== passwordConfirmation) return;
+    if (areErrorsPresent) {
+      return setErrors(inputErrors);
+    }
 
     const res = await fetch(`/api/auth/${formType}`, {
       method: "POST",
@@ -123,7 +136,12 @@ const AuthForm: FC<Props> = ({
     } else {
       const json = await res.json();
 
-      // setErrors(json.errors as AuthErrors); //TODO uncomment later
+      const errorsCopy = { ...errors };
+      errorsCopy.server = {};
+
+      errorsCopy.server[json.key] = true;
+
+      setErrors(errorsCopy);
     }
   };
 
@@ -158,22 +176,29 @@ const AuthForm: FC<Props> = ({
           </div>
         ))}
 
-        {Object.keys(passwordValidation).map((key) => (
-          <RequirementContainer>
-            <Checkmark
-              isComplete={
-                !passwordValidation[key as keyof typeof passwordValidation]
-              }
-            >
-              <img src="/assets/icons/checkmark.png" alt="checkmark" />
-            </Checkmark>
-            <PassRequirement>{t(key)}</PassRequirement>
-          </RequirementContainer>
-        ))}
+        {formType !== "login" &&
+          Object.keys(passwordValidation).map((key) => (
+            <RequirementContainer key={key}>
+              <Checkmark
+                isComplete={
+                  !passwordValidation[key as keyof typeof passwordValidation]
+                }
+              >
+                <img src="/assets/icons/checkmark.png" alt="checkmark" />
+              </Checkmark>
+              <PassRequirement>{t(key)}</PassRequirement>
+            </RequirementContainer>
+          ))}
+
+        {errors && renderErrors(errors, "server", { t })}
 
         <Submit type="submit" value={title} />
 
-        {children}
+        <Link href={authHref}>
+          <AuthLink href={authHref}>
+            {authText} <span className="highlited">{authHighlited}</span>
+          </AuthLink>
+        </Link>
       </form>
     </Container>
   );

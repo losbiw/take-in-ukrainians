@@ -8,14 +8,14 @@ import server from "@/constants/server";
 
 const verifyServerJWT = (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const { userId, isAdmin } = jwt.verify(
+    const { user_id, is_admin } = jwt.verify(
       req.cookies.token,
       process.env.JWT_SECRET
     ) as JwtPayload;
 
     return {
-      userId,
-      isAdmin,
+      user_id,
+      is_admin,
     };
   } catch {
     res.setHeader(
@@ -48,7 +48,7 @@ const verifyClientJWT = async (ctx: GetServerSidePropsContext) => {
 
     const json = await res.json();
 
-    if (json.userId) {
+    if (json.user_id) {
       return {
         props: {},
       };
