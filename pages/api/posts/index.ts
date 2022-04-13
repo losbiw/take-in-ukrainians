@@ -10,7 +10,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       SELECT * FROM posts
       ${
         typeof offers_only !== "undefined"
-          ? `WHERE is_offering=${offers_only}`
+          ? sql`WHERE is_offering=${offers_only === "true"}`
           : sql``
       }
       ORDER BY post_id DESC

@@ -3,7 +3,8 @@ export default interface Post {
   user_id: number;
   title: string;
   description: string;
-  city: string; // TODO: change this to whatever ffs
-  max_people: number;
+  city_name: string; // TODO: change this to whatever ffs
+  city_id: string;
+  people_number: number;
   is_offering: boolean;
 }

@@ -6,6 +6,13 @@ import {
 } from "next";
 import server from "@/constants/server";
 
+interface Redirect {
+  redirect: {
+    destination: string;
+    permanent: boolean;
+  };
+}
+
 const verifyServerJWT = (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const { user_id, is_admin } = jwt.verify(
@@ -27,7 +34,9 @@ const verifyServerJWT = (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-const verifyClientJWT = async (ctx: GetServerSidePropsContext) => {
+const verifyClientJWT = async (
+  ctx: GetServerSidePropsContext
+): Promise<boolean | Redirect> => {
   const {
     cookies: { token },
   } = ctx.req;
@@ -49,9 +58,7 @@ const verifyClientJWT = async (ctx: GetServerSidePropsContext) => {
     const json = await res.json();
 
     if (json.user_id) {
-      return {
-        props: {},
-      };
+      return true;
     }
 
     ctx.res.setHeader(

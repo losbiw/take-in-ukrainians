@@ -9,7 +9,7 @@ interface Props {
 const Container = styled.div`
   width: 90%;
   max-width: 1280px;
-  margin: 0 auto;
+  margin: 4rem auto;
 `;
 
 const Page: FC<Props> = ({ isNavIncluded, children }) => (

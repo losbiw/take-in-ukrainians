@@ -20,7 +20,12 @@ const Feed: NextPage<Props> = ({ posts }: Props) => (
 );
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const posts = await fetch(`${server}/api/posts?page=${ctx.query.page || 1}`);
+  const posts = await fetch(
+    `${server}/api/posts?${new URLSearchParams(
+      ctx.query as Record<string, string>
+    )}`
+  );
+
   const json = await posts.json();
 
   if (!ctx.query.page) {

@@ -13,3 +13,9 @@ a {
   box-sizing: border-box;
   font-family: "Poppins", "Ubuntu", sans-serif;
 }
+
+@media screen and (max-width: 992px) {
+  html {
+    font-size: 85%;
+  }
+}

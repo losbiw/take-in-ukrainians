@@ -29,14 +29,21 @@ export default async function handler(
   };
 
   const createPost = async (post: Omit<Post, "post_id">) => {
-    const { title, description, city, max_people, is_offering } = post;
+    const {
+      title,
+      description,
+      city_name,
+      city_id,
+      people_number,
+      is_offering,
+    } = post;
 
     const [result] = await sql`
       INSERT INTO
-      posts (user_id, title, description, city, max_people, is_offering)
+      posts (user_id, title, description, city_name, city_id, people_number, is_offering)
       VALUES (${
         JWTUserId as string
-      }, ${title}, ${description}, ${city}, ${max_people}, ${is_offering})
+      }, ${title}, ${description}, ${city_name}, ${city_id}, ${people_number}, ${is_offering})
       RETURNING post_id
     `;
 
@@ -71,7 +78,7 @@ export default async function handler(
     `;
 
     if (existingPost.user_id) {
-      const { title, city, max_people } = post;
+      const { title, city_name, description, city_id, people_number } = post;
 
       if (JWTUserId !== existingPost.user_id) {
         return res.status(401).json({
@@ -82,8 +89,10 @@ export default async function handler(
       const [updatedPost] = await sql`
         UPDATE posts
         SET title=${title}
-            city=${city}
-            max_people=${max_people}
+            description=${description}
+            city_id=${city_id}
+            city_name=${city_name}
+            people_number=${people_number}
         WHERE post_id=${post.post_id}
       `;
 

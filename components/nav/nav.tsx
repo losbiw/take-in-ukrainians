@@ -1,9 +1,11 @@
 import Link from "next/link";
-import React, { FC, memo } from "react";
+import React, { FC, memo, useState } from "react";
 import styled from "styled-components";
 import useTranslation from "next-translate/useTranslation";
-import breakpoints from "@/constants/breakpoints";
+import breakpoints, { sizes } from "@/constants/breakpoints";
 import colors from "@/constants/colors";
+import Menu from "./menu";
+import useWidth from "@/hooks/useWidth";
 
 const StyledNav = styled.nav`
   width: 90%;
@@ -17,7 +19,7 @@ const StyledNav = styled.nav`
     display: none;
   }
 
-  ${breakpoints.md} {
+  ${breakpoints.lg} {
     & > a {
       display: block;
     }
@@ -35,38 +37,6 @@ const Yellow = styled.span`
   color: ${colors.yellow};
 `;
 
-const Menu = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-
-  a {
-    margin: 0.3rem 0;
-    color: ${colors.darkGrey};
-    transition: 0.15s;
-    font-size: 0.9rem;
-
-    &:hover {
-      color: ${colors.grey};
-    }
-  }
-
-  ${breakpoints.md} {
-    position: relative;
-    flex-direction: row;
-
-    a {
-      margin: 0 2rem;
-    }
-  }
-`;
-
 const DonateLink = styled.a`
   font-weight: 500;
   color: ${colors.white} !important;
@@ -80,7 +50,51 @@ const DonateLink = styled.a`
     background-color: ${colors.darkGrey};
   }
 
-  ${breakpoints.md} {
+  ${breakpoints.lg} {
+    display: none;
+  }
+`;
+
+const MenuButton = styled.div<{ isMenuExpanded: boolean }>`
+  width: 26px;
+  border: none;
+  background: transparent;
+  z-index: 999;
+
+  &:after,
+  &:before,
+  & div {
+    background-color: ${colors.black};
+    border-radius: 6px;
+    content: "";
+    display: block;
+    height: 3px;
+    transition: all 0.2s ease-in-out;
+  }
+
+  &:before,
+  & div {
+    margin-bottom: 5px;
+  }
+
+  ${({ isMenuExpanded }) =>
+    isMenuExpanded
+      ? `
+    &:before {
+      transform: translateY(8px) rotate(135deg);
+    }
+
+    &:after {
+      transform: translateY(-8px) rotate(-135deg);
+    }
+
+    div {
+      transform: scale(0);
+    }
+  `
+      : ""}
+
+  ${breakpoints.lg} {
     display: none;
   }
 `;
@@ -88,11 +102,11 @@ const DonateLink = styled.a`
 const links = [
   {
     placeholder: "find_residence",
-    href: "/feed?residence_only=true",
+    href: "/feed?offers_only=true",
   },
   {
     placeholder: "find_refugees",
-    href: "/feed?residence_only=false",
+    href: "/feed?offers_only=false",
   },
   {
     placeholder: "dashboard",
@@ -102,6 +116,8 @@ const links = [
 
 const Nav: FC = () => {
   const { t } = useTranslation("general");
+  const [isMenuExpanded, setIsMenuExpanded] = useState(false);
+  const windowWidth = useWidth();
 
   const Donate = memo(() => (
     <DonateLink target="_blank" href="https://standforukraine.com/">
@@ -119,15 +135,18 @@ const Nav: FC = () => {
         </Link>
       </div>
 
-      <Menu>
-        {links.map(({ placeholder, href }) => (
-          <Link href={href} key={href}>
-            <a href={href}>{t(placeholder)}</a>
-          </Link>
-        ))}
+      <MenuButton
+        isMenuExpanded={isMenuExpanded}
+        onClick={() => setIsMenuExpanded(!isMenuExpanded)}
+      >
+        <div />
+      </MenuButton>
 
-        <Donate />
-      </Menu>
+      {(isMenuExpanded || (windowWidth && windowWidth >= sizes.lg)) && (
+        <Menu links={links}>
+          <Donate />
+        </Menu>
+      )}
 
       <Donate />
     </StyledNav>

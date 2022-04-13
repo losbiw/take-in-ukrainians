@@ -4,12 +4,26 @@ import server from "@/constants/server";
 import Page from "@/components/general/page";
 import Post from "@/types/post";
 import { Title } from "@/components/general/title";
+import Description from "@/components/general/description";
+import SplitScreen from "@/components/auth-form/split-screen";
+import PostInformation from "@/components/posts/post-information";
 
-const PostPage: FC<Post> = ({ title, description }) => (
-  <Page isNavIncluded={false}>
-    <Title>{title}</Title>
-  </Page>
-);
+const PostPage: FC<Post> = (post) => {
+  const { title, description } = post;
+
+  return (
+    <Page isNavIncluded>
+      <SplitScreen>
+        <div>
+          <Title>{title}</Title>
+          <Description>{description}</Description>
+
+          <PostInformation {...post} />
+        </div>
+      </SplitScreen>
+    </Page>
+  );
+};
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const post_id = ctx.params?.post_id;

@@ -1,9 +1,17 @@
-import React from "react";
+import React, { memo } from "react";
 import { NextPage, GetServerSideProps } from "next";
 import useTranslation from "next-translate/useTranslation";
+import styled from "styled-components";
 import SplitScreen from "@/components/auth-form/split-screen";
 import Information from "@/components/auth-form/information";
 import AuthForm from "@/components/auth-form/auth-form";
+import Description from "@/components/general/description";
+import colors from "@/constants/colors";
+
+const StyledLink = styled.a`
+  color: ${colors.blue};
+  text-decoration: underline;
+`;
 
 const Signup: NextPage = () => {
   const { t } = useTranslation("signup");
@@ -37,6 +45,23 @@ const Signup: NextPage = () => {
       <Information
         title={t("everyone_hero")}
         description={t("become_a_hero")}
+        innerCardInfo={{
+          title: t("the app is free"),
+          images: [
+            "/assets/charities/un.png",
+            "/assets/charities/ukr-army.png",
+            "/assets/charities/come-back-alive.png",
+          ],
+          Description: memo(() => (
+            <Description>
+              {t("all we're asking to do")}{" "}
+              <StyledLink target="_blank" href="https://standforukraine.com/">
+                {t("donate")}
+              </StyledLink>{" "}
+              {t("to the ukrainian army and other charities")}
+            </Description>
+          )),
+        }}
       />
     </SplitScreen>
   );

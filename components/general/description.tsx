@@ -5,10 +5,8 @@ const Description = styled.p`
   font-size: 1rem;
   line-height: 160%;
   color: ${colors.darkGrey};
-  margin: 1.3rem auto;
-  text-align: center;
+  margin: 1.3rem 0;
   font-weight: 400;
-  max-width: 70%;
 `;
 
 export default Description;

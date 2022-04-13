@@ -10,26 +10,26 @@ export default async function handler(
 
   if (!JWTUserId) return res.redirect("/");
 
-  const getUser = async (userId: number) => {
-    const [user] = await sql`
-      SELECT user_id, email, is_admin
-      FROM users
+  const getPosts = async (userId: number) => {
+    const posts = await sql`
+      SELECT * FROM posts
       WHERE user_id=${userId}
     `;
 
-    if (user) {
+    if (posts) {
       return res.status(200).json({
-        user,
+        posts,
       });
     }
 
     return res.status(404).json({
-      message: "The user doesn't exist",
+      key: "user_doesnt_have_posts",
+      message: "The user doesn't have any posts",
     });
   };
 
   if (req.method === "GET") {
-    return getUser(JWTUserId);
+    return getPosts(JWTUserId);
   }
 
   return res.status(405).end();

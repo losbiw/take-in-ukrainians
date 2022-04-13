@@ -1,12 +1,15 @@
 import React, { FC } from "react";
 import styled from "styled-components";
+import breakpoints from "@/constants/breakpoints";
 
 const SplitContainer = styled.div`
   width: 100%;
   display: flex;
 
-  & > * {
-    width: 50%;
+  ${breakpoints.lg} {
+    & > * {
+      width: 50%;
+    }
   }
 `;
 

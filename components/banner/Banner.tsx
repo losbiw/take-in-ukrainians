@@ -15,10 +15,14 @@ const Container = styled.div`
   background-image: url("/assets/landing/background.png");
   background-size: cover;
   background-position: center;
-  padding: 6rem 0;
+  padding: 12rem 0;
 
   * {
-    z-index: 0;
+    z-index: 1;
+  }
+
+  ${breakpoints.md} {
+    padding: 5rem 0 6rem;
   }
 `;
 
@@ -40,8 +44,12 @@ const Description = styled.p`
   text-align: center;
   font-size: 1rem;
   margin: 0 0 2.5rem;
-  max-width: 50%;
+  max-width: 90%;
   line-height: 160%;
+
+  ${breakpoints.lg} {
+    max-width: 50%;
+  }
 `;
 
 const LinksContainer = styled.div`
@@ -60,6 +68,16 @@ const StyledLink = styled.a`
   font-size: 1rem;
   border: none;
   border-radius: 999px;
+
+  &:first-child {
+    margin-bottom: 1rem;
+  }
+
+  ${breakpoints.md} {
+    &:first-child {
+      margin-bottom: 0;
+    }
+  }
 `;
 
 const BlueLink = styled(StyledLink)`
@@ -90,8 +108,8 @@ const Banner: FC = () => {
           </BlueLink>
         </Link>
 
-        <Link href="/dashboard/create?offer_type=refugee">
-          <YellowLink href="/dashboard/create?offer_type=refugee">
+        <Link href="/feed?offers_only=true">
+          <YellowLink href="/feed?offers_only=true">
             {t("find_a_place")}
           </YellowLink>
         </Link>

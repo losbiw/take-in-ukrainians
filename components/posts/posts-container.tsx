@@ -6,12 +6,14 @@ import Post from "./post";
 
 interface Props {
   posts: PostType[];
+  areControlsEnabled?: boolean;
 }
 
 const Container = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   gap: 2rem;
+  margin-top: 2.5rem;
 
   ${breakpoints.md} {
     grid-template-columns: 1fr 1fr;
@@ -22,15 +24,13 @@ const Container = styled.div`
   }
 `;
 
-const PostsContainer: FC<Props> = ({ posts }) => (
+const PostsContainer: FC<Props> = ({ posts, areControlsEnabled }) => (
   <Container>
-    {posts.map(({ title, city, max_people, post_id }) => (
+    {posts.map((post) => (
       <Post
-        key={`${title}${city}`}
-        title={title}
-        city={city}
-        max_people={max_people}
-        post_id={post_id}
+        key={`${post.title}${post.city_name}`}
+        areControlsEnabled={areControlsEnabled}
+        {...post}
       />
     ))}
   </Container>

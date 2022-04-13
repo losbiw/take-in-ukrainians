@@ -13,6 +13,8 @@ import Subtitle from "@/components/general/subtitle";
 import { Title } from "@/components/general/title";
 import Input, { InputStyles } from "@/components/inputs/input";
 import Submit from "@/components/inputs/submit";
+import CitySearchBar from "@/components/city-search-bar";
+import City from "@/types/city";
 
 interface Errors extends PostErrors {
   server: {
@@ -73,8 +75,9 @@ const Create: NextPage = () => {
   );
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [maxPeople, setMaxPeople] = useState<number>();
+  const [peopleNumber, setPeopleNumber] = useState<number>();
   const [errors, setErrors] = useState<Partial<Errors>>();
+  const [city, setCity] = useState<City>();
 
   // eslint-disable-next-line consistent-return
   const handleSubmit = async () => {
@@ -82,8 +85,9 @@ const Create: NextPage = () => {
       title,
       description,
       is_offering: isOfferingResidence,
-      max_people: maxPeople || 0,
-      city: "Uknown",
+      people_number: peopleNumber || 0,
+      city_name: city?.city_name || "",
+      city_id: city?.city_id || "",
     };
 
     const [areErrors, inputErrors] = validateInputs.post(requestData);
@@ -101,7 +105,7 @@ const Create: NextPage = () => {
     if (res.ok) {
       const json = await res.json();
 
-      router.push(`/feed?post_id=${json.post_id}`);
+      router.push(`/feed/${json.post_id}`);
     } else {
       const json = await res.json();
 
@@ -175,24 +179,31 @@ const Create: NextPage = () => {
               namespace: "create_post",
             })}
 
-          {isOfferingResidence && (
-            <>
-              <Subtitle>{t("how_many_people")}</Subtitle>
+          <Subtitle>{t("location")}</Subtitle>
+          <CitySearchBar setCity={setCity} />
 
-              <Input
-                type="number"
-                placeholder={t("estimated_number")}
-                value={maxPeople || ""}
-                onChange={(e) => setMaxPeople(parseInt(e.target.value, 10))}
-              />
+          {errors &&
+            renderErrors(errors, "city_id", {
+              t,
+              namespace: "create_post",
+            })}
 
-              {errors &&
-                renderErrors(errors, "max_people", {
-                  t,
-                  namespace: "create_post",
-                })}
-            </>
-          )}
+          <Subtitle>
+            {isOfferingResidence ? t("max_people") : t("how_many_people")}
+          </Subtitle>
+
+          <Input
+            type="number"
+            placeholder={t("estimated_number")}
+            value={peopleNumber || ""}
+            onChange={(e) => setPeopleNumber(parseInt(e.target.value, 10))}
+          />
+
+          {errors &&
+            renderErrors(errors, "people_number", {
+              t,
+              namespace: "create_post",
+            })}
 
           <Submit type="submit" value={t("publish")} />
         </Form>
@@ -201,7 +212,15 @@ const Create: NextPage = () => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (ctx) =>
-  verifyJWT.client(ctx);
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const verification = await verifyJWT.client(ctx);
+
+  if (typeof verification !== "boolean" && verification.redirect)
+    return verification;
+
+  return {
+    props: {},
+  };
+};
 
 export default Create;

@@ -3,10 +3,11 @@
   "defaultLocale": "en",
   "pages": {
     "/": ["general", "home", "post"],
-    "/dashboard": ["general"],
+    "/dashboard": ["dashboard", "general", "post"],
     "/auth/login": ["login", "auth"],
     "/auth/signup": ["signup", "auth"],
-    "/dashboard/create": ["create_post"],
-    "/feed": ["post", "general"]
+    "/dashboard/create": ["create_post", "general"],
+    "/feed": ["post", "general"],
+    "/feed/[post_id]": ["post", "general"]
   }
 }

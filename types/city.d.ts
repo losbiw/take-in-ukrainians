@@ -1,4 +1,4 @@
 export default interface City {
-  name: string;
-  id: string;
+  city_name: string;
+  city_id: string;
 }

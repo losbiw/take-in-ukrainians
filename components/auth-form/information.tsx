@@ -2,10 +2,13 @@ import React, { FC } from "react";
 import styled from "styled-components";
 import colors from "@/constants/colors";
 import { WhiteTitle } from "../general/title";
+import Card, { CardProps } from "./card";
+import breakpoints from "@/constants/breakpoints";
 
 interface Props {
   title: string;
   description: string;
+  innerCardInfo: CardProps;
 }
 
 const Container = styled.div`
@@ -14,15 +17,19 @@ const Container = styled.div`
   bottom: 0;
   right: 0;
   overflow: hidden;
-  display: flex;
+  display: none;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   background: ${colors.yellow};
   padding: 6rem 0;
 
   & > * {
     z-index: 1;
+  }
+
+  ${breakpoints.lg} {
+    display: flex;
   }
 `;
 
@@ -41,6 +48,7 @@ const TextContainer = styled.div`
   flex-direction: column;
   align-items: center;
   width: 60%;
+  margin-top: 3rem;
 `;
 
 const Description = styled.p`
@@ -51,8 +59,10 @@ const Description = styled.p`
   line-height: 170%;
 `;
 
-const Information: FC<Props> = ({ title, description }) => (
+const Information: FC<Props> = ({ title, description, innerCardInfo }) => (
   <Container>
+    <Card {...innerCardInfo} />
+
     <TextContainer>
       <WhiteTitle>{title}</WhiteTitle>
       <Description>{description}</Description>

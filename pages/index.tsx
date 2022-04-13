@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import type { GetServerSideProps, NextPage } from "next";
 import useTranslation from "next-translate/useTranslation";
 import styled from "styled-components";
@@ -8,17 +8,26 @@ import Banner from "@/components/banner/Banner";
 import Page from "@/components/general/page";
 import server from "@/constants/server";
 import { Title as RawTitle } from "@/components/general/title";
-import Description from "@/components/general/description";
+import RawDescription from "@/components/general/description";
 import { InputStyles } from "@/components/inputs/input";
 import colors from "@/constants/colors";
 import PostsContainer from "@/components/posts/posts-container";
 import Post from "@/types/post";
 import Error from "@/components/general/error";
-import CitySearchBar from "@/components/CitySearchBar";
+import breakpoints from "@/constants/breakpoints";
 
 const Title = styled(RawTitle)`
-  margin: 4rem 0 2rem;
+  margin: 5rem 0 2rem;
   text-align: center;
+`;
+
+const Description = styled(RawDescription)`
+  text-align: center;
+  margin: 0 auto 3rem;
+
+  ${breakpoints.lg} {
+    max-width: 70%;
+  }
 `;
 
 const SeeMoreLink = styled.a`
@@ -31,12 +40,10 @@ const SeeMoreLink = styled.a`
   border: none;
   margin: 2.5rem auto;
   text-align: center;
-  width: 40%;
-`;
 
-const CitySearchContainer = styled.div`
-  width: 50%;
-  margin: 3rem auto;
+  ${breakpoints.md} {
+    width: 40%;
+  }
 `;
 
 const Home: NextPage = () => {
@@ -44,19 +51,19 @@ const Home: NextPage = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [error, setError] = useState("");
 
+  // eslint-disable-next-line consistent-return
+  const fetchPosts = useCallback(async () => {
+    const res = await fetch(`${server}/api/posts`);
+    const json = await res.json();
+
+    if (res.ok) {
+      return setPosts(json.posts);
+    }
+
+    setError(json.message);
+  }, []);
+
   useEffect(() => {
-    // eslint-disable-next-line consistent-return
-    const fetchPosts = async () => {
-      const res = await fetch(`${server}/api/posts`);
-      const json = await res.json();
-
-      if (res.ok) {
-        return setPosts(json.posts);
-      }
-
-      setError(json.message);
-    };
-
     fetchPosts();
   }, []);
 
@@ -69,18 +76,14 @@ const Home: NextPage = () => {
         <Title>{t("if_youre_looking_for_a_place")}</Title>
         <Description>{t("youre_not_alone")}</Description>
 
-        <CitySearchContainer>
-          <CitySearchBar />
-        </CitySearchContainer>
-
         <PostsContainer
           posts={posts.filter(({ is_offering }) => is_offering).slice(0, 6)}
         />
 
         {error && <Error>{error}</Error>}
 
-        <Link href="/feed?residence_only=false">
-          <SeeMoreLink href="/feed?residence_only=false">
+        <Link href="/feed?offers_only=false">
+          <SeeMoreLink href="/feed?offers_only=false">
             {t("see_more_residences")}
           </SeeMoreLink>
         </Link>
@@ -93,8 +96,8 @@ const Home: NextPage = () => {
 
         {error && <Error>{error}</Error>}
 
-        <Link href="/feed?residence_only=false">
-          <SeeMoreLink href="/feed?residence_only=false">
+        <Link href="/feed?offers_only=false">
+          <SeeMoreLink href="/feed?offers_only=false">
             {t("see_more_refugees")}
           </SeeMoreLink>
         </Link>

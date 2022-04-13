@@ -65,11 +65,11 @@ const validateAuth = ({
 const validatePost = ({
   title,
   description,
-  max_people,
+  people_number,
   is_offering,
-}: PostWithoutIDs): ErrorTuple<
-  Omit<PostWithoutIDs, "city" | "is_offering">
-> => {
+  city_id,
+  city_name,
+}: PostWithoutIDs): ErrorTuple<Omit<PostWithoutIDs, "is_offering">> => {
   const errors = {
     title: {
       title_below_limit: title.length < 5,
@@ -78,9 +78,14 @@ const validatePost = ({
     description: {
       description_above_limit: description.length > 300,
     },
-    max_people: {
-      max_people_below_limit: is_offering && max_people < 1,
-      max_people_above_limit: max_people > 10,
+    people_number: {
+      people_number_below_limit: people_number < 1,
+      people_number_above_limit: is_offering && people_number > 10,
+    },
+    city_name: {},
+    city_id: {
+      city_not_selected: !city_name,
+      city_lacks_id: !!city_name && !city_id,
     },
     server: {},
   };

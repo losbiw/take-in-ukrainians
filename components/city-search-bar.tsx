@@ -7,10 +7,15 @@ import colors from "@/constants/colors";
 import Input, { InputStyles } from "./inputs/input";
 import City from "@/types/city";
 
+interface Props {
+  // eslint-disable-next-line no-unused-vars
+  setCity: (city: City) => void;
+}
+
 let timeout: NodeJS.Timeout;
 
 const StyledInput = styled(Input)<{ areCitiesFound: boolean }>`
-  margin: 0;
+  margin: 0.6rem 0;
   border-radius: ${({ areCitiesFound }) =>
     areCitiesFound ? "1.5rem 1.5rem 0 0" : ""};
   border-bottom-color: ${({ areCitiesFound }) =>
@@ -46,19 +51,21 @@ const Icon = styled.img`
 const SearchIcon = styled(Icon)`
   margin: 0;
   position: absolute;
-  top: 0.9rem;
+  top: 1.5rem;
   right: 2rem;
 `;
 
-const CitySearchBar: FC = () => {
+const CitySearchBar: FC<Props> = ({ setCity }) => {
   const { t } = useTranslation();
 
   const [autocomplete, setAutocomplete] =
     useState<google.maps.places.AutocompleteService>();
   const [cities, setCities] = useState<City[]>([]);
+  const [input, setInput] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
+
     if (value && autocomplete) {
       clearTimeout(timeout);
 
@@ -72,8 +79,8 @@ const CitySearchBar: FC = () => {
           autocomplete.getPlacePredictions(options, (result) => {
             setCities(
               result?.map(({ description, place_id }) => ({
-                name: description,
-                id: place_id,
+                city_name: description,
+                city_id: place_id,
               })) || []
             );
           });
@@ -85,6 +92,18 @@ const CitySearchBar: FC = () => {
       clearTimeout(timeout);
       setCities([]);
     }
+
+    setInput(value);
+  };
+
+  const handleClick = (cityName: string, id: string) => {
+    setCity({
+      city_name: cityName,
+      city_id: id,
+    });
+
+    setInput(cityName);
+    setCities([]);
   };
 
   return (
@@ -100,6 +119,7 @@ const CitySearchBar: FC = () => {
       <Container>
         <StyledInput
           placeholder={t("general:city_name")}
+          value={input}
           onChange={handleChange}
           areCitiesFound={cities.length > 0}
         />
@@ -107,10 +127,13 @@ const CitySearchBar: FC = () => {
         <SearchIcon src="/assets/icons/search.png" />
 
         {cities.length > 0 &&
-          cities.map((city) => (
-            <CityButton key={city.name}>
+          cities.map(({ city_name, city_id }) => (
+            <CityButton
+              key={city_name}
+              onClick={() => handleClick(city_name, city_id)}
+            >
               <Icon src="/assets/icons/geolocation.png" />
-              {city.name}
+              {city_name}
             </CityButton>
           ))}
       </Container>

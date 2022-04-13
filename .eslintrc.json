@@ -22,9 +22,12 @@
       2,
       { "extensions": [".js", ".jsx", ".ts", ".tsx"] }
     ],
-    "camelcase": "off"
+    "camelcase": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/require-default-props": "off"
   },
   "globals": {
-    "NodeJS": true
+    "NodeJS": true,
+    "JSX": true
   }
 }
