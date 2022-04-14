@@ -86,7 +86,7 @@ const Controls: FC<Props> = ({ postId }) => {
 
   const links = useMemo(
     () => [
-      { placeholder_key: "edit", href: `/dashboard/edit?post_id=${postId}` },
+      { placeholder_key: "edit", href: `/dashboard/edit/${postId}` },
       {
         placeholder_key: "delete",
         href: `/dashboard/delete?post_id=${postId}`,

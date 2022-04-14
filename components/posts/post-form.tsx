@@ -194,7 +194,7 @@ const PostForm: FC<Props> = ({ post }) => {
             })}
 
           <Subtitle>{t("location")}</Subtitle>
-          <CitySearchBar setCity={setCity} />
+          <CitySearchBar setCity={setCity} defaultValue={post?.city_name} />
 
           {errors &&
             renderErrors(errors, "city_id", {

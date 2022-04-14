@@ -6,7 +6,8 @@
     "/dashboard": ["dashboard", "general", "post"],
     "/auth/login": ["login", "auth"],
     "/auth/signup": ["signup", "auth"],
-    "/dashboard/create": ["create_post", "general"],
+    "/dashboard/create": ["create_post"],
+    "/dashboard/edit/[post_id]": ["create_post"],
     "/feed": ["post", "general"],
     "/feed/[post_id]": ["post", "general"]
   }

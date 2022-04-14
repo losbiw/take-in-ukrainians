@@ -2,11 +2,6 @@ import { NextApiRequest } from "next";
 import jwt from "jsonwebtoken";
 import throwCustomError from "@/middleware/throwCustomError";
 
-interface URL {
-  path: string;
-  method: string;
-}
-
 const urlsWithoutAuth = [
   "/api/auth/login",
   "/api/auth/signup",
@@ -29,7 +24,9 @@ const jwtMiddleware = (req: NextApiRequest) => {
   // eslint-disable-next-line no-restricted-syntax
   for (const url of urlsWithoutAuth) {
     if (typeof url === "string" && url === path) return;
-    if ((url as URL).path === path && (url as URL).method === method) return;
+
+    if (typeof url !== "string" && url.path === path && url.method === method)
+      return;
   }
 
   try {

@@ -10,6 +10,7 @@ import City from "@/types/city";
 interface Props {
   // eslint-disable-next-line no-unused-vars
   setCity: (city: City) => void;
+  defaultValue?: string;
 }
 
 let timeout: NodeJS.Timeout;
@@ -55,13 +56,13 @@ const SearchIcon = styled(Icon)`
   right: 2rem;
 `;
 
-const CitySearchBar: FC<Props> = ({ setCity }) => {
+const CitySearchBar: FC<Props> = ({ setCity, defaultValue }) => {
   const { t } = useTranslation();
 
   const [autocomplete, setAutocomplete] =
     useState<google.maps.places.AutocompleteService>();
   const [cities, setCities] = useState<City[]>([]);
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState(defaultValue || "");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;

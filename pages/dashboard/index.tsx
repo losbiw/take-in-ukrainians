@@ -25,8 +25,19 @@ const Dashboard: NextPage<Props> = ({ usersPosts }: Props) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const { user_id } = parseJwt(ctx.req.cookies.token);
-  const usersPosts = getUsersPosts(user_id);
+  const { token } = ctx.req.cookies;
+
+  if (!token) {
+    return {
+      redirect: {
+        destination: "/auth/login",
+        permanent: true,
+      },
+    };
+  }
+
+  const { user_id } = parseJwt(token);
+  const usersPosts = await getUsersPosts(user_id);
 
   return {
     props: {

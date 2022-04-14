@@ -30,10 +30,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   try {
     const parsedId = parseInt(postId as string, 10);
+    const post = await getPost(parsedId);
 
     return {
       props: {
-        post: getPost(parsedId),
+        post,
       },
     };
   } catch {
