@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 import sql from "@/db";
 import server from "@/constants/server";
+import throwCustomError from "@/middleware/throwCustomError";
+import apiHandler from "@/middleware/api";
 
 interface ExtendedApiRequest extends NextApiRequest {
   body: {
@@ -21,7 +23,7 @@ const transport = nodemailer.createTransport({
   },
 });
 
-export default function handler(req: ExtendedApiRequest, res: NextApiResponse) {
+const handler = (req: ExtendedApiRequest, res: NextApiResponse) => {
   const {
     method,
     body: { email, password: plainPassword },
@@ -34,10 +36,7 @@ export default function handler(req: ExtendedApiRequest, res: NextApiResponse) {
     `;
 
     if (user) {
-      return res.status(400).json({
-        key: "signup:user_already_exists",
-        message: "User already exists",
-      });
+      throwCustomError("user_already_exists", 400);
     }
 
     const encryptedPassword = crypto
@@ -52,7 +51,7 @@ export default function handler(req: ExtendedApiRequest, res: NextApiResponse) {
       RETURNING user_id, is_admin, email
     `;
 
-    const { emai: returnedEmail, user_id, is_admin } = returnedUser;
+    const { email: returnedEmail, user_id, is_admin } = returnedUser;
 
     if (user_id) {
       const token = jwt.sign({ user_id, is_admin }, process.env.JWT_SECRET, {
@@ -60,37 +59,33 @@ export default function handler(req: ExtendedApiRequest, res: NextApiResponse) {
       });
 
       transport.sendMail({
-        from: "",
+        from: "Take in Ukrainians",
         to: returnedEmail,
-        subject: "Confirm your email to publish an offer",
-        html: `<a href="${server}/auth/verify_email?token=${token}">Click here to confirm the email</a>`,
+        subject: "Confirm your email to access full functionality",
+        html: `<a href="${server}/auth/verify_email?token=${token}">Click here to confirm your email</a>`,
       });
 
-      return res.status(200).json({
+      return res.json({
         message: "Your account has been created successfully",
       });
     }
 
-    return res.status(500).json({
-      message: "Your account could not be created. Try again later",
-    });
+    throwCustomError("Your account wasn't created. Try again later", 500);
   };
 
   switch (method) {
     case "POST":
       if (!email) {
-        return res.status(400).json({
-          message: 'Required argument "email" was not provided',
-        });
+        throwCustomError('Required argument "email" was not provided', 400);
       }
       if (!plainPassword) {
-        return res.status(400).json({
-          message: 'Required argument "password" was not provided',
-        });
+        throwCustomError('Required argument "password" was not provided', 400);
       }
 
       return authenticate();
     default:
-      return res.status(405).end();
+      throwCustomError("Method not allowed", 405);
   }
-}
+};
+
+export default apiHandler(handler);

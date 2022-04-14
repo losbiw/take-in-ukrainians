@@ -1,36 +1,36 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import sql from "@/db";
-import verifyJWT from "@/helpers/jwt";
+import throwCustomError from "@/middleware/throwCustomError";
+import parseJwt from "@/helpers/parseJwt";
+import apiHandler from "@/middleware/api";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  const { user_id: JWTUserId } = verifyJWT.server(req, res);
+const getUserData = async (userId: number) => {
+  const [user] = await sql`
+    SELECT user_id, email, is_admin
+    FROM users
+    WHERE user_id=${userId}
+  `;
 
-  if (!JWTUserId) return res.redirect("/");
-
-  const getUser = async (userId: number) => {
-    const [user] = await sql`
-      SELECT user_id, email, is_admin
-      FROM users
-      WHERE user_id=${userId}
-    `;
-
-    if (user) {
-      return res.status(200).json({
-        user,
-      });
-    }
-
-    return res.status(404).json({
-      message: "The user doesn't exist",
-    });
-  };
-
-  if (req.method === "GET") {
-    return getUser(JWTUserId);
+  if (user) {
+    return user;
   }
 
-  return res.status(405).end();
-}
+  throwCustomError("The user doesn't exist", 404);
+};
+
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  const {
+    cookies: { token },
+    method,
+  } = req;
+  const { user_id } = parseJwt(token);
+
+  switch (method) {
+    case "GET":
+      return res.json({ user: getUserData(user_id) });
+    default:
+      throwCustomError("Method not allowed", 405);
+  }
+};
+
+export default apiHandler(handler);

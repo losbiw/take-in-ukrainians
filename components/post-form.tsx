@@ -1,5 +1,4 @@
-import { NextPage } from "next";
-import React, { useState } from "react";
+import React, { FC, useState } from "react";
 import useTranslation from "next-translate/useTranslation";
 import styled from "styled-components";
 import { useRouter } from "next/router";
@@ -14,6 +13,11 @@ import Input, { InputStyles } from "@/components/inputs/input";
 import Submit from "@/components/inputs/submit";
 import CitySearchBar from "@/components/city-search-bar";
 import City from "@/types/city";
+import Post from "@/types/post";
+
+interface Props {
+  post?: Post;
+}
 
 interface Errors extends PostErrors {
   server: {
@@ -65,18 +69,29 @@ const ChoiceButton = styled.button<{ isActive: boolean | undefined }>`
 const getQueryBasedState = (offerType: string | string[] | undefined) =>
   !!(offerType && offerType === "residence");
 
-const Create: NextPage = () => {
+const PostForm: FC<Props> = ({ post }) => {
   const { t } = useTranslation("create_post");
   const router = useRouter();
 
   const [isOfferingResidence, setIsOfferingResidence] = useState(
     getQueryBasedState(router.query.offer_type)
   );
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [peopleNumber, setPeopleNumber] = useState<number>();
+  const [title, setTitle] = useState(post?.title || "");
+  const [description, setDescription] = useState(post?.description || "");
+
+  const [peopleNumber, setPeopleNumber] = useState<number | undefined>(
+    post?.people_number || undefined
+  );
+
+  const [city, setCity] = useState<City | undefined>(
+    post?.city_id && post?.city_name
+      ? {
+          city_id: post?.city_id,
+          city_name: post?.city_name,
+        }
+      : undefined
+  );
   const [errors, setErrors] = useState<Partial<Errors>>();
-  const [city, setCity] = useState<City>();
 
   // eslint-disable-next-line consistent-return
   const handleSubmit = async () => {
@@ -211,4 +226,4 @@ const Create: NextPage = () => {
   );
 };
 
-export default Create;
+export default PostForm;

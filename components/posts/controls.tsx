@@ -52,8 +52,8 @@ const StyledLink = styled.a<{ isDangerous?: boolean }>`
 
 const StyledIcon = styled(Icon)`
   transform: rotate(90deg);
-  height: 1.2rem;
-  width: 1.2rem;
+  height: 1.1rem;
+  width: 1.1rem;
 
   * {
     fill: ${colors.darkGrey};

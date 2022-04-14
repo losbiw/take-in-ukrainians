@@ -1,10 +1,10 @@
 import { GetServerSideProps, NextPage } from "next";
 import React from "react";
 import PostType from "@/types/post";
-import server from "@/constants/server";
 import PostsContainer from "@/components/posts/posts-container";
 import Page from "@/components/general/page";
 import { Title } from "@/components/general/title";
+import { getPosts } from "../api/posts";
 
 interface Props {
   posts: PostType[];
@@ -20,23 +20,32 @@ const Feed: NextPage<Props> = ({ posts }: Props) => (
 );
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const posts = await fetch(
-    `${server}/api/posts?${new URLSearchParams(
-      ctx.query as Record<string, string>
-    )}`
-  );
+  const {
+    params,
+    query: { offersOnly },
+  } = ctx;
 
-  const json = await posts.json();
+  const page = params?.page;
+  const pageNumber = parseInt(page as string, 10);
 
-  if (!ctx.query.page) {
-    ctx.query.page = "1";
+  try {
+    const posts = getPosts(
+      pageNumber || 1,
+      offersOnly ? offersOnly === "true" : undefined
+    );
+
+    return {
+      props: {
+        posts,
+      },
+    };
+  } catch {
+    return {
+      props: {
+        posts: [],
+      },
+    };
   }
-
-  return {
-    props: {
-      posts: json.posts as PostType[],
-    },
-  };
 };
 
 export default Feed;

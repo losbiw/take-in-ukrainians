@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import type { GetServerSideProps, NextPage } from "next";
+import type { NextPage } from "next";
 import useTranslation from "next-translate/useTranslation";
 import styled from "styled-components";
 import Link from "next/link";
@@ -105,9 +105,5 @@ const Home: NextPage = () => {
     </div>
   );
 };
-
-export const getServerSideProps: GetServerSideProps = async () => ({
-  props: {},
-});
 
 export default Home;

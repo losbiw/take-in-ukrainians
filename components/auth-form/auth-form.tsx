@@ -6,7 +6,7 @@ import Link from "next/link";
 import colors from "@/constants/colors";
 import Input from "../inputs/input";
 import validateInputs, { ValidationErrors } from "@/helpers/validateInputs";
-import renderErrors from "@/helpers/error";
+import renderErrors from "@/helpers/renderErrors";
 import { Title } from "../general/title";
 import AuthLink from "./auth-link";
 

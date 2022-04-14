@@ -1,5 +1,6 @@
-interface PublicUser {
-  email: string;
+interface User {
+  user_id: number;
+  is_admin: boolean;
 }
 
-export default interface User {}
+export default User;

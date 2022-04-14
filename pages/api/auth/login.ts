@@ -3,6 +3,8 @@ import crypto from "crypto";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
 import sql from "@/db";
+import throwCustomError from "@/middleware/throwCustomError";
+import apiHandler from "@/middleware/api";
 
 interface ExtendedApiRequest extends NextApiRequest {
   body: {
@@ -11,7 +13,7 @@ interface ExtendedApiRequest extends NextApiRequest {
   };
 }
 
-export default function handler(req: ExtendedApiRequest, res: NextApiResponse) {
+const handler = (req: ExtendedApiRequest, res: NextApiResponse) => {
   const {
     method,
     body: { email, password: plainPassword },
@@ -24,10 +26,7 @@ export default function handler(req: ExtendedApiRequest, res: NextApiResponse) {
     `;
 
     if (!user) {
-      return res.status(400).json({
-        key: "login:user_doesnt_exist",
-        message: "User doesn't exist",
-      });
+      throwCustomError("user_doesnt_exist", 400);
     }
 
     const encryptedPassword = crypto
@@ -53,31 +52,28 @@ export default function handler(req: ExtendedApiRequest, res: NextApiResponse) {
           })
         )
         .json({
-          token,
+          user_id,
+          is_admin,
         });
     }
 
-    return res.status(401).json({
-      key: "login:incorrent_data",
-      message: "Incorrect login or password",
-    });
+    throwCustomError("incorrect_data", 401);
   };
 
   switch (method) {
     case "POST":
       if (!email) {
-        return res.status(400).json({
-          message: 'Required argument "email" was not provided',
-        });
+        throwCustomError('Required argument "email" was not provided', 400);
       }
+
       if (!plainPassword) {
-        return res.status(400).json({
-          message: 'Required argument "password" was not provided',
-        });
+        throwCustomError('Required argument "password" was not provided', 400);
       }
 
       return authenticate();
     default:
-      return res.status(405).end();
+      throwCustomError("Method not allowed", 405);
   }
-}
+};
+
+export default apiHandler(handler);

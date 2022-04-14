@@ -1,41 +1,63 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import sql from "@/db";
 import ITEMS_PER_PAGE from "@/constants/posts";
+import throwCustomError from "@/middleware/throwCustomError";
+import apiHandler from "@/middleware/api";
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { page: pageParam, offers_only } = req.query;
-
-  const getPosts = async (page: number = 1) => {
-    const posts = await sql`
-      SELECT * FROM posts
-      ${
-        typeof offers_only !== "undefined"
-          ? sql`WHERE is_offering=${offers_only === "true"}`
-          : sql``
-      }
-      ORDER BY post_id DESC
-      LIMIT ${ITEMS_PER_PAGE}
-      OFFSET ${(page - 1) * ITEMS_PER_PAGE}
-    `;
-
-    if (posts.length > 0) {
-      return res.status(200).json({
-        posts,
-      });
+export const getPosts = async (
+  page: number,
+  offersOnly?: boolean | undefined
+) => {
+  const posts = await sql`
+    SELECT * FROM posts
+    ${
+      typeof offersOnly !== "undefined"
+        ? sql`WHERE is_offering=${offersOnly}`
+        : sql``
     }
+    ORDER BY post_id DESC
+    LIMIT ${ITEMS_PER_PAGE}
+    OFFSET ${(page - 1) * ITEMS_PER_PAGE}
+  `;
 
-    return res.status(404).json({
-      message: "There are no more publications",
-    });
-  };
-
-  if (req.method === "GET") {
-    const parsedPage = parseInt(pageParam as string, 10);
-
-    if (Number.isNaN(parsedPage)) return getPosts();
-
-    return getPosts(parsedPage);
+  if (posts.length > 0) {
+    return posts;
   }
 
-  return res.status(405).end();
-}
+  throwCustomError("No more posts were found", 404);
+};
+
+const handler = (req: NextApiRequest, res: NextApiResponse) => {
+  const {
+    query: { page, offersOnly },
+    method,
+  } = req;
+
+  const parseQueryPage = () => {
+    if (!page) {
+      throwCustomError('Required argument "page" wasn\'t provided', 401);
+    }
+
+    const parsedPage = parseInt(page as string, 10);
+
+    if (Number.isNaN(parsedPage)) {
+      throwCustomError(
+        'Incorrent type of "page" argument. Must be of type "number"',
+        401
+      );
+    }
+
+    return parsedPage;
+  };
+
+  switch (method) {
+    case "GET":
+      return res.json({
+        posts: getPosts(parseQueryPage(), offersOnly === "true"),
+      });
+    default:
+      throwCustomError("Method not allowed", 405);
+  }
+};
+
+export default apiHandler(handler);

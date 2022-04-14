@@ -13,7 +13,7 @@ const Container = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   gap: 2rem;
-  margin-top: 2.5rem;
+  margin-top: 1.5rem;
 
   ${breakpoints.md} {
     grid-template-columns: 1fr 1fr;

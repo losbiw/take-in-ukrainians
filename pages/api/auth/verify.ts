@@ -1,11 +1,19 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import verifyJWT from "@/helpers/jwt";
+import throwCustomError from "@/middleware/throwCustomError";
+import apiHandler from "@/middleware/api";
 
-export default function handle(req: NextApiRequest, res: NextApiResponse) {
-  switch (req.method) {
+const handler = (req: NextApiRequest, res: NextApiResponse) => {
+  const {
+    cookies: { token },
+    method,
+  } = req;
+
+  switch (method) {
     case "GET":
-      return res.json(verifyJWT.server(req, res));
+      return res.json({ token });
     default:
-      return res.status(405).end();
+      throwCustomError("Method not allowed", 405);
   }
-}
+};
+
+export default apiHandler(handler);

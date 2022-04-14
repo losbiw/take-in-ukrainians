@@ -1,175 +1,149 @@
 /* eslint-disable consistent-return */
-import { NextApiResponse, NextApiRequest } from "next";
+import { NextApiResponse, NextApiRequest, NextApiHandler } from "next";
 import Post from "@/types/post";
 import sql from "@/db";
-import verifyJWT from "@/helpers/jwt";
+import throwCustomError from "@/middleware/throwCustomError";
+import parseJwt from "@/helpers/parseJwt";
+import apiHandler from "@/middleware/api";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  const { user_id: JWTUserId } = verifyJWT.server(req, res);
-  const { post_id } = req.query;
+export const getPost = async (postId: number) => {
+  const [post] = await sql`
+    SELECT * FROM posts
+    WHERE post_id=${postId}
+  `;
 
-  const getPost = async () => {
-    const [post] = await sql`
-      SELECT * FROM posts
-      WHERE post_id=${post_id}
-    `;
+  if (post) {
+    return post;
+  }
 
-    if (post) {
-      return res.status(200).json({
-        post,
-      });
+  throwCustomError("The post doesn't exist", 404);
+};
+
+const createPost = async (post: Omit<Post, "post_id">) => {
+  const [author] = await sql`
+    SELECT email FROM users
+    WHERE user_id=${post.user_id}  
+  `;
+
+  if (!author) {
+    throwCustomError("The author doesn't exist", 404);
+  }
+
+  const [result] = await sql`
+    INSERT INTO posts ${sql(post)}
+    RETURNING post_id
+  `;
+
+  await sql`
+    UPDATE users 
+    SET posts_id = array_append(posts_id, ${result.post_id as number})
+    WHERE user_id=${post.user_id}
+    RETURNING user_id, posts_id
+  `;
+
+  if (result) {
+    return result;
+  }
+
+  throwCustomError("Something went wrong", 500);
+};
+
+const updatePost = async (post: Post, userId: number) => {
+  const [existingPost] = await sql`
+    SELECT user_id FROM posts
+    WHERE post_id=${post.post_id}
+  `;
+
+  if (existingPost.user_id) {
+    if (userId !== existingPost.user_id) {
+      throwCustomError("You do not have the permission to edit the post", 401);
     }
 
-    return res.status(404).json({
-      message: "The post doesn't exist",
-    });
-  };
-
-  const createPost = async (post: Omit<Post, "post_id">) => {
-    const {
-      title,
-      description,
-      city_name,
-      city_id,
-      people_number,
-      is_offering,
-    } = post;
-
-    const [result] = await sql`
-      INSERT INTO
-      posts (user_id, title, description, city_name, city_id, people_number, is_offering)
-      VALUES (${
-        JWTUserId as string
-      }, ${title}, ${description}, ${city_name}, ${city_id}, ${people_number}, ${is_offering})
-      RETURNING post_id
-    `;
-
-    const [updatedAuthor] = await sql`
-      UPDATE users 
-      SET posts_id = array_append(posts_id, ${result.post_id as number})
-      WHERE user_id=${JWTUserId as string}
-      RETURNING user_id, posts_id
-    `;
-
-    if (result && updatedAuthor) {
-      return res.status(200).json({
-        post_id: result.post_id,
-      });
-    }
-
-    if (result) {
-      return res.status(404).json({
-        message: "The author doesn't exist",
-      });
-    }
-
-    return res.status(500).json({
-      message: "Something went wrong, try again later",
-    });
-  };
-
-  const updatePost = async (post: Post) => {
-    const [existingPost] = await sql`
-      SELECT user_id FROM posts
+    const [updatedPost] = await sql`
+      UPDATE posts
+      SET ${sql(post)}
       WHERE post_id=${post.post_id}
     `;
 
-    if (existingPost.user_id) {
-      const { title, city_name, description, city_id, people_number } = post;
-
-      if (JWTUserId !== existingPost.user_id) {
-        return res.status(401).json({
-          message: "You do not have the permission to change the post",
-        });
-      }
-
-      const [updatedPost] = await sql`
-        UPDATE posts
-        SET title=${title}
-            description=${description}
-            city_id=${city_id}
-            city_name=${city_name}
-            people_number=${people_number}
-        WHERE post_id=${post.post_id}
-      `;
-
-      if (updatedPost) {
-        return res.status(200).json({
-          message: "Your publication has been updated successfully",
-        });
-      }
-
-      return res.status(500).json({
-        message: "Something went wrong",
-      });
+    if (updatedPost) {
+      return updatedPost;
     }
 
-    return res.status(404).json({
-      message: "The post doesn't exist",
-    });
-  };
+    throwCustomError("Something went wrong", 500);
+  }
 
-  const deletePost = async () => {
-    const [post] = await sql`
-      SELECT user_id FROM posts
-      WHERE post_id=${post_id}
-    `;
+  throwCustomError("The post doesn't exist", 404);
+};
 
-    if (JWTUserId !== post.user_id) {
-      return res.status(401).json({
-        message: "You are not allowed to delete the post",
-      });
+const deletePost = async (postId: number, userId: number) => {
+  const [post] = await sql`
+    SELECT user_id FROM posts
+    WHERE post_id=${postId}
+  `;
+
+  if (userId !== post.user_id) {
+    throwCustomError("You don't have the permission to delete the post", 401);
+  }
+
+  const [deletedPost] = await sql`
+    DELETE FROM posts
+    WHERE post_id=${postId}
+    RETURNING *
+  `;
+
+  if (deletedPost) {
+    return "The post was deleted successfully";
+  }
+
+  throwCustomError("The post doesn't exist", 404);
+};
+
+const handler: NextApiHandler = async (
+  req: NextApiRequest,
+  res: NextApiResponse
+) => {
+  const {
+    query: { postId },
+    cookies: { token },
+    body,
+    method,
+  } = req;
+  const { user_id } = parseJwt(token);
+
+  const parseQueryId = () => {
+    if (!postId) {
+      throwCustomError('Required argument "post_id" wasn\'t provided', 401);
     }
 
-    const [deletedPost] = await sql`
-      DELETE FROM posts
-      WHERE post_id=${post_id}
-      RETURNING *
-    `;
-
-    if (deletedPost) {
-      return res.status(200).json({
-        message: "The post was deleted successfully",
-      });
-    }
-
-    return res.status(404).json({
-      message: "The post doesn't exist",
-    });
-  };
-
-  const validateQueryId = () => {
-    if (!post_id) {
-      return res.status(401).json({
-        message: 'Required argument "post_id" wasn\'t provided',
-      });
-    }
-
-    const parsedId = parseInt(post_id as string, 10);
+    const parsedId = parseInt(postId as string, 10);
 
     if (Number.isNaN(parsedId)) {
-      return res.status(401).json({
-        message:
-          'Incorrent type of "post_id" argument. Must be of type "number"',
-      });
+      throwCustomError(
+        'Incorrent type of "post_id" argument. Must be of type "number"',
+        401
+      );
     }
+
+    return parsedId;
   };
 
-  switch (req.method) {
+  switch (method) {
     case "GET":
-      validateQueryId();
-      return getPost();
+      return res.json({ post: getPost(parseQueryId()) });
     case "POST":
-      return createPost(req.body);
+      return res.json({
+        post: createPost({
+          ...body,
+          user_id,
+        }),
+      });
     case "PATCH":
-      return updatePost(req.body);
+      return res.json({ post: updatePost(body, user_id) });
     case "DELETE":
-      validateQueryId();
-      return deletePost();
+      return res.json({ message: deletePost(parseQueryId(), user_id) });
     default:
-      return res.status(405).end();
+      throwCustomError("Method not allowed", 405);
   }
-}
+};
+
+export default apiHandler(handler);

@@ -1,25 +1,34 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import throwCustomError from "@/middleware/throwCustomError";
+import apiHandler from "@/middleware/api";
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+const handler = (req: NextApiRequest, res: NextApiResponse) => {
+  const {
+    cookies: { token },
+    method,
+  } = req;
+
   const logout = () => {
-    if (req.cookies.token) {
-      res.setHeader(
-        "Set-Cookie",
-        "token=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
-      );
-
-      res.redirect("/");
+    if (token) {
+      res
+        .setHeader(
+          "Set-Cookie",
+          "token=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+        )
+        .json({
+          message: "You were logged out successfully",
+        });
     }
 
-    return res.status(400).json({
-      message: "You are already logged out",
-    });
+    throwCustomError("You are already logged out", 400);
   };
 
-  switch (req.method) {
+  switch (method) {
     case "GET":
       return logout();
     default:
-      return res.status(405);
+      throwCustomError("Method not allowed", 405);
   }
-}
+};
+
+export default apiHandler(handler);

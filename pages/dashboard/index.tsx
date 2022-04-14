@@ -1,47 +1,36 @@
 import React from "react";
 import type { GetServerSideProps, NextPage } from "next";
 import useTranslation from "next-translate/useTranslation";
-import verifyJWT from "@/helpers/jwt";
 import Page from "@/components/general/page";
 import { Title } from "@/components/general/title";
 import Post from "@/types/post";
 import PostsContainer from "@/components/posts/posts-container";
-import server from "@/constants/server";
+import { getUsersPosts } from "../api/user/posts";
+import parseJwt from "@/helpers/parseJwt";
 
 interface Props {
-  userPosts: Post[];
+  usersPosts: Post[];
 }
 
-const Dashboard: NextPage<Props> = ({ userPosts }: Props) => {
+const Dashboard: NextPage<Props> = ({ usersPosts }: Props) => {
   const { t } = useTranslation("dashboard");
 
   return (
     <Page isNavIncluded>
       <Title>{t("posts")}</Title>
 
-      <PostsContainer areControlsEnabled posts={userPosts} />
+      <PostsContainer areControlsEnabled posts={usersPosts} />
     </Page>
   );
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const {
-    cookies: { token },
-  } = ctx.req;
-  const verification = await verifyJWT.client(ctx);
-
-  if (typeof verification !== "boolean") return verification;
-
-  const res = await fetch(`${server}/api/user/posts`, {
-    headers: {
-      Cookie: `token=${token}`,
-    },
-  });
-  const json = await res.json();
+  const { user_id } = parseJwt(ctx.req.cookies.token);
+  const usersPosts = getUsersPosts(user_id);
 
   return {
     props: {
-      userPosts: json.posts,
+      usersPosts,
     },
   };
 };
