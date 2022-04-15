@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { ApiError } from "next/dist/server/api-utils";
 import sql from "@/db";
 import ITEMS_PER_PAGE from "@/constants/posts";
-import throwCustomError from "@/middleware/throwCustomError";
 import apiHandler from "@/middleware/api";
 
 const getNumberOfPages = async () => {
@@ -18,7 +18,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
     case "GET":
       return res.json({ pages: getNumberOfPages() });
     default:
-      throwCustomError("Method not allowed", 405);
+      throw new ApiError(405, "Method not allowed");
   }
 };
 

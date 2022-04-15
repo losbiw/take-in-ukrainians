@@ -26,10 +26,10 @@ const PostPage: FC<Post> = (post) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const postId = ctx.params?.postId;
+  const pid = ctx.params?.pid;
 
   try {
-    const parsedId = parseInt(postId as string, 10);
+    const parsedId = parseInt(pid as string, 10);
     const post = await getPost(parsedId);
 
     return {

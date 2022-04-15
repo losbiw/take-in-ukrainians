@@ -56,8 +56,8 @@ const ImageContainer = styled.div`
   }
 
   &:nth-child(3) {
-    bottom: -2rem;
-    right: -5rem;
+    bottom: -3rem;
+    right: -6rem;
     width: 11vw;
     height: 11vw;
   }

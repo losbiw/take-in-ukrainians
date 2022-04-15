@@ -74,7 +74,7 @@ const PostForm: FC<Props> = ({ post }) => {
   const router = useRouter();
 
   const [isOfferingResidence, setIsOfferingResidence] = useState(
-    getQueryBasedState(router.query.offer_type)
+    getQueryBasedState(router.query.offerType)
   );
   const [title, setTitle] = useState(post?.title || "");
   const [description, setDescription] = useState(post?.description || "");
@@ -95,7 +95,7 @@ const PostForm: FC<Props> = ({ post }) => {
 
   // eslint-disable-next-line consistent-return
   const handleSubmit = async () => {
-    const requestData = {
+    const requestData: any = {
       title,
       description,
       is_offering: isOfferingResidence,
@@ -108,8 +108,12 @@ const PostForm: FC<Props> = ({ post }) => {
 
     if (areErrors) return setErrors(inputErrors);
 
+    if (post?.post_id) {
+      requestData.post_id = post.post_id;
+    }
+
     const res = await fetch(`/api/post/`, {
-      method: "POST",
+      method: post ? "PATCH" : "POST",
       body: JSON.stringify(requestData),
       headers: {
         "Content-Type": "application/json",
@@ -119,14 +123,14 @@ const PostForm: FC<Props> = ({ post }) => {
     if (res.ok) {
       const json = await res.json();
 
-      router.push(`/feed/${json.post_id}`);
+      router.push(`/feed/${json.post.post_id}`);
     } else {
       const json = await res.json();
 
       const errorsCopy = { ...errors };
       errorsCopy.server = {};
 
-      errorsCopy.server[json.key] = true;
+      errorsCopy.server[json.message] = true;
 
       setErrors(errorsCopy);
     }
@@ -141,7 +145,7 @@ const PostForm: FC<Props> = ({ post }) => {
             handleSubmit();
           }}
         >
-          <Title>{t("create_a_proposal")}</Title>
+          <Title>{t(post ? "edit_a_proposal" : "create_a_proposal")}</Title>
 
           <Subtitle>{t("what_are_you_looking_to_do")}</Subtitle>
 

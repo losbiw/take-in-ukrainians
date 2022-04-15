@@ -1,6 +1,6 @@
 import { NextApiRequest } from "next";
 import jwt from "jsonwebtoken";
-import throwCustomError from "@/middleware/throwCustomError";
+import { ApiError } from "next/dist/server/api-utils";
 
 const urlsWithoutAuth = [
   "/api/auth/login",
@@ -32,7 +32,7 @@ const jwtMiddleware = (req: NextApiRequest) => {
   try {
     jwt.verify(token, process.env.JWT_SECRET);
   } catch {
-    throwCustomError("Auth expired", 401);
+    throw new ApiError(401, "Authentication failed");
   }
 };
 

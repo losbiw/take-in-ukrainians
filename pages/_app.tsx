@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import type { AppProps } from "next/app";
 import "@/styles/globals.css";
 import { useRouter } from "next/router";
+import server from "@/constants/server";
 
 const urlsWithoutAuth = [
   "/",
@@ -15,16 +16,25 @@ const App = ({ Component, pageProps }: AppProps): JSX.Element => {
   const router = useRouter();
 
   useEffect(() => {
-    const { asPath } = router;
+    const checkVerification = async () => {
+      const { asPath } = router;
 
-    // eslint-disable-next-line no-restricted-syntax
-    for (const url of urlsWithoutAuth) {
-      if (typeof url === "string" && url === asPath) return;
+      // eslint-disable-next-line no-restricted-syntax
+      for (const url of urlsWithoutAuth) {
+        if (typeof url === "string" && url === asPath) return;
 
-      if (typeof url !== "string" && asPath.match(url)) return;
-    }
+        if (typeof url !== "string" && asPath.match(url)) return;
+      }
 
-    router.replace("/auth/login");
+      const res = await fetch(`${server}/api/auth/verify`);
+      const json = await res.json();
+
+      if (!json.token) {
+        router.replace("/auth/login");
+      }
+    };
+
+    checkVerification();
   }, []);
 
   return <Component {...pageProps} />;

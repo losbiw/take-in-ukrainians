@@ -82,8 +82,8 @@ const Home: NextPage = () => {
 
         {error && <Error>{error}</Error>}
 
-        <Link href="/feed?offers_only=false">
-          <SeeMoreLink href="/feed?offers_only=false">
+        <Link href="/feed/1?offerOnly=false">
+          <SeeMoreLink href="/feed/1?offerOnly=false">
             {t("see_more_residences")}
           </SeeMoreLink>
         </Link>
@@ -96,8 +96,8 @@ const Home: NextPage = () => {
 
         {error && <Error>{error}</Error>}
 
-        <Link href="/feed?offers_only=false">
-          <SeeMoreLink href="/feed?offers_only=false">
+        <Link href="/feed/1?offerOnly=false">
+          <SeeMoreLink href="/feed/1?offerOnly=false">
             {t("see_more_refugees")}
           </SeeMoreLink>
         </Link>

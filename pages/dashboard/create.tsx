@@ -70,7 +70,7 @@ const Create: NextPage = () => {
   const router = useRouter();
 
   const [isOfferingResidence, setIsOfferingResidence] = useState(
-    getQueryBasedState(router.query.offer_type)
+    getQueryBasedState(router.query.offerType)
   );
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -111,7 +111,7 @@ const Create: NextPage = () => {
       const errorsCopy = { ...errors };
       errorsCopy.server = {};
 
-      errorsCopy.server[json.key] = true;
+      errorsCopy.server[json.message] = true;
 
       setErrors(errorsCopy);
     }

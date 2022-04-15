@@ -29,7 +29,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const pageNumber = parseInt(page as string, 10);
 
   try {
-    const posts = getPosts(
+    const posts = await getPosts(
       pageNumber || 1,
       offersOnly ? offersOnly === "true" : undefined
     );

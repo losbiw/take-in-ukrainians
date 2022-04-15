@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import throwCustomError from "@/middleware/throwCustomError";
+import { ApiError } from "next/dist/server/api-utils";
 import apiHandler from "@/middleware/api";
 
 const handler = (req: NextApiRequest, res: NextApiResponse) => {
@@ -20,14 +20,14 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
         });
     }
 
-    throwCustomError("You are already logged out", 400);
+    throw new ApiError(400, "User is already logged out");
   };
 
   switch (method) {
     case "GET":
       return logout();
     default:
-      throwCustomError("Method not allowed", 405);
+      throw new ApiError(405, "Method not allowed");
   }
 };
 

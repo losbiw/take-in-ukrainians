@@ -102,14 +102,14 @@ const Banner: FC = () => {
       <Description>{t("during_europes_war")}</Description>
 
       <LinksContainer>
-        <Link href="/dashboard/create?offer_type=residence">
-          <BlueLink href="/dashboard/create?offer_type=residence">
+        <Link href="/dashboard/create?offerType=residence">
+          <BlueLink href="/dashboard/create?offerType=residence">
             {t("offer_residence")}
           </BlueLink>
         </Link>
 
-        <Link href="/feed?offers_only=true">
-          <YellowLink href="/feed?offers_only=true">
+        <Link href="/feed/1?offerOnly=true">
+          <YellowLink href="/feed/1?offerOnly=true">
             {t("find_a_place")}
           </YellowLink>
         </Link>

@@ -2,8 +2,8 @@ import { NextApiRequest, NextApiResponse } from "next";
 import crypto from "crypto";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
+import { ApiError } from "next/dist/server/api-utils";
 import sql from "@/db";
-import throwCustomError from "@/middleware/throwCustomError";
 import apiHandler from "@/middleware/api";
 
 interface ExtendedApiRequest extends NextApiRequest {
@@ -26,7 +26,7 @@ const handler = (req: ExtendedApiRequest, res: NextApiResponse) => {
     `;
 
     if (!user) {
-      throwCustomError("user_doesnt_exist", 400);
+      throw new ApiError(400, "User doesn't exist");
     }
 
     const encryptedPassword = crypto
@@ -57,22 +57,25 @@ const handler = (req: ExtendedApiRequest, res: NextApiResponse) => {
         });
     }
 
-    throwCustomError("incorrect_data", 401);
+    throw new ApiError(401, "Username or password is incorrect");
   };
 
   switch (method) {
     case "POST":
       if (!email) {
-        throwCustomError('Required argument "email" was not provided', 400);
+        throw new ApiError(400, 'Required argument "email" was not provided');
       }
 
       if (!plainPassword) {
-        throwCustomError('Required argument "password" was not provided', 400);
+        throw new ApiError(
+          400,
+          'Required argument "password" was not provided'
+        );
       }
 
       return authenticate();
     default:
-      throwCustomError("Method not allowed", 405);
+      throw new ApiError(405, "Method not allowed");
   }
 };
 

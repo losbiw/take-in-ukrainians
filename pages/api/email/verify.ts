@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import throwCustomError from "@/middleware/throwCustomError";
+import { ApiError } from "next/dist/server/api-utils";
 import sql from "@/db";
 import apiHandler from "@/middleware/api";
 
@@ -32,12 +32,12 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
   switch (method) {
     case "POST":
       if (!token) {
-        throwCustomError(`Required argument "token" was not provided`, 400);
+        throw new ApiError(400, 'Required argument "token" was not provided');
       }
 
       return verify();
     default:
-      throwCustomError("Method not allowed", 405);
+      throw new ApiError(405, "Method not allowed");
   }
 };
 

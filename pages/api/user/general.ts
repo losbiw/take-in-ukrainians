@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { ApiError } from "next/dist/server/api-utils";
 import sql from "@/db";
-import throwCustomError from "@/middleware/throwCustomError";
 import parseJwt from "@/helpers/parseJwt";
 import apiHandler from "@/middleware/api";
 
@@ -15,7 +15,7 @@ const getUserData = async (userId: number) => {
     return user;
   }
 
-  throwCustomError("The user doesn't exist", 404);
+  throw new ApiError(404, "The user was not found");
 };
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -29,7 +29,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     case "GET":
       return res.json({ user: getUserData(user_id) });
     default:
-      throwCustomError("Method not allowed", 405);
+      throw new ApiError(405, "Method not allowed");
   }
 };
 

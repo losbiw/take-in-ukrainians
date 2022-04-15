@@ -3,8 +3,11 @@ import styled from "styled-components";
 import breakpoints from "@/constants/breakpoints";
 
 const SplitContainer = styled.div`
-  width: 100%;
   display: flex;
+
+  & > * {
+    width: 100%;
+  }
 
   ${breakpoints.lg} {
     & > * {

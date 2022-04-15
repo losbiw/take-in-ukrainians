@@ -2,9 +2,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
+import { ApiError } from "next/dist/server/api-utils";
 import sql from "@/db";
 import server from "@/constants/server";
-import throwCustomError from "@/middleware/throwCustomError";
 import apiHandler from "@/middleware/api";
 
 interface ExtendedApiRequest extends NextApiRequest {
@@ -36,7 +36,7 @@ const handler = (req: ExtendedApiRequest, res: NextApiResponse) => {
     `;
 
     if (user) {
-      throwCustomError("user_already_exists", 400);
+      throw new ApiError(400, "User already exists");
     }
 
     const encryptedPassword = crypto
@@ -70,21 +70,24 @@ const handler = (req: ExtendedApiRequest, res: NextApiResponse) => {
       });
     }
 
-    throwCustomError("Your account wasn't created. Try again later", 500);
+    throw new ApiError(500, "Your account could not be created");
   };
 
   switch (method) {
     case "POST":
       if (!email) {
-        throwCustomError('Required argument "email" was not provided', 400);
+        throw new ApiError(400, 'Required argument "email" was not provided');
       }
       if (!plainPassword) {
-        throwCustomError('Required argument "password" was not provided', 400);
+        throw new ApiError(
+          400,
+          'Required argument "password" was not provided'
+        );
       }
 
       return authenticate();
     default:
-      throwCustomError("Method not allowed", 405);
+      throw new ApiError(405, "Method not allowed");
   }
 };
 

@@ -86,10 +86,10 @@ const Controls: FC<Props> = ({ postId }) => {
 
   const links = useMemo(
     () => [
-      { placeholder_key: "edit", href: `/dashboard/edit/${postId}` },
+      { placeholderKey: "edit", href: `/dashboard/edit/${postId}` },
       {
-        placeholder_key: "delete",
-        href: `/dashboard/delete?post_id=${postId}`,
+        placeholderKey: "delete",
+        href: `/dashboard/delete/${postId}`,
         isDangerous: true,
       },
     ],
@@ -107,10 +107,10 @@ const Controls: FC<Props> = ({ postId }) => {
 
       {isControlPanelVisible && (
         <Panel>
-          {links.map(({ placeholder_key, href, isDangerous }) => (
-            <Link href={href}>
+          {links.map(({ placeholderKey, href, isDangerous }) => (
+            <Link href={href} key={href}>
               <StyledLink href={href} isDangerous={isDangerous}>
-                {t(placeholder_key)}
+                {t(placeholderKey)}
               </StyledLink>
             </Link>
           ))}

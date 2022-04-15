@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
+import { ApiError } from "next/dist/server/api-utils";
 import sql from "@/db";
 import ITEMS_PER_PAGE from "@/constants/posts";
-import throwCustomError from "@/middleware/throwCustomError";
 import apiHandler from "@/middleware/api";
 
 export const getPosts = async (
@@ -24,7 +24,7 @@ export const getPosts = async (
     return posts;
   }
 
-  throwCustomError("No more posts were found", 404);
+  throw new ApiError(404, "Posts were not found");
 };
 
 const handler = (req: NextApiRequest, res: NextApiResponse) => {
@@ -35,15 +35,15 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
 
   const parseQueryPage = () => {
     if (!page) {
-      throwCustomError('Required argument "page" wasn\'t provided', 401);
+      throw new ApiError(401, 'Required argument "page" was not provided');
     }
 
     const parsedPage = parseInt(page as string, 10);
 
     if (Number.isNaN(parsedPage)) {
-      throwCustomError(
-        'Incorrent type of "page" argument. Must be of type "number"',
-        401
+      throw new ApiError(
+        401,
+        'Incorrent type of "page" argument. Must be of type "number"'
       );
     }
 
@@ -56,7 +56,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
         posts: getPosts(parseQueryPage(), offersOnly === "true"),
       });
     default:
-      throwCustomError("Method not allowed", 405);
+      throw new ApiError(405, "Method not allowed");
   }
 };
 

@@ -29,7 +29,7 @@ const LinkContainer = styled.a`
 
 const Post: FC<Props> = (props) => {
   const { title, post_id, areControlsEnabled } = props;
-  const href = `/feed/${post_id}`;
+  const href = `/post/${post_id}`;
 
   return (
     <Container>

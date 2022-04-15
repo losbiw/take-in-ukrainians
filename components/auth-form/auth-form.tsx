@@ -139,7 +139,7 @@ const AuthForm: FC<Props> = ({
       const errorsCopy = { ...errors };
       errorsCopy.server = {};
 
-      errorsCopy.server[json.key] = true;
+      errorsCopy.server[json.message] = true;
 
       setErrors(errorsCopy);
     }
