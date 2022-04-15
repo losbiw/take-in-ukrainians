@@ -27,7 +27,7 @@ export const getPosts = async (
   throw new ApiError(404, "Posts were not found");
 };
 
-const handler = (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const {
     query: { page, offersOnly },
     method,
@@ -35,14 +35,14 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
 
   const parseQueryPage = () => {
     if (!page) {
-      throw new ApiError(401, 'Required argument "page" was not provided');
+      throw new ApiError(422, 'Required argument "page" was not provided');
     }
 
     const parsedPage = parseInt(page as string, 10);
 
     if (Number.isNaN(parsedPage)) {
       throw new ApiError(
-        401,
+        422,
         'Incorrent type of "page" argument. Must be of type "number"'
       );
     }
@@ -53,7 +53,10 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
   switch (method) {
     case "GET":
       return res.json({
-        posts: getPosts(parseQueryPage(), offersOnly === "true"),
+        posts: await getPosts(
+          parseQueryPage(),
+          offersOnly ? offersOnly === "true" : undefined
+        ),
       });
     default:
       throw new ApiError(405, "Method not allowed");

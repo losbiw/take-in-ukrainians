@@ -5,6 +5,7 @@ import PostsContainer from "@/components/posts/posts-container";
 import Page from "@/components/general/page";
 import { Title } from "@/components/general/title";
 import { getPosts } from "../api/posts";
+import { getNumberOfPages } from "../api/posts/pages";
 
 interface Props {
   posts: PostType[];
@@ -26,16 +27,20 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   } = ctx;
 
   const page = params?.page;
-  const pageNumber = parseInt(page as string, 10);
+  const currentPage = parseInt(page as string, 10);
 
   try {
     const posts = await getPosts(
-      pageNumber || 1,
+      currentPage || 1,
       offersOnly ? offersOnly === "true" : undefined
     );
 
+    const numberOfPages = await getNumberOfPages();
+
     return {
       props: {
+        currentPage,
+        numberOfPages,
         posts,
       },
     };

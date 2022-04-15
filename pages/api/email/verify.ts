@@ -32,7 +32,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
   switch (method) {
     case "POST":
       if (!token) {
-        throw new ApiError(400, 'Required argument "token" was not provided');
+        throw new ApiError(422, 'Required argument "token" was not provided');
       }
 
       return verify();

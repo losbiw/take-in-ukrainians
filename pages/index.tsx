@@ -53,7 +53,7 @@ const Home: NextPage = () => {
 
   // eslint-disable-next-line consistent-return
   const fetchPosts = useCallback(async () => {
-    const res = await fetch(`${server}/api/posts`);
+    const res = await fetch(`${server}/api/posts?page=1`);
     const json = await res.json();
 
     if (res.ok) {

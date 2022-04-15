@@ -36,7 +36,7 @@ const handler = (req: ExtendedApiRequest, res: NextApiResponse) => {
     `;
 
     if (user) {
-      throw new ApiError(400, "User already exists");
+      throw new ApiError(409, "User already exists");
     }
 
     const encryptedPassword = crypto
@@ -76,11 +76,11 @@ const handler = (req: ExtendedApiRequest, res: NextApiResponse) => {
   switch (method) {
     case "POST":
       if (!email) {
-        throw new ApiError(400, 'Required argument "email" was not provided');
+        throw new ApiError(422, 'Required argument "email" was not provided');
       }
       if (!plainPassword) {
         throw new ApiError(
-          400,
+          422,
           'Required argument "password" was not provided'
         );
       }

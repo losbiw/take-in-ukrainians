@@ -14,10 +14,10 @@ export const getUsersPosts = async (userId: number) => {
     return posts;
   }
 
-  throw new ApiError(401, "No user's posts were found");
+  throw new ApiError(404, "No user's posts were found");
 };
 
-const handler = (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const {
     cookies: { token },
     method,
@@ -26,7 +26,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
 
   switch (method) {
     case "GET":
-      return res.json({ posts: getUsersPosts(user_id) });
+      return res.json({ posts: await getUsersPosts(user_id) });
     default:
       throw new ApiError(405, "Method not allowed");
   }

@@ -20,7 +20,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
         });
     }
 
-    throw new ApiError(400, "User is already logged out");
+    throw new ApiError(401, "User is already logged out");
   };
 
   switch (method) {

@@ -29,7 +29,7 @@ const createPost = async (post: Omit<Post, "post_id">) => {
   `;
 
   if (result) {
-    return result;
+    return result.post_id;
   }
 
   throw new ApiError(500, "Something went wrong");
@@ -44,7 +44,7 @@ const updatePost = async (post: Post, userId: number) => {
   if (existingPost.user_id) {
     if (userId !== existingPost.user_id) {
       throw new ApiError(
-        401,
+        403,
         "User doesn't have the permission to edit the post"
       );
     }
@@ -53,11 +53,11 @@ const updatePost = async (post: Post, userId: number) => {
       UPDATE posts
       SET ${sql(post)}
       WHERE post_id=${post.post_id}
-      RETURNING *
+      RETURNING post_id
     `;
 
     if (updatedPost) {
-      return updatedPost;
+      return updatedPost.post_id as number;
     }
 
     throw new ApiError(500, "Something went wrong");
@@ -80,13 +80,13 @@ const handler: NextApiHandler = async (
   switch (method) {
     case "POST":
       return res.json({
-        post: createPost({
+        postId: createPost({
           ...body,
           user_id,
         }),
       });
     case "PATCH":
-      return res.json({ post: updatePost(body, user_id) });
+      return res.json({ postId: await updatePost(body, user_id) });
     default:
       throw new ApiError(405, "Method not allowed");
   }

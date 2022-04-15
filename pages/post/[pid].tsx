@@ -6,7 +6,7 @@ import { Title } from "@/components/general/title";
 import Description from "@/components/general/description";
 import SplitScreen from "@/components/auth-form/split-screen";
 import PostInformation from "@/components/posts/post-information";
-import { getPost } from "../api/post";
+import { getPost } from "../api/post/[pid]";
 
 const PostPage: FC<Post> = (post) => {
   const { title, description } = post;

@@ -25,7 +25,7 @@ const deletePost = async (postId: number, userId: number) => {
 
   if (userId !== post.user_id) {
     throw new ApiError(
-      401,
+      403,
       "User doesn't have the permission to delete the post"
     );
   }
@@ -60,7 +60,7 @@ const handler: NextApiHandler = async (
 
     if (Number.isNaN(parsedId)) {
       throw new ApiError(
-        401,
+        422,
         'Incorrent type of "post_id" argument. Must be of type "number"'
       );
     }
@@ -70,9 +70,9 @@ const handler: NextApiHandler = async (
 
   switch (method) {
     case "GET":
-      return res.json({ post: getPost(parseQueryId()) });
+      return res.json({ post: await getPost(parseQueryId()) });
     case "DELETE":
-      return res.json({ message: deletePost(parseQueryId(), user_id) });
+      return res.json({ message: await deletePost(parseQueryId(), user_id) });
     default:
       throw new ApiError(405, "Method not allowed");
   }

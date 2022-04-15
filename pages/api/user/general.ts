@@ -27,7 +27,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   switch (method) {
     case "GET":
-      return res.json({ user: getUserData(user_id) });
+      return res.json({ user: await getUserData(user_id) });
     default:
       throw new ApiError(405, "Method not allowed");
   }

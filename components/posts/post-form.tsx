@@ -74,7 +74,7 @@ const PostForm: FC<Props> = ({ post }) => {
   const router = useRouter();
 
   const [isOfferingResidence, setIsOfferingResidence] = useState(
-    getQueryBasedState(router.query.offerType)
+    post?.is_offering || getQueryBasedState(router.query.offerType)
   );
   const [title, setTitle] = useState(post?.title || "");
   const [description, setDescription] = useState(post?.description || "");
@@ -123,7 +123,7 @@ const PostForm: FC<Props> = ({ post }) => {
     if (res.ok) {
       const json = await res.json();
 
-      router.push(`/feed/${json.post.post_id}`);
+      router.push(`/feed/${json.postId}`);
     } else {
       const json = await res.json();
 
