@@ -108,8 +108,8 @@ const Banner: FC = () => {
           </BlueLink>
         </Link>
 
-        <Link href="/feed/1?offerOnly=true">
-          <YellowLink href="/feed/1?offerOnly=true">
+        <Link href="/feed/1?offersOnly=true">
+          <YellowLink href="/feed/1?offersnly=true">
             {t("find_a_place")}
           </YellowLink>
         </Link>

@@ -6,15 +6,33 @@ import apiHandler from "@/middleware/api";
 
 export const getPosts = async (
   page: number,
-  offersOnly?: boolean | undefined
+  offersOnly: boolean | undefined,
+  cityId?: string
 ) => {
+  const getCondition = () => {
+    const isCityUndefined = typeof cityId === "undefined";
+    const isOffersOnlyUndefined = typeof offersOnly === "undefined";
+
+    if (!isOffersOnlyUndefined && !isCityUndefined) {
+      return sql`WHERE city_id=${cityId} AND is_offering=${offersOnly}`;
+    }
+
+    if (!isCityUndefined) {
+      return sql`WHERE city_id=${cityId}`;
+    }
+
+    if (!isOffersOnlyUndefined) {
+      return sql`WHERE is_offering=${offersOnly}`;
+    }
+
+    return sql``;
+  };
+
+  const condition = getCondition();
+
   const posts = await sql`
     SELECT * FROM posts
-    ${
-      typeof offersOnly !== "undefined"
-        ? sql`WHERE is_offering=${offersOnly}`
-        : sql``
-    }
+    ${condition}
     ORDER BY post_id DESC
     LIMIT ${ITEMS_PER_PAGE}
     OFFSET ${(page - 1) * ITEMS_PER_PAGE}

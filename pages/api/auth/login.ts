@@ -46,7 +46,7 @@ const handler = (req: ExtendedApiRequest, res: NextApiResponse) => {
           cookie.serialize("token", token, {
             httpOnly: true,
             secure: process.env.NODE_ENV !== "development",
-            maxAge: 3600 * 24 * 7 * 30,
+            maxAge: 3600 * 24 * 7 * 14,
             sameSite: "strict",
             path: "/",
           })

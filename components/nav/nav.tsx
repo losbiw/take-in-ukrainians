@@ -102,11 +102,11 @@ const MenuButton = styled.div<{ isMenuExpanded: boolean }>`
 const links = [
   {
     placeholder: "find_residence",
-    href: "/feed/1?offerOnly=true",
+    href: "/feed/1?offersOnly=true",
   },
   {
     placeholder: "find_refugees",
-    href: "/feed/1?offerOnly=false",
+    href: "/feed/1?offersOnly=false",
   },
   {
     placeholder: "dashboard",
