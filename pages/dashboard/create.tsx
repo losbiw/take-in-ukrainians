@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import React from "react";
-import PostForm from "@/components/posts/post-form";
+import PostForm from "@/components/post-form/post-form";
 
 const CreatePost: NextPage = () => <PostForm />;
 

@@ -56,7 +56,7 @@ const DonateLink = styled.a`
 `;
 
 const MenuButton = styled.div<{ isMenuExpanded: boolean }>`
-  width: 26px;
+  width: 23px;
   border: none;
   background: transparent;
   z-index: 999;
@@ -65,10 +65,10 @@ const MenuButton = styled.div<{ isMenuExpanded: boolean }>`
   &:before,
   & div {
     background-color: ${colors.black};
-    border-radius: 6px;
+    border-radius: 999px;
     content: "";
     display: block;
-    height: 3px;
+    height: 2px;
     transition: all 0.2s ease-in-out;
   }
 

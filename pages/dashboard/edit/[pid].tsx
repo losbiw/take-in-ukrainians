@@ -1,6 +1,6 @@
 import { GetServerSideProps } from "next";
 import React, { FC } from "react";
-import PostForm from "@/components/posts/post-form";
+import PostForm from "@/components/post-form/post-form";
 import Post from "@/types/post";
 import { getPost } from "@/pages/api/post/[pid]";
 

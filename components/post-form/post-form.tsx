@@ -14,6 +14,7 @@ import Submit from "@/components/inputs/submit";
 import CitySearchBar from "@/components/city-search-bar";
 import City from "@/types/city";
 import Post from "@/types/post";
+import ContactForm from "./contact-form";
 
 interface Props {
   post?: Post;
@@ -29,6 +30,7 @@ const Container = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   margin: 4rem auto;
+  gap: 8rem;
 
   ${breakpoints.lg} {
     grid-template-columns: 1fr 1fr;
@@ -225,6 +227,8 @@ const PostForm: FC<Props> = ({ post }) => {
 
           <Submit type="submit" value={t("publish")} />
         </Form>
+
+        <ContactForm />
       </Container>
     </Page>
   );

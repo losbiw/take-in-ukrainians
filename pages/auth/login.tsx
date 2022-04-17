@@ -36,9 +36,9 @@ const Login: NextPage = () => {
         innerCardInfo={{
           title: t("link_social_media"),
           images: [
-            "/assets/social-medias/facebook.png",
-            "/assets/social-medias/messenger.png",
-            "/assets/social-medias/telegram.png",
+            "/assets/social-media/facebook.png",
+            "/assets/social-media/messenger.png",
+            "/assets/social-media/telegram.png",
           ],
           Description: memo(() => (
             <Description>{t("people_can_get_in_touch")}</Description>
