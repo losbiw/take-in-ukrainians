@@ -1,5 +1,5 @@
 {
-  "locales": ["en", "ua"],
+  "locales": ["en", "ua", "ru"],
   "defaultLocale": "en",
   "pages": {
     "/": ["general", "home", "post"],
@@ -7,7 +7,7 @@
     "/auth/login": ["login", "auth"],
     "/auth/signup": ["signup", "auth"],
     "/dashboard/create": ["create_post", "contact", "general"],
-    "/dashboard/edit/[pid]": ["create_post", "general"],
+    "/dashboard/edit/[pid]": ["create_post", "general", "contact"],
     "/feed": ["post", "general"],
     "/feed/[page]": ["post", "general"]
   }
