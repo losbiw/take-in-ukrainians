@@ -39,15 +39,16 @@ const Yellow = styled.span`
 
 const DonateLink = styled.a`
   font-weight: 500;
-  color: ${colors.white} !important;
-  background-color: ${colors.blue};
+  color: ${colors.blue} !important;
   display: block;
-  padding: 0.4rem 2rem;
+  padding: 0.35rem 2rem;
   border-radius: 999px;
+  border: 1px solid ${colors.blue};
   transition: 0.3s;
 
   &:hover {
-    background-color: ${colors.darkGrey};
+    color: ${colors.white} !important;
+    background-color: ${colors.blue};
   }
 
   ${breakpoints.lg} {
@@ -74,7 +75,7 @@ const MenuButton = styled.div<{ isMenuExpanded: boolean }>`
 
   &:before,
   & div {
-    margin-bottom: 5px;
+    margin-bottom: 6px;
   }
 
   ${({ isMenuExpanded }) =>

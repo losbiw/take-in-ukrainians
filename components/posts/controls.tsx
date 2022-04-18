@@ -2,8 +2,10 @@ import React, { FC, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import Link from "next/link";
 import useTranslation from "next-translate/useTranslation";
+import { useRouter } from "next/router";
 import colors from "@/constants/colors";
 import Icon from "../../public/assets/icons/menu.svg";
+import server from "@/constants/server";
 
 interface Props {
   postId: number;
@@ -67,6 +69,7 @@ const StyledIcon = styled(Icon)`
 `;
 
 const Controls: FC<Props> = ({ postId }) => {
+  const router = useRouter();
   const { t } = useTranslation("dashboard");
   const [isControlPanelVisible, setIsControlPanelVisible] = useState(false);
   const buttonRef = useRef(null);
@@ -84,11 +87,22 @@ const Controls: FC<Props> = ({ postId }) => {
     }
   }, [isControlPanelVisible]);
 
+  const handleClick = async () => {
+    const res = await fetch(`${server}/api/post/${postId}`, {
+      method: "DELETE",
+    });
+
+    // if (res.ok) {
+    router.push(router.asPath);
+    // }
+  };
+
   const links = useMemo(
     () => [
       { placeholderKey: "edit", href: `/dashboard/edit/${postId}` },
       {
         placeholderKey: "delete",
+        onClick: handleClick,
         href: `/dashboard/delete/${postId}`,
         isDangerous: true,
       },
@@ -107,9 +121,13 @@ const Controls: FC<Props> = ({ postId }) => {
 
       {isControlPanelVisible && (
         <Panel>
-          {links.map(({ placeholderKey, href, isDangerous }) => (
-            <Link href={href} key={href}>
-              <StyledLink href={href} isDangerous={isDangerous}>
+          {links.map(({ placeholderKey, href, isDangerous, onClick }) => (
+            <Link href={href || ""} key={href}>
+              <StyledLink
+                href={href || ""}
+                onClick={onClick}
+                isDangerous={isDangerous}
+              >
                 {t(placeholderKey)}
               </StyledLink>
             </Link>

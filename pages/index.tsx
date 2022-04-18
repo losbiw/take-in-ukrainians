@@ -41,6 +41,10 @@ const SeeMoreLink = styled.a`
   margin: 2.5rem auto;
   text-align: center;
 
+  &:hover {
+    transform: scale(1.03);
+  }
+
   ${breakpoints.md} {
     width: 40%;
   }

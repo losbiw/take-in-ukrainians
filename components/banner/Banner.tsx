@@ -68,6 +68,11 @@ const StyledLink = styled.a`
   font-size: 1rem;
   border: none;
   border-radius: 999px;
+  transition: 0.3s;
+
+  &:hover {
+    transform: scale(1.05);
+  }
 
   &:first-child {
     margin-bottom: 1rem;

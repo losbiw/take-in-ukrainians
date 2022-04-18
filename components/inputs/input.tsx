@@ -11,9 +11,15 @@ export const InputStyles = `
   outline-color: ${colors.blue};
   border-radius: 999px;
   font-size: 0.9rem;
+  transition: .2s;
 
   &:placeholder {
+    transition: .2s;
     color: ${colors.darkGrey};
+  }
+
+  &:hover::placeholder {
+    color: ${colors.grey};
   }
 
   &::-webkit-outer-spin-button,

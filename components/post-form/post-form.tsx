@@ -14,10 +14,11 @@ import Submit from "@/components/inputs/submit";
 import CitySearchBar from "@/components/city-search-bar";
 import City from "@/types/city";
 import Post from "@/types/post";
-import ContactForm from "./contact-form";
+import ContactForm, { ContactProps } from "./contact-form";
 
 interface Props {
   post?: Post;
+  contacts: ContactProps;
 }
 
 interface Errors extends PostErrors {
@@ -26,13 +27,30 @@ interface Errors extends PostErrors {
   };
 }
 
+const CharacterLimitationWrapper = styled.div`
+  position: relative;
+`;
+
+const CharacterLimitation = styled.p<{ isInTextarea?: boolean }>`
+  margin: 0;
+  position: absolute;
+  ${({ isInTextarea }) =>
+    isInTextarea
+      ? "bottom: 2.5rem;"
+      : "top: 50%; transform: translate(0, -50%);"}
+  right: 2rem;
+  font-size: 0.9rem;
+  color: ${colors.grey};
+`;
+
 const Container = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   margin: 4rem auto;
-  gap: 8rem;
+  gap: 3rem;
 
   ${breakpoints.lg} {
+    gap: 8rem;
     grid-template-columns: 1fr 1fr;
     padding: 1rem;
   }
@@ -64,14 +82,19 @@ const ChoiceButton = styled.button<{ isActive: boolean | undefined }>`
   ${InputStyles}
 
   text-align: center;
-  color: ${({ isActive }) => (isActive ? colors.blue : "")};
   border-color: ${({ isActive }) => (isActive ? colors.blue : "")};
+  ${({ isActive }) => (isActive ? `color: ${colors.blue};` : "")};
+
+  &:hover {
+    cursor: pointer;
+    ${({ isActive }) => (!isActive ? `color: ${colors.grey};` : "")};
+  }
 `;
 
 const getQueryBasedState = (offerType: string | string[] | undefined) =>
   !!(offerType && offerType === "residence");
 
-const PostForm: FC<Props> = ({ post }) => {
+const PostForm: FC<Props> = ({ post, contacts }) => {
   const { t } = useTranslation("create_post");
   const router = useRouter();
 
@@ -125,7 +148,7 @@ const PostForm: FC<Props> = ({ post }) => {
     if (res.ok) {
       const json = await res.json();
 
-      router.push(`/feed/${json.postId}`);
+      router.push(`/post/${json.postId}`);
     } else {
       const json = await res.json();
 
@@ -175,23 +198,33 @@ const PostForm: FC<Props> = ({ post }) => {
 
           <Subtitle>{t("general_info")}</Subtitle>
 
-          <Input
-            type="text"
-            maxLength={50}
-            placeholder={t("title")}
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-          />
+          <CharacterLimitationWrapper>
+            <Input
+              type="text"
+              maxLength={50}
+              placeholder={t("title")}
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+            />
+
+            <CharacterLimitation>{50 - title.length}/50</CharacterLimitation>
+          </CharacterLimitationWrapper>
 
           {errors &&
             renderErrors(errors, "title", { t, namespace: "create_post" })}
 
-          <DescriptionInput
-            maxLength={300}
-            placeholder={t("description")}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
+          <CharacterLimitationWrapper>
+            <DescriptionInput
+              maxLength={300}
+              placeholder={t("description")}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+
+            <CharacterLimitation isInTextarea>
+              {300 - description.length}/300
+            </CharacterLimitation>
+          </CharacterLimitationWrapper>
 
           {errors &&
             renderErrors(errors, "description", {
@@ -228,7 +261,7 @@ const PostForm: FC<Props> = ({ post }) => {
           <Submit type="submit" value={t("publish")} />
         </Form>
 
-        <ContactForm />
+        <ContactForm contacts={contacts} isEditable />
       </Container>
     </Page>
   );

@@ -37,6 +37,21 @@ const deletePost = async (postId: number, userId: number) => {
   `;
 
   if (deletedPost) {
+    const [user] = await sql`
+      SELECT posts_id
+      FROM users
+      WHERE user_id=${userId}
+    `;
+
+    const posts = user.posts_id as number[];
+    posts.splice(posts.indexOf(postId), 1);
+
+    await sql`
+      UPDATE users
+      SET posts_id=${posts}
+      WHERE user_id=${userId}
+    `;
+
     return "The post was deleted successfully";
   }
 
