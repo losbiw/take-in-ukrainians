@@ -19,5 +19,6 @@
   "people_number_below_limit": "The maximum people limitation must not be lower than 1",
   "people_number_above_limit": "You cannot take in more than 10 people at once",
   "city_not_selected": "You must specify a city for your offer",
-  "city_lacks_id": "You must choose one of the cities from the dropdown"
+  "city_lacks_id": "You must choose one of the cities from the dropdown",
+  "is_in_russia": "We do not work with terrorists. Russian warship, go fuck yourself."
 }

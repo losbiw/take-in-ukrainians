@@ -15,6 +15,7 @@ import CitySearchBar from "@/components/city-search-bar";
 import City from "@/types/city";
 import Post from "@/types/post";
 import ContactForm, { ContactProps } from "./contact-form";
+import Radio from "../inputs/radio";
 
 interface Props {
   post?: Post;
@@ -78,24 +79,11 @@ const DescriptionInput = styled.textarea`
   border-radius: 2rem;
 `;
 
-const ChoiceButton = styled.button<{ isActive: boolean | undefined }>`
-  ${InputStyles}
-
-  text-align: center;
-  border-color: ${({ isActive }) => (isActive ? colors.blue : "")};
-  ${({ isActive }) => (isActive ? `color: ${colors.blue};` : "")};
-
-  &:hover {
-    cursor: pointer;
-    ${({ isActive }) => (!isActive ? `color: ${colors.grey};` : "")};
-  }
-`;
-
 const getQueryBasedState = (offerType: string | string[] | undefined) =>
   !!(offerType && offerType === "residence");
 
 const PostForm: FC<Props> = ({ post, contacts }) => {
-  const { t } = useTranslation("create_post");
+  const { t } = useTranslation("create-post");
   const router = useRouter();
 
   const [isOfferingResidence, setIsOfferingResidence] = useState(
@@ -174,7 +162,7 @@ const PostForm: FC<Props> = ({ post, contacts }) => {
 
           <Subtitle>{t("what_are_you_looking_to_do")}</Subtitle>
 
-          <ChoiceButton
+          <Radio
             isActive={isOfferingResidence}
             onClick={(e) => {
               e.preventDefault();
@@ -182,11 +170,11 @@ const PostForm: FC<Props> = ({ post, contacts }) => {
             }}
           >
             {t("offer_my_residence")}
-          </ChoiceButton>
+          </Radio>
 
           {isOfferingResidence && <Warning>{t("offer_warning")}</Warning>}
 
-          <ChoiceButton
+          <Radio
             isActive={!isOfferingResidence && isOfferingResidence !== undefined}
             onClick={(e) => {
               e.preventDefault();
@@ -194,7 +182,7 @@ const PostForm: FC<Props> = ({ post, contacts }) => {
             }}
           >
             {t("find_a_place")}
-          </ChoiceButton>
+          </Radio>
 
           <Subtitle>{t("general_info")}</Subtitle>
 
@@ -211,7 +199,7 @@ const PostForm: FC<Props> = ({ post, contacts }) => {
           </CharacterLimitationWrapper>
 
           {errors &&
-            renderErrors(errors, "title", { t, namespace: "create_post" })}
+            renderErrors(errors, "title", { t, namespace: "create-post" })}
 
           <CharacterLimitationWrapper>
             <DescriptionInput
@@ -229,16 +217,22 @@ const PostForm: FC<Props> = ({ post, contacts }) => {
           {errors &&
             renderErrors(errors, "description", {
               t,
-              namespace: "create_post",
+              namespace: "create-post",
             })}
 
           <Subtitle>{t("location")}</Subtitle>
           <CitySearchBar setCity={setCity} defaultValue={post?.city_name} />
 
           {errors &&
+            renderErrors(errors, "city_name", {
+              t,
+              namespace: "create-post",
+            })}
+
+          {errors &&
             renderErrors(errors, "city_id", {
               t,
-              namespace: "create_post",
+              namespace: "create-post",
             })}
 
           <Subtitle>
@@ -255,7 +249,7 @@ const PostForm: FC<Props> = ({ post, contacts }) => {
           {errors &&
             renderErrors(errors, "people_number", {
               t,
-              namespace: "create_post",
+              namespace: "create-post",
             })}
 
           <Submit type="submit" value={t("publish")} />

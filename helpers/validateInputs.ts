@@ -56,7 +56,6 @@ const validateAuth = ({
     passwordConfirmation: {
       passwords_dont_match: password !== passwordConfirmation,
     },
-    sever: {},
   };
 
   return [areErrorsPresent(errors), errors];
@@ -82,7 +81,13 @@ const validatePost = ({
       people_number_below_limit: people_number < 1,
       people_number_above_limit: is_offering && people_number > 10,
     },
-    city_name: {},
+    city_name: {
+      is_in_russia:
+        /Russia/.test(city_name) ||
+        /Belarus/.test(city_name) ||
+        /Россия/.test(city_name) ||
+        /Беларусь/.test(city_name),
+    },
     city_id: {
       city_not_selected: !city_name,
       city_lacks_id: !!city_name && !city_id,

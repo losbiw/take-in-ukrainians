@@ -24,6 +24,7 @@ const StyledInput = styled(Input)<{ areCitiesFound: boolean }>`
 `;
 
 const Container = styled.div`
+  width: 100%;
   position: relative;
 `;
 

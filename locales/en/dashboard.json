@@ -1,5 +1,6 @@
 {
   "posts": "Your offers",
   "edit": "Edit",
-  "delete": "Delete"
+  "delete": "Delete",
+  "create_offer": "Create offer"
 }

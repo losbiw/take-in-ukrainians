@@ -2,10 +2,12 @@ import React, { FC } from "react";
 import styled from "styled-components";
 import Link from "next/link";
 import useTranslation from "next-translate/useTranslation";
+import { useRouter } from "next/router";
 import breakpoints from "@/constants/breakpoints";
 import colors from "@/constants/colors";
 
 interface Props {
+  closeMenu: () => void;
   links: {
     placeholder: string;
     href: string;
@@ -32,6 +34,12 @@ const Container = styled.div`
     transition: 0.15s;
     font-size: 1.1rem;
 
+    &.active {
+      color: ${colors.black};
+      font-weight: 500;
+      pointer-events: none;
+    }
+
     &:hover {
       color: ${colors.grey};
     }
@@ -48,13 +56,21 @@ const Container = styled.div`
   }
 `;
 
-const Menu: FC<Props> = ({ links, children }) => {
+const Menu: FC<Props> = ({ links, closeMenu, children }) => {
   const { t } = useTranslation("general");
+  const router = useRouter();
+
   return (
     <Container>
       {links.map(({ placeholder, href }) => (
         <Link href={href} key={href}>
-          <a href={href}>{t(placeholder)}</a>
+          <a
+            className={href === router.asPath ? "active" : ""}
+            onClick={closeMenu}
+            href={href}
+          >
+            {t(placeholder)}
+          </a>
         </Link>
       ))}
 

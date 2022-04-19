@@ -75,7 +75,7 @@ const MenuButton = styled.div<{ isMenuExpanded: boolean }>`
 
   &:before,
   & div {
-    margin-bottom: 6px;
+    margin-bottom: 5px;
   }
 
   ${({ isMenuExpanded }) =>
@@ -144,7 +144,7 @@ const Nav: FC = () => {
       </MenuButton>
 
       {(isMenuExpanded || (windowWidth && windowWidth >= sizes.lg)) && (
-        <Menu links={links}>
+        <Menu closeMenu={() => setIsMenuExpanded(false)} links={links}>
           <Donate />
         </Menu>
       )}
