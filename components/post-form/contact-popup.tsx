@@ -5,12 +5,14 @@ import colors from "@/constants/colors";
 import Input from "../inputs/input";
 import Submit from "../inputs/submit";
 import server from "@/constants/server";
-import { SocialMedia } from "./contact-form";
 import Subtitle from "../general/subtitle";
 import breakpoints from "@/constants/breakpoints";
+import { SocialMediaName } from "@/constants/socials";
+import validateInputs, { ContactErrors } from "@/helpers/validateInputs";
+import renderErrors from "@/helpers/renderErrors";
 
 interface Props {
-  name: SocialMedia;
+  name: SocialMediaName;
   title: string;
   placeholder: string;
   defaultValue?: string;
@@ -65,15 +67,22 @@ const ContactPopup: FC<Props> = ({
 }) => {
   const { t } = useTranslation("contact");
   const [input, setInput] = useState(defaultValue || "");
+  const [errors, setErrors] = useState<ContactErrors>();
 
   const handleClick = async () => {
-    const body: any = {};
+    const [areErrors, validationErrors] = validateInputs.contactInfo({
+      [name]: input,
+    });
 
-    body[name] = input;
+    if (areErrors) {
+      return setErrors(validationErrors);
+    }
 
     const res = await fetch(`${server}/api/user/contact`, {
       method: "POST",
-      body: JSON.stringify(body),
+      body: JSON.stringify({
+        [name]: input,
+      }),
     });
 
     if (res.ok) {
@@ -93,6 +102,8 @@ const ContactPopup: FC<Props> = ({
           onChange={(e) => setInput(e.target.value)}
           placeholder={placeholder}
         />
+
+        {errors && renderErrors(errors, name, { t, namespace: "create-post" })}
 
         <Submit type="submit" value={t("Submit")} onClick={handleClick} />
       </Container>

@@ -5,6 +5,18 @@ import Post from "@/types/post";
 import sql from "@/db";
 import parseJwt from "@/helpers/parseJwt";
 import apiHandler from "@/middleware/api";
+import { getContactInfo } from "../user/contact";
+import { ContactData } from "@/components/post-form/contact-form";
+import { SocialMediaName } from "@/constants/socials";
+
+const isContactInfoEmpty = async (contactInfo: ContactData) => {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const key of Object.keys(contactInfo)) {
+    if (contactInfo[key as SocialMediaName]) return false;
+  }
+
+  return true;
+};
 
 const createPost = async (post: Omit<Post, "post_id">) => {
   const [author] = await sql`
@@ -15,6 +27,14 @@ const createPost = async (post: Omit<Post, "post_id">) => {
   if (!author) {
     throw new ApiError(404, "The author was not found");
   }
+
+  const contactInfo = await getContactInfo(post.user_id);
+
+  if (await isContactInfoEmpty(contactInfo))
+    throw new ApiError(
+      401,
+      "You must have set at least one way of contacting you before publishing"
+    );
 
   const [result] = await sql`
     INSERT INTO posts ${sql(post)}
@@ -29,7 +49,7 @@ const createPost = async (post: Omit<Post, "post_id">) => {
   `;
 
   if (result) {
-    return result.post_id;
+    return result.post_id as number;
   }
 
   throw new ApiError(500, "Something went wrong");
@@ -80,7 +100,7 @@ const handler: NextApiHandler = async (
   switch (method) {
     case "POST":
       return res.json({
-        postId: createPost({
+        postId: await createPost({
           ...body,
           user_id,
         }),

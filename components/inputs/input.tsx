@@ -18,7 +18,7 @@ export const InputStyles = `
     color: ${colors.darkGrey};
   }
 
-  &:hover::placeholder {
+  &:focus::placeholder, &:hover::placeholder {
     color: ${colors.grey};
   }
 

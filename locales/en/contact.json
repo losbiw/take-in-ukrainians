@@ -1,9 +1,10 @@
 {
   "contact information": "Contact information",
   "only fill out ones that you want": "You can link as many profiles as you want others to see.",
+  "choose whichever option": "You can choose whichever way of contacting the author you prefer.",
   "facebook link": "Link to your profile",
   "instagram nickname": "Username",
-  "telegram id or phone": "Phone number or username",
-  "phone number": "Phone number",
+  "telegram username": "Phone number or username",
+  "phone number": "Phone number (international format)",
   "submit": "Submit"
 }

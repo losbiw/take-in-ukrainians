@@ -3,15 +3,16 @@ import { ApiError } from "next/dist/server/api-utils";
 import sql from "@/db";
 import parseJwt from "@/helpers/parseJwt";
 import apiHandler from "@/middleware/api";
+import Post from "@/types/post";
 
-export const getPost = async (postId: number) => {
+export const getPost = async (postId: number): Promise<Post> => {
   const [post] = await sql`
     SELECT * FROM posts
     WHERE post_id=${postId}
   `;
 
   if (post) {
-    return post;
+    return post as Post;
   }
 
   throw new ApiError(404, "The post was not found");

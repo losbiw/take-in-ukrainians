@@ -31,11 +31,11 @@ const handler = (req: ExtendedApiRequest, res: NextApiResponse) => {
 
   const authenticate = async () => {
     const [user] = await sql`
-      SELECT * FROM users
+      SELECT user_id FROM users
       WHERE email=${email}
     `;
 
-    if (user) {
+    if (user.user_id) {
       throw new ApiError(409, "User already exists");
     }
 
@@ -62,7 +62,7 @@ const handler = (req: ExtendedApiRequest, res: NextApiResponse) => {
         from: "Take in Ukrainians",
         to: returnedEmail,
         subject: "Confirm your email to access full functionality",
-        html: `<a href="${server}/auth/verify_email?token=${token}">Click here to confirm your email</a>`,
+        html: `<a href="${server}/auth/confirm-email?token=${token}">Click here to confirm your email</a>`,
       });
 
       return res.json({

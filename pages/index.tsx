@@ -19,6 +19,10 @@ import breakpoints from "@/constants/breakpoints";
 const Title = styled(RawTitle)`
   margin: 5rem 0 2rem;
   text-align: center;
+
+  &:first-child {
+    margin-top: 0;
+  }
 `;
 
 const Description = styled(RawDescription)`

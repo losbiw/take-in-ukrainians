@@ -20,5 +20,8 @@
   "people_number_above_limit": "You cannot take in more than 10 people at once",
   "city_not_selected": "You must specify a city for your offer",
   "city_lacks_id": "You must choose one of the cities from the dropdown",
-  "is_in_russia": "We do not work with terrorists. Russian warship, go fuck yourself."
+  "is_in_russia": "We do not work with terrorists. Russian warship, go fuck yourself.",
+  "isnt_a_facebook_link": "The link you entered is a not a valid facebook profile link.",
+  "incorrect_phone_format": "Incorrent phone number format",
+  "You must have set at least one way of contacting you before publishing": "You must have set at least one way of contacting you before publishing"
 }

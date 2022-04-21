@@ -5,7 +5,7 @@ const Subtitle = styled.h2`
   font-size: 1rem;
   color: ${colors.black};
   font-weight: 500;
-  margin: 2rem 0 1.5rem;
+  margin: 1.5rem 0;
 `;
 
 export default Subtitle;

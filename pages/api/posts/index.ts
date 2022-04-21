@@ -3,12 +3,13 @@ import { ApiError } from "next/dist/server/api-utils";
 import sql from "@/db";
 import ITEMS_PER_PAGE from "@/constants/posts";
 import apiHandler from "@/middleware/api";
+import Post from "@/types/post";
 
 export const getPosts = async (
   page: number,
   offersOnly: boolean | undefined,
   cityId?: string
-) => {
+): Promise<Post[]> => {
   const getCondition = () => {
     const isCityUndefined = typeof cityId === "undefined";
     const isOffersOnlyUndefined = typeof offersOnly === "undefined";
@@ -39,7 +40,7 @@ export const getPosts = async (
   `;
 
   if (posts.length > 0) {
-    return posts;
+    return posts as unknown as Post[];
   }
 
   throw new ApiError(404, "Posts were not found");

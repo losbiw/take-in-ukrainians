@@ -4,8 +4,9 @@ import colors from "@/constants/colors";
 const AuthLink = styled.a`
   font-size: 0.9rem;
   color: ${colors.grey};
-  margin: 3rem 0 0;
+  margin: 1rem 0 0;
   transition: 0.1s;
+  display: block;
 
   &:hover {
     color: ${colors.darkGrey};

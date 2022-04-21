@@ -2,7 +2,7 @@
 import useTranslation from "next-translate/useTranslation";
 import React, { FC, useState } from "react";
 import styled from "styled-components";
-import socialMedia from "@/constants/socials";
+import socialMedia, { SocialMediaName } from "@/constants/socials";
 import { InputStyles } from "../inputs/input";
 import { Title } from "../general/title";
 import Subtitle from "../general/subtitle";
@@ -10,12 +10,10 @@ import colors from "@/constants/colors";
 import ContactPopup from "./contact-popup";
 import server from "@/constants/server";
 
-export type SocialMedia = keyof typeof socialMedia;
-
-export type ContactProps = Partial<Record<SocialMedia, string>>;
+export type ContactData = Partial<Record<SocialMediaName, string>>;
 
 interface Props {
-  contacts: ContactProps;
+  contacts: ContactData;
   isEditable: boolean;
 }
 
@@ -33,7 +31,7 @@ const InputContainer = styled.div`
   }
 `;
 
-const Field = styled.button<{ isFilledOut: boolean }>`
+const Field = styled.a<{ isFilledOut: boolean }>`
   ${InputStyles}
 
   padding-top: 0.6rem;
@@ -101,36 +99,36 @@ const CrossIcon = styled.img`
 const ContactForm: FC<Props> = ({ contacts: contactsProps, isEditable }) => {
   const { t } = useTranslation("contact");
 
-  const [popupKey, setPopupKey] = useState<SocialMedia | null>(null);
+  const [popupKey, setPopupKey] = useState<SocialMediaName | null>(null);
   const [contacts, setContants] = useState(contactsProps);
 
-  const updateContactsKey = (key: SocialMedia, value: string) => {
-    const copy = { ...contactsProps };
-    copy[key] = value;
+  const updateContactsKey = (key: SocialMediaName, value: string) => {
+    const copy = {
+      ...contactsProps,
+      [key]: value,
+    };
 
     setContants(copy);
   };
 
-  const handleClick = (key: SocialMedia) => {
+  const handleClick = (key: SocialMediaName) => {
     setPopupKey(key);
   };
 
   const closePopup = (value?: string) => {
     if (value) {
-      updateContactsKey(popupKey as string, value);
+      updateContactsKey(popupKey as SocialMediaName, value);
     }
 
     setPopupKey(null);
   };
 
-  const handleDelete = async (key: SocialMedia) => {
-    const body: any = {};
-
-    body[key] = null;
-
+  const handleDelete = async (key: SocialMediaName) => {
     const res = await fetch(`${server}/api/user/contact`, {
       method: "DELETE",
-      body: JSON.stringify(body),
+      body: JSON.stringify({
+        [key]: null,
+      }),
     });
 
     if (res.ok) {
@@ -141,30 +139,52 @@ const ContactForm: FC<Props> = ({ contacts: contactsProps, isEditable }) => {
   return (
     <Container>
       <Title>{t("contact information")}</Title>
-      <Subtitle>{t("only fill out ones that you want")}</Subtitle>
+      <Subtitle>
+        {t(
+          isEditable
+            ? "only fill out ones that you want"
+            : "choose whichever option"
+        )}
+      </Subtitle>
 
-      {Object.keys(socialMedia).map((key) => (
-        <InputContainer key={key}>
-          <Field
-            isFilledOut={!!contacts[key as SocialMedia]}
-            onClick={
-              isEditable ? () => handleClick(key as SocialMedia) : undefined
-            }
-          >
-            <img
-              src={`/assets/social-media/${key}.png`}
-              alt={`${key} logotype`}
-            />
-            <p>{socialMedia[key].name}</p>
-          </Field>
+      {Object.keys(socialMedia).map((key) => {
+        const nameKey = key as SocialMediaName;
+        const fieldValue = contacts[nameKey];
+        const { name, baseUrl } = socialMedia[nameKey];
 
-          {isEditable && contacts[key] && (
-            <DeleteButton onClick={() => handleDelete(key)}>
-              <CrossIcon src="/assets/icons/close.png" />
-            </DeleteButton>
-          )}
-        </InputContainer>
-      ))}
+        if (isEditable || fieldValue) {
+          return (
+            <InputContainer key={key}>
+              <Field
+                href={baseUrl + fieldValue}
+                isFilledOut={!!fieldValue}
+                onClick={
+                  isEditable
+                    ? (e) => {
+                        e.preventDefault();
+                        handleClick(nameKey);
+                      }
+                    : undefined
+                }
+              >
+                <img
+                  src={`/assets/social-media/${key}.png`}
+                  alt={`${key} logotype`}
+                />
+                <p>{name}</p>
+              </Field>
+
+              {isEditable && fieldValue && (
+                <DeleteButton onClick={() => handleDelete(nameKey)}>
+                  <CrossIcon src="/assets/icons/close.png" />
+                </DeleteButton>
+              )}
+            </InputContainer>
+          );
+        }
+
+        return undefined;
+      })}
 
       {popupKey && (
         <ContactPopup

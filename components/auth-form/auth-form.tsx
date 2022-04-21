@@ -29,11 +29,11 @@ interface Field {
 }
 
 interface Props {
-  formType: "login" | "signup" | "recovery";
+  formType: "login" | "signup" | "recovery" | "newPassword";
   title: string;
   description: string;
   fields: Field[];
-  authLink: AuthLinkInfo;
+  authLink?: AuthLinkInfo;
 }
 
 const Container = styled.div`
@@ -55,6 +55,12 @@ const Submit = styled(Input)`
   font-weight: 500;
   color: ${colors.white};
   margin: 2rem 0 1.2rem;
+  transition: 0.2s;
+
+  &:hover {
+    cursor: pointer;
+    transform: scale(1.05);
+  }
 `;
 
 const RequirementContainer = styled.div`
@@ -92,7 +98,7 @@ const AuthForm: FC<Props> = ({
   title,
   description,
   fields,
-  authLink: { text: authText, href: authHref, highlited: authHighlited },
+  authLink,
 }) => {
   const router = useRouter();
   const { t } = useTranslation("auth");
@@ -136,10 +142,12 @@ const AuthForm: FC<Props> = ({
     } else {
       const json = await res.json();
 
-      const errorsCopy = { ...errors };
-      errorsCopy.server = {};
-
-      errorsCopy.server[json.message] = true;
+      const errorsCopy = {
+        ...errors,
+        server: {
+          [json.message]: true,
+        },
+      };
 
       setErrors(errorsCopy);
     }
@@ -176,7 +184,7 @@ const AuthForm: FC<Props> = ({
           </div>
         ))}
 
-        {formType !== "login" &&
+        {(formType === "newPassword" || formType === "signup") &&
           Object.keys(passwordValidation).map((key) => (
             <RequirementContainer key={key}>
               <Checkmark
@@ -192,13 +200,26 @@ const AuthForm: FC<Props> = ({
 
         {errors && renderErrors(errors, "server", { t })}
 
+        {formType === "login" && (
+          <Link href="/auth/recovery">
+            <AuthLink className="margin-top" href="/auth/recovery">
+              <span className="highlited">
+                {t("login:forgot your password")}
+              </span>
+            </AuthLink>
+          </Link>
+        )}
+
         <Submit type="submit" value={title} />
 
-        <Link href={authHref}>
-          <AuthLink href={authHref}>
-            {authText} <span className="highlited">{authHighlited}</span>
-          </AuthLink>
-        </Link>
+        {authLink && (
+          <Link href={authLink.href}>
+            <AuthLink href={authLink.href}>
+              {authLink.text}{" "}
+              <span className="highlited">{authLink.highlited}</span>
+            </AuthLink>
+          </Link>
+        )}
       </form>
     </Container>
   );

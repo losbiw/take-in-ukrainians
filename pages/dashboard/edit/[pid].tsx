@@ -5,11 +5,11 @@ import Post from "@/types/post";
 import { getPost } from "@/pages/api/post/[pid]";
 import parseJwt from "@/helpers/parseJwt";
 import { getContactInfo } from "@/pages/api/user/contact";
-import { ContactProps } from "@/components/post-form/contact-form";
+import { ContactData } from "@/components/post-form/contact-form";
 
 interface Props {
   post: Post;
-  contacts: ContactProps;
+  contacts: ContactData;
 }
 
 const EditPost: FC<Props> = ({ post, contacts }) => (

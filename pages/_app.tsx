@@ -9,6 +9,9 @@ const urlsWithoutAuth = [
   /\/feed\/\d+/,
   "/auth/login",
   "/auth/signup",
+  "/auth/recovery", // TODO: remove
+  "/auth/new-password",
+  "/confirmation-letter",
   /\/post\/\d+/,
 ];
 

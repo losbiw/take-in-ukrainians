@@ -10,7 +10,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
     query: { token },
   } = req;
 
-  const verify = async () => {
+  const confirmEmail = async () => {
     try {
       const { user_id } = jwt.verify(
         token as string,
@@ -35,7 +35,7 @@ const handler = (req: NextApiRequest, res: NextApiResponse) => {
         throw new ApiError(422, 'Required argument "token" was not provided');
       }
 
-      return verify();
+      return confirmEmail();
     default:
       throw new ApiError(405, "Method not allowed");
   }

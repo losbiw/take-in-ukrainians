@@ -3,8 +3,11 @@ import { ApiError } from "next/dist/server/api-utils";
 import sql from "@/db";
 import parseJwt from "@/helpers/parseJwt";
 import apiHandler from "@/middleware/api";
+import User from "@/types/user";
 
-const getUserData = async (userId: number) => {
+type GeneralUserData = Pick<User, "user_id" | "email" | "is_admin">;
+
+const getUserData = async (userId: number): Promise<GeneralUserData> => {
   const [user] = await sql`
     SELECT user_id, email, is_admin
     FROM users
@@ -12,7 +15,7 @@ const getUserData = async (userId: number) => {
   `;
 
   if (user) {
-    return user;
+    return user as GeneralUserData;
   }
 
   throw new ApiError(404, "The user was not found");

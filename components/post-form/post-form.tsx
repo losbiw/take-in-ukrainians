@@ -14,12 +14,12 @@ import Submit from "@/components/inputs/submit";
 import CitySearchBar from "@/components/city-search-bar";
 import City from "@/types/city";
 import Post from "@/types/post";
-import ContactForm, { ContactProps } from "./contact-form";
+import ContactForm, { ContactData } from "./contact-form";
 import Radio from "../inputs/radio";
 
 interface Props {
   post?: Post;
-  contacts: ContactProps;
+  contacts: ContactData;
 }
 
 interface Errors extends PostErrors {
@@ -47,7 +47,7 @@ const CharacterLimitation = styled.p<{ isInTextarea?: boolean }>`
 const Container = styled.div`
   display: grid;
   grid-template-columns: 1fr;
-  margin: 4rem auto;
+  margin: 1rem auto;
   gap: 3rem;
 
   ${breakpoints.lg} {
@@ -140,10 +140,12 @@ const PostForm: FC<Props> = ({ post, contacts }) => {
     } else {
       const json = await res.json();
 
-      const errorsCopy = { ...errors };
-      errorsCopy.server = {};
-
-      errorsCopy.server[json.message] = true;
+      const errorsCopy = {
+        ...errors,
+        server: {
+          [json.message]: true,
+        },
+      };
 
       setErrors(errorsCopy);
     }
@@ -248,6 +250,12 @@ const PostForm: FC<Props> = ({ post, contacts }) => {
 
           {errors &&
             renderErrors(errors, "people_number", {
+              t,
+              namespace: "create-post",
+            })}
+
+          {errors &&
+            renderErrors(errors, "server", {
               t,
               namespace: "create-post",
             })}

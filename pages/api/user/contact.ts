@@ -3,8 +3,9 @@ import { ApiError } from "next/dist/server/api-utils";
 import parseJwt from "@/helpers/parseJwt";
 import sql from "@/db";
 import socialMedia from "@/constants/socials";
+import { ContactData } from "@/components/post-form/contact-form";
 
-export const getContactInfo = async (userId: number) => {
+export const getContactInfo = async (userId: number): Promise<ContactData> => {
   const [contact] = await sql`
     SELECT facebook, instagram, telegram, whatsapp, viber
     FROM users
@@ -15,12 +16,18 @@ export const getContactInfo = async (userId: number) => {
     throw new ApiError(404, "User was not found");
   }
 
-  return contact;
+  const filteredContactTuples = Object.entries(contact).filter(
+    // eslint-disable-next-line no-unused-vars
+    ([_key, value]) => !!value
+  );
+  const filteredContact = Object.fromEntries(filteredContactTuples);
+
+  return filteredContact as ContactData;
 };
 
 const updateContact = async (
   userId: number,
-  socialMediaRecord: Record<keyof typeof socialMedia, string>
+  socialMediaRecord: ContactData
 ) => {
   const [user] = await sql`
     UPDATE users
@@ -31,7 +38,8 @@ const updateContact = async (
 
   if (user.user_id) {
     return {
-      user_id: user.user_id,
+      user_id: userId,
+      ...socialMediaRecord,
     };
   }
 

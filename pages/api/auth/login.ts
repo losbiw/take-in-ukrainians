@@ -21,7 +21,7 @@ const handler = (req: ExtendedApiRequest, res: NextApiResponse) => {
 
   const authenticate = async () => {
     const [user] = await sql`
-      SELECT password, user_id, is_admin FROM users
+      SELECT password, user_id, is_admin, is_confirmed FROM users
       WHERE email=${email}
     `;
 
@@ -35,7 +35,11 @@ const handler = (req: ExtendedApiRequest, res: NextApiResponse) => {
       .digest("hex");
 
     if (encryptedPassword === user.password) {
-      const { user_id, is_admin } = user;
+      const { user_id, is_admin, is_confirmed } = user;
+
+      if (!is_confirmed) {
+        throw new ApiError(403, "The email was not confirmed");
+      }
 
       const token = jwt.sign({ user_id, is_admin }, process.env.JWT_SECRET);
 

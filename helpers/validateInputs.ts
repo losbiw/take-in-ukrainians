@@ -1,3 +1,4 @@
+import { ContactData } from "@/components/post-form/contact-form";
 import Post from "@/types/post";
 
 type PostWithoutIDs = Omit<Post, "user_id" | "post_id">;
@@ -19,6 +20,7 @@ interface AuthInfo {
 
 export type PostErrors = Errors<PostWithoutIDs>;
 export type ValidationErrors = Errors<AuthInfo>;
+export type ContactErrors = Errors<ContactData>;
 
 const areErrorsPresent = (errors: Errors<any>) => {
   let areErrors = false;
@@ -98,8 +100,39 @@ const validatePost = ({
   return [areErrorsPresent(errors), errors];
 };
 
+const validatePhoneNumber = (phone: string) =>
+  /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/im.test(phone);
+
+const validateContactInfo = ({
+  facebook,
+  telegram,
+  viber,
+  whatsapp,
+}: ContactData): ErrorTuple<ContactData> => {
+  const errors = {
+    facebook: {
+      isnt_a_facebook_link:
+        !!facebook && !/https:\/\/facebook.com/.test(facebook),
+    },
+    instagram: {},
+    telegram: {
+      incorrect_phone_format:
+        !!telegram && /\+/.test(telegram) && !validatePhoneNumber(telegram),
+    },
+    viber: {
+      incorrect_phone_format: !!viber && !validatePhoneNumber(viber),
+    },
+    whatsapp: {
+      incorrect_phone_format: !!whatsapp && !validatePhoneNumber(whatsapp),
+    },
+  };
+
+  return [areErrorsPresent(errors), errors];
+};
+
 export default {
   post: validatePost,
   auth: validateAuth,
   password: validatePassword,
+  contactInfo: validateContactInfo,
 };
