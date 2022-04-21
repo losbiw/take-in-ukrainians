@@ -3,10 +3,12 @@ import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import { ApiError } from "next/dist/server/api-utils";
 import nodemailer from "nodemailer";
+import getT from "next-translate/getT";
 import sql from "@/db";
 import server from "@/constants/server";
 import apiHandler from "@/middleware/api";
 import validateInputs from "@/helpers/validateInputs";
+import generateEmailTemplate from "@/helpers/sendEmail";
 
 const transport = nodemailer.createTransport({
   host: "take-in-ukrainians.com",
@@ -21,24 +23,9 @@ interface ExtendedApiRequest extends NextApiRequest {
   body: {
     email: string;
     password: string;
+    locale: string;
   };
 }
-
-export const sendConfirmationEmail = (
-  email: string,
-  jwtPayload: { user_id: string; is_admin: boolean }
-) => {
-  const token = jwt.sign(jwtPayload, process.env.JWT_SECRET, {
-    expiresIn: "20m",
-  });
-
-  transport.sendMail({
-    from: '"Email Confirmation" <confirmation@take-in-ukrainians.com>',
-    to: email,
-    subject: "Confirm your email to access full functionality",
-    html: `<a href="${server}/auth/confirm-email?token=${token}">Click here to confirm your email</a>`,
-  });
-};
 
 const handler: NextApiHandler = async (
   req: ExtendedApiRequest,
@@ -46,8 +33,10 @@ const handler: NextApiHandler = async (
 ) => {
   const {
     method,
-    body: { email, password },
+    body: { email, password, locale },
   } = req;
+
+  const t = await getT(locale, "email");
 
   const authenticate = async () => {
     const [user] = await sql`
@@ -74,9 +63,22 @@ const handler: NextApiHandler = async (
     const { email: returnedEmail, user_id, is_admin } = returnedUser;
 
     if (user_id) {
-      sendConfirmationEmail(returnedEmail, {
-        user_id,
-        is_admin,
+      const token = jwt.sign({ user_id, is_admin }, process.env.JWT_SECRET, {
+        expiresIn: "20m",
+      });
+
+      transport.sendMail({
+        from: '"Email Confirmation" <confirmation@take-in-ukrainians.com>',
+        to: returnedEmail,
+        subject: "Confirm your email to access full functionality",
+        html: generateEmailTemplate(
+          t("confirm your email"),
+          t("it is required to access"),
+          {
+            href: `${server}/auth/confirm-email?token=${token}`,
+            text: t("confirm email"),
+          }
+        ),
       });
 
       return "We have sent you the email confirmation email.";

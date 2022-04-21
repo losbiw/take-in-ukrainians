@@ -176,7 +176,7 @@ const AuthForm: FC<Props> = ({
       password,
       passwordConfirmation,
       formType,
-      includePassword: true,
+      includePassword: formType === "signup",
     });
 
     if (areErrorsPresent) {
@@ -184,12 +184,13 @@ const AuthForm: FC<Props> = ({
     }
 
     const res = await fetch(
-      `/api/auth/${formType}?${token ? `token=${token}` : ""}`,
+      `/api/auth/${formType}${token ? `?token=${token}` : ""}`,
       {
         method: "POST",
         body: JSON.stringify({
           email,
           password,
+          locale: router.locale,
         }),
         headers: {
           "Content-Type": "application/json",

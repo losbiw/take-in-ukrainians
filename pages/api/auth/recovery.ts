@@ -2,9 +2,11 @@ import { NextApiHandler, NextApiRequest, NextApiResponse } from "next";
 import { ApiError } from "next/dist/server/api-utils";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
+import getT from "next-translate/getT";
 import apiHandler from "@/middleware/api";
 import sql from "@/db";
 import server from "@/constants/server";
+import generateEmailTemplate from "@/helpers/sendEmail";
 
 const transport = nodemailer.createTransport({
   host: "take-in-ukrainians.com",
@@ -21,8 +23,10 @@ const handler: NextApiHandler = async (
 ) => {
   const {
     method,
-    body: { email },
+    body: { email, locale },
   } = req;
+
+  const t = await getT(locale, "email");
 
   const recover = async () => {
     const [user] = await sql`
@@ -46,8 +50,15 @@ const handler: NextApiHandler = async (
     transport.sendMail({
       from: '"Password Recovery" <recovery@take-in-ukrainians.com>',
       to: email,
-      subject: "Recover your forgotten password",
-      html: `<a href="${server}/auth/new-password?token=${token}">Click here to recover the password</a>`,
+      subject: t("recover your password"),
+      html: generateEmailTemplate(
+        t("recover password"),
+        t("click the link to recover"),
+        {
+          href: `${server}/auth/new-password?token=${token}`,
+          text: t("recover"),
+        }
+      ),
     });
 
     return "Recovery link was sent successfully";

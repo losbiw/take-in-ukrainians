@@ -27,7 +27,7 @@ const Title = styled(RawTitle)`
 
 const Description = styled(RawDescription)`
   text-align: center;
-  margin: 0 auto 3rem;
+  margin: 0 auto 2rem;
 
   ${breakpoints.lg} {
     max-width: 70%;
@@ -42,7 +42,7 @@ const SeeMoreLink = styled.a`
   background-color: ${colors.blue};
   font-weight: 500;
   border: none;
-  margin: 2.5rem auto;
+  margin: 3rem auto 2.5rem;
   text-align: center;
 
   &:hover {
@@ -52,6 +52,12 @@ const SeeMoreLink = styled.a`
   ${breakpoints.md} {
     width: 40%;
   }
+`;
+
+const PostsWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  margin-top: 2rem;
 `;
 
 const Home: NextPage = () => {
@@ -84,9 +90,11 @@ const Home: NextPage = () => {
         <Title>{t("if_youre_looking_for_a_place")}</Title>
         <Description>{t("youre_not_alone")}</Description>
 
-        <PostsContainer
-          posts={posts.filter(({ is_offering }) => is_offering).slice(0, 6)}
-        />
+        <PostsWrapper>
+          <PostsContainer
+            posts={posts.filter(({ is_offering }) => is_offering).slice(0, 6)}
+          />
+        </PostsWrapper>
 
         {error && <Error>{error}</Error>}
 
@@ -98,9 +106,11 @@ const Home: NextPage = () => {
 
         <Title>{t("if_youre_looking_to_take_in")}</Title>
 
-        <PostsContainer
-          posts={posts.filter(({ is_offering }) => !is_offering).slice(0, 6)}
-        />
+        <PostsWrapper>
+          <PostsContainer
+            posts={posts.filter(({ is_offering }) => !is_offering).slice(0, 6)}
+          />
+        </PostsWrapper>
 
         {error && <Error>{error}</Error>}
 

@@ -30,7 +30,7 @@ const ButtonsContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 2rem;
+  margin-top: 4rem;
 `;
 
 const Filters = styled.div`
