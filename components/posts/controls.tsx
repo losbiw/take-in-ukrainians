@@ -92,9 +92,9 @@ const Controls: FC<Props> = ({ postId }) => {
       method: "DELETE",
     });
 
-    // if (res.ok) {
-    router.push(router.asPath);
-    // }
+    if (res.ok) {
+      router.push(router.asPath);
+    }
   };
 
   const links = useMemo(

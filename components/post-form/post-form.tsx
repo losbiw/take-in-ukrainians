@@ -160,7 +160,7 @@ const PostForm: FC<Props> = ({ post, contacts }) => {
             handleSubmit();
           }}
         >
-          <Title>{t(post ? "edit_a_proposal" : "create_a_proposal")}</Title>
+          <Title>{t(post ? "edit_the_offer" : "create_an_offer")}</Title>
 
           <Subtitle>{t("what_are_you_looking_to_do")}</Subtitle>
 

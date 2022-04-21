@@ -12,7 +12,7 @@
     "/dashboard/create": ["create-post", "contact", "general"],
     "/dashboard/edit/[pid]": ["create-post", "general", "contact"],
     "/feed/[page]": ["feed", "post", "general"],
-    "/post/[pid]": ["general", "post", "contact"],
+    "/post/[pid]": ["general", "post", "contact", "create-post"],
     "/email-sent": ["email-sent"]
   }
 }

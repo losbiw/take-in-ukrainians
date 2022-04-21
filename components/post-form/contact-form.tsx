@@ -156,7 +156,12 @@ const ContactForm: FC<Props> = ({ contacts: contactsProps, isEditable }) => {
           return (
             <InputContainer key={key}>
               <Field
-                href={baseUrl + fieldValue}
+                href={
+                  baseUrl +
+                  (nameKey === "telegram" && fieldValue?.[0] === "@"
+                    ? fieldValue.slice(1)
+                    : fieldValue)
+                }
                 isFilledOut={!!fieldValue}
                 onClick={
                   isEditable

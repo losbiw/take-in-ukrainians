@@ -8,6 +8,8 @@ import Input from "../inputs/input";
 import validateInputs, { ValidationErrors } from "@/helpers/validateInputs";
 import renderErrors from "@/helpers/renderErrors";
 import { Title } from "../general/title";
+import ShowPasswordIcon from "../../public/assets/icons/show-password.svg";
+import HidePasswordIcon from "../../public/assets/icons/hide-password.svg";
 import AuthLink from "./auth-link";
 
 export type FormType = "login" | "signup" | "recovery" | "new-password";
@@ -66,6 +68,45 @@ const Submit = styled(Input)`
   }
 `;
 
+const InputWrapper = styled.div`
+  position: relative;
+`;
+
+const PasswordVisibilityButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  position: absolute;
+  right: 1.3rem;
+  top: 50%;
+  transform: translateY(-50%);
+`;
+
+const SharedPasswordIconStyled = `
+  height: 1.3rem;
+  width: 1.3rem;
+
+  * {
+    fill: ${colors.darkGrey};
+  }
+
+  &:hover {
+    * {
+      fill: ${colors.grey};
+    }
+  }
+`;
+
+const ShowPassword = styled(ShowPasswordIcon)`
+  ${SharedPasswordIconStyled}
+`;
+
+const HidePassword = styled(HidePasswordIcon)`
+  ${SharedPasswordIconStyled}
+`;
+
 const PasswordRequirementWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -117,6 +158,7 @@ const AuthForm: FC<Props> = ({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
+  const [isPasswordVisible, setIsPasswordVisible] = useState(true);
   const [passwordValidation, setPasswordValidation] = useState(
     validateInputs.password("")
   );
@@ -181,9 +223,20 @@ const AuthForm: FC<Props> = ({
 
       <form onSubmit={handleSubmit}>
         {fields.map(({ type, placeholder, key }) => (
-          <div key={placeholder}>
+          <InputWrapper key={placeholder}>
+            {key === "password" && (
+              <PasswordVisibilityButton
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsPasswordVisible(!isPasswordVisible);
+                }}
+              >
+                {isPasswordVisible ? <HidePassword /> : <ShowPassword />}
+              </PasswordVisibilityButton>
+            )}
+
             <Input
-              type={type}
+              type={type === "password" && isPasswordVisible ? "text" : type}
               placeholder={placeholder}
               onChange={(e) => {
                 const { value } = e.target;
@@ -199,10 +252,11 @@ const AuthForm: FC<Props> = ({
                   setPasswordConfirmation(value);
               }}
             />
+
             {key !== "password" &&
               errors &&
               renderErrors(errors, key, { t, namespace: "auth" })}
-          </div>
+          </InputWrapper>
         ))}
 
         {(formType === "new-password" || formType === "signup") && (
