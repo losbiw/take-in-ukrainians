@@ -110,13 +110,17 @@ const HidePassword = styled(HidePasswordIcon)`
 const PasswordRequirementWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 0.3rem 0 1rem;
+  margin: 1.5rem 0 1rem;
 `;
 
 const PasswordRequirementContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-top: 1.3rem;
+  margin-top: 1rem;
+
+  &:first-child {
+    margin-top: 0;
+  }
 `;
 
 const Checkmark = styled.div<{ isComplete: boolean }>`
@@ -158,7 +162,7 @@ const AuthForm: FC<Props> = ({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
-  const [isPasswordVisible, setIsPasswordVisible] = useState(true);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [passwordValidation, setPasswordValidation] = useState(
     validateInputs.password("")
   );
@@ -172,6 +176,7 @@ const AuthForm: FC<Props> = ({
       password,
       passwordConfirmation,
       formType,
+      includePassword: true,
     });
 
     if (areErrorsPresent) {
@@ -259,6 +264,8 @@ const AuthForm: FC<Props> = ({
           </InputWrapper>
         ))}
 
+        {errors && renderErrors(errors, "server", { t })}
+
         {(formType === "new-password" || formType === "signup") && (
           <PasswordRequirementWrapper>
             {Object.keys(passwordValidation).map((key) => (
@@ -277,8 +284,6 @@ const AuthForm: FC<Props> = ({
             ))}
           </PasswordRequirementWrapper>
         )}
-
-        {errors && renderErrors(errors, "server", { t })}
 
         {formType === "login" && (
           <Link href="/auth/recovery">
