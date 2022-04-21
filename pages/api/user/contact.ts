@@ -5,6 +5,17 @@ import sql from "@/db";
 import socialMedia from "@/constants/socials";
 import { ContactData } from "@/components/post-form/contact-form";
 
+const findInvalidKeys = (contacts: ContactData) => {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const key of Object.keys(contacts)) {
+    if (!socialMedia[key as keyof typeof socialMedia]) {
+      return key;
+    }
+  }
+
+  return null;
+};
+
 export const getContactInfo = async (userId: number): Promise<ContactData> => {
   const [contact] = await sql`
     SELECT facebook, instagram, telegram, whatsapp, viber
@@ -17,8 +28,7 @@ export const getContactInfo = async (userId: number): Promise<ContactData> => {
   }
 
   const filteredContactTuples = Object.entries(contact).filter(
-    // eslint-disable-next-line no-unused-vars
-    ([_key, value]) => !!value
+    (tuple) => !!tuple[1] // tuple[1] contains the value of the object property
   );
   const filteredContact = Object.fromEntries(filteredContactTuples);
 
@@ -56,35 +66,28 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const { user_id } = parseJwt(token);
   const body = JSON.parse(rawBody);
 
+  if (Object.keys(body).length) {
+    const invalidKey = findInvalidKeys(body);
+
+    if (invalidKey) {
+      throw new ApiError(
+        422,
+        `User contact scheme doesn't have the key: ${invalidKey}`
+      );
+    }
+  }
+
   switch (method) {
     case "GET":
       return res.json(await getContactInfo(user_id));
     case "POST":
-      // eslint-disable-next-line no-restricted-syntax
-      for (const key of Object.keys(body)) {
-        if (!socialMedia[key as keyof typeof socialMedia]) {
-          throw new ApiError(
-            422,
-            `User contact scheme doesn't have the key: ${key}`
-          );
-        }
-      }
-
       return res.json(await updateContact(user_id, body));
     case "DELETE":
-      // eslint-disable-next-line no-restricted-syntax
-      for (const key of Object.keys(body)) {
-        if (!socialMedia[key as keyof typeof socialMedia]) {
-          throw new ApiError(
-            422,
-            `User contact scheme doesn't have the key: ${key}`
-          );
-        }
+      const contactTuples = Object.entries(body).map(([key]) => [key, null]);
 
-        body[key] = null;
-      }
-
-      return res.json(await updateContact(user_id, body));
+      return res.json(
+        await updateContact(user_id, Object.fromEntries(contactTuples))
+      );
     default:
       throw new ApiError(405, "Method not allowed");
   }

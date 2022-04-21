@@ -1,3 +1,4 @@
+import { FormType } from "@/components/auth-form/auth-form";
 import { ContactData } from "@/components/post-form/contact-form";
 import Post from "@/types/post";
 
@@ -16,6 +17,11 @@ interface AuthInfo {
   email: string;
   password: string;
   passwordConfirmation: string;
+  formType: FormType;
+}
+
+interface AuthValidationArgs extends AuthInfo {
+  includePassword?: boolean;
 }
 
 export type PostErrors = Errors<PostWithoutIDs>;
@@ -48,15 +54,21 @@ const validateAuth = ({
   email,
   password,
   passwordConfirmation,
-}: AuthInfo): ErrorTuple<Omit<AuthInfo, "password">> => {
+  formType,
+  includePassword,
+}: AuthValidationArgs): ErrorTuple<Omit<AuthInfo, "formType">> => {
   const errors = {
     email: {
-      email_invalid_format: !/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(
-        email
-      ),
+      email_not_present: !email,
+      email_invalid_format:
+        formType !== "new-password" &&
+        !/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(email),
     },
+    password: includePassword ? validatePassword(password) : {},
     passwordConfirmation: {
-      passwords_dont_match: password !== passwordConfirmation,
+      passwords_dont_match:
+        (formType === "signup" || formType === "new-password") &&
+        password !== passwordConfirmation,
     },
   };
 

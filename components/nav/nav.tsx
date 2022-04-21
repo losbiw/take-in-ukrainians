@@ -8,18 +8,25 @@ import Menu from "./menu";
 import useWidth from "@/hooks/useWidth";
 
 const StyledNav = styled.nav`
-  width: 90%;
-  max-width: 1280px;
-  margin: 0.5rem auto;
+  width: 100%;
+  padding: 0.5rem 0;
+  margin: 0 auto;
+  box-shadow: 0px 6px 20px rgba(47, 47, 47, 0.05);
+`;
+
+const InnerContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 90%;
+  max-width: 1280px;
+  margin: 0 auto;
 
   & > a {
     display: none;
   }
 
-  ${breakpoints.lg} {
+  ${breakpoints.md} {
     & > a {
       display: block;
     }
@@ -51,7 +58,7 @@ const DonateLink = styled.a`
     background-color: ${colors.blue};
   }
 
-  ${breakpoints.lg} {
+  ${breakpoints.md} {
     display: none;
   }
 `;
@@ -82,11 +89,11 @@ const MenuButton = styled.div<{ isMenuExpanded: boolean }>`
     isMenuExpanded
       ? `
     &:before {
-      transform: translateY(8px) rotate(135deg);
+      transform: translateY(7px) rotate(135deg);
     }
 
     &:after {
-      transform: translateY(-8px) rotate(-135deg);
+      transform: translateY(-7px) rotate(-135deg);
     }
 
     div {
@@ -95,7 +102,7 @@ const MenuButton = styled.div<{ isMenuExpanded: boolean }>`
   `
       : ""}
 
-  ${breakpoints.lg} {
+  ${breakpoints.md} {
     display: none;
   }
 `;
@@ -128,28 +135,30 @@ const Nav: FC = () => {
 
   return (
     <StyledNav>
-      <div>
-        <Link href="/">
-          <TitleLink href="/">
-            Take in <Yellow>Ukrainians</Yellow>
-          </TitleLink>
-        </Link>
-      </div>
+      <InnerContainer>
+        <div>
+          <Link href="/">
+            <TitleLink href="/">
+              Take in <Yellow>Ukrainians</Yellow>
+            </TitleLink>
+          </Link>
+        </div>
 
-      <MenuButton
-        isMenuExpanded={isMenuExpanded}
-        onClick={() => setIsMenuExpanded(!isMenuExpanded)}
-      >
-        <div />
-      </MenuButton>
+        <MenuButton
+          isMenuExpanded={isMenuExpanded}
+          onClick={() => setIsMenuExpanded(!isMenuExpanded)}
+        >
+          <div />
+        </MenuButton>
 
-      {(isMenuExpanded || (windowWidth && windowWidth >= sizes.lg)) && (
-        <Menu closeMenu={() => setIsMenuExpanded(false)} links={links}>
-          <Donate />
-        </Menu>
-      )}
+        {(isMenuExpanded || (windowWidth && windowWidth >= sizes.lg)) && (
+          <Menu closeMenu={() => setIsMenuExpanded(false)} links={links}>
+            <Donate />
+          </Menu>
+        )}
 
-      <Donate />
+        <Donate />
+      </InnerContainer>
     </StyledNav>
   );
 };

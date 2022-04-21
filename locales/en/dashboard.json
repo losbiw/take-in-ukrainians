@@ -2,5 +2,7 @@
   "posts": "Your offers",
   "edit": "Edit",
   "delete": "Delete",
-  "create_offer": "Create offer"
+  "create_offer": "Create offer",
+  "logout": "Logout",
+  "delete_account": "Delete account"
 }

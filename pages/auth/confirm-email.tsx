@@ -1,8 +1,8 @@
 import { GetServerSideProps, NextPage } from "next";
-import jwt from "jsonwebtoken";
 import React from "react";
+import { confirmEmail } from "../api/email/confirm";
 
-const ConfirmEmail: NextPage = () => <div />;
+const EmailConfirmation: NextPage = () => <div />;
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const {
@@ -10,7 +10,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   } = ctx;
 
   try {
-    jwt.verify(token as string, process.env.JWT_SECRET);
+    await confirmEmail(token as string);
 
     return {
       redirect: {
@@ -28,4 +28,4 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
 };
 
-export default ConfirmEmail;
+export default EmailConfirmation;

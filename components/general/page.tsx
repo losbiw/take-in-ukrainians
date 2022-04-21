@@ -19,7 +19,7 @@ const ContentWrapper = styled.div`
   align-items: center;
   width: 90%;
   max-width: 1280px;
-  margin: 4rem auto;
+  margin: 3rem auto;
   height: 100%;
 `;
 

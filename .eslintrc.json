@@ -20,6 +20,7 @@
     "import/no-extraneous-dependencies": "off",
     "consistent-return": "off",
     "no-plusplus": "off",
+    "no-case-declarations": "off",
     "react/jsx-filename-extension": [
       2,
       { "extensions": [".js", ".jsx", ".ts", ".tsx"] }

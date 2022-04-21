@@ -18,7 +18,7 @@ export const getPost = async (postId: number): Promise<Post> => {
   throw new ApiError(404, "The post was not found");
 };
 
-const deletePost = async (postId: number, userId: number) => {
+export const deletePost = async (postId: number, userId: number) => {
   const [post] = await sql`
     SELECT user_id FROM posts
     WHERE post_id=${postId}

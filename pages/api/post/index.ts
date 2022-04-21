@@ -8,6 +8,7 @@ import apiHandler from "@/middleware/api";
 import { getContactInfo } from "../user/contact";
 import { ContactData } from "@/components/post-form/contact-form";
 import { SocialMediaName } from "@/constants/socials";
+import validateInputs from "@/helpers/validateInputs";
 
 const isContactInfoEmpty = async (contactInfo: ContactData) => {
   // eslint-disable-next-line no-restricted-syntax
@@ -96,6 +97,14 @@ const handler: NextApiHandler = async (
     method,
   } = req;
   const { user_id } = parseJwt(token);
+
+  const [areErrorsPresent, errors] = validateInputs.post(body);
+
+  if (areErrorsPresent) {
+    return res.status(422).json({
+      errors,
+    });
+  }
 
   switch (method) {
     case "POST":

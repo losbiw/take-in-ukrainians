@@ -9,6 +9,7 @@ export const getUsersPosts = async (userId: number): Promise<Post[]> => {
   const posts = await sql`
     SELECT * FROM posts
     WHERE user_id=${userId}
+    ORDER BY post_id DESC
   `;
 
   if (posts) {

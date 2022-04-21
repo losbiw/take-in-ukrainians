@@ -10,6 +10,8 @@ import renderErrors from "@/helpers/renderErrors";
 import { Title } from "../general/title";
 import AuthLink from "./auth-link";
 
+export type FormType = "login" | "signup" | "recovery" | "new-password";
+
 interface Errors extends ValidationErrors {
   server: {
     [key: string]: boolean;
@@ -29,11 +31,12 @@ interface Field {
 }
 
 interface Props {
-  formType: "login" | "signup" | "recovery" | "newPassword";
+  formType: FormType;
   title: string;
   description: string;
   fields: Field[];
   authLink?: AuthLinkInfo;
+  token?: string;
 }
 
 const Container = styled.div`
@@ -54,7 +57,7 @@ const Submit = styled(Input)`
   background: ${colors.blue};
   font-weight: 500;
   color: ${colors.white};
-  margin: 2rem 0 1.2rem;
+  margin: 2.5rem 0 0.8rem;
   transition: 0.2s;
 
   &:hover {
@@ -63,10 +66,16 @@ const Submit = styled(Input)`
   }
 `;
 
-const RequirementContainer = styled.div`
+const PasswordRequirementWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 0.3rem 0 1rem;
+`;
+
+const PasswordRequirementContainer = styled.div`
   display: flex;
   align-items: center;
-  margin-top: 0.5rem;
+  margin-top: 1.3rem;
 `;
 
 const Checkmark = styled.div<{ isComplete: boolean }>`
@@ -86,11 +95,11 @@ const Checkmark = styled.div<{ isComplete: boolean }>`
   }
 `;
 
-const PassRequirement = styled.p`
+const PasswordRequirementExplanation = styled.p`
   font-size: 0.9rem;
   font-weight: 400;
   color: ${colors.grey};
-  margin: 0.3rem 0;
+  margin: 0;
 `;
 
 const AuthForm: FC<Props> = ({
@@ -99,6 +108,7 @@ const AuthForm: FC<Props> = ({
   description,
   fields,
   authLink,
+  token,
 }) => {
   const router = useRouter();
   const { t } = useTranslation("auth");
@@ -118,27 +128,38 @@ const AuthForm: FC<Props> = ({
     const [areErrorsPresent, inputErrors] = validateInputs.auth({
       email,
       password,
-      passwordConfirmation:
-        formType === "login" ? password : passwordConfirmation,
+      passwordConfirmation,
+      formType,
     });
 
     if (areErrorsPresent) {
       return setErrors(inputErrors);
     }
 
-    const res = await fetch(`/api/auth/${formType}`, {
-      method: "POST",
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const res = await fetch(
+      `/api/auth/${formType}?${token ? `token=${token}` : ""}`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (res.ok) {
-      router.push("/dashboard");
+      let finalPath = "/dashboard";
+
+      if (formType === "recovery") {
+        finalPath = "/email-sent?type=passwordRecovery";
+      } else if (formType === "signup") {
+        finalPath = "/email-sent?type=emailConfirmation";
+      }
+
+      router.push(finalPath);
     } else {
       const json = await res.json();
 
@@ -184,19 +205,24 @@ const AuthForm: FC<Props> = ({
           </div>
         ))}
 
-        {(formType === "newPassword" || formType === "signup") &&
-          Object.keys(passwordValidation).map((key) => (
-            <RequirementContainer key={key}>
-              <Checkmark
-                isComplete={
-                  !passwordValidation[key as keyof typeof passwordValidation]
-                }
-              >
-                <img src="/assets/icons/checkmark.png" alt="checkmark" />
-              </Checkmark>
-              <PassRequirement>{t(key)}</PassRequirement>
-            </RequirementContainer>
-          ))}
+        {(formType === "new-password" || formType === "signup") && (
+          <PasswordRequirementWrapper>
+            {Object.keys(passwordValidation).map((key) => (
+              <PasswordRequirementContainer key={key}>
+                <Checkmark
+                  isComplete={
+                    !passwordValidation[key as keyof typeof passwordValidation]
+                  }
+                >
+                  <img src="/assets/icons/checkmark.png" alt="checkmark" />
+                </Checkmark>
+                <PasswordRequirementExplanation>
+                  {t(key)}
+                </PasswordRequirementExplanation>
+              </PasswordRequirementContainer>
+            ))}
+          </PasswordRequirementWrapper>
+        )}
 
         {errors && renderErrors(errors, "server", { t })}
 

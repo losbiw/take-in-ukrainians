@@ -1,41 +1,37 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import jwt, { JwtPayload } from "jsonwebtoken";
 import { ApiError } from "next/dist/server/api-utils";
 import sql from "@/db";
 import apiHandler from "@/middleware/api";
+import parseJwt from "@/helpers/parseJwt";
 
-const handler = (req: NextApiRequest, res: NextApiResponse) => {
+export const confirmEmail = async (token: string) => {
+  const { user_id } = parseJwt(token);
+
+  const [confirmedUser] = await sql`
+      UPDATE users
+      SET is_confirmed=true
+      WHERE user_id=${user_id as number}
+      RETURNING user_id
+    `;
+
+  if (!confirmedUser?.user_id) {
+    throw new ApiError(500, "Failed to confirm the email");
+  }
+
+  return "The email was confirmed successfully";
+};
+
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const {
     method,
     query: { token },
   } = req;
 
-  const confirmEmail = async () => {
-    try {
-      const { user_id } = jwt.verify(
-        token as string,
-        process.env.JWT_SECRET
-      ) as JwtPayload;
-
-      await sql`
-        UPDATE users
-        SET is_confirmed=true
-        WHERE user_id=${user_id as number}
-      `;
-
-      res.redirect("/dashboard?email_verification=success");
-    } catch {
-      res.redirect("/dashboard?email_verification=failure");
-    }
-  };
-
   switch (method) {
     case "POST":
-      if (!token) {
-        throw new ApiError(422, 'Required argument "token" was not provided');
-      }
-
-      return confirmEmail();
+      return res.json({
+        message: await confirmEmail(token as string),
+      });
     default:
       throw new ApiError(405, "Method not allowed");
   }

@@ -5,6 +5,8 @@ import jwt from "jsonwebtoken";
 import { ApiError } from "next/dist/server/api-utils";
 import sql from "@/db";
 import apiHandler from "@/middleware/api";
+import { sendConfirmationEmail } from "./signup";
+import validateInputs from "@/helpers/validateInputs";
 
 interface ExtendedApiRequest extends NextApiRequest {
   body: {
@@ -16,7 +18,7 @@ interface ExtendedApiRequest extends NextApiRequest {
 const handler = (req: ExtendedApiRequest, res: NextApiResponse) => {
   const {
     method,
-    body: { email, password: plainPassword },
+    body: { email, password },
   } = req;
 
   const authenticate = async () => {
@@ -29,16 +31,24 @@ const handler = (req: ExtendedApiRequest, res: NextApiResponse) => {
       throw new ApiError(404, "User was not found");
     }
 
-    const encryptedPassword = crypto
+    const hashedPassword = crypto
       .createHmac("sha256", process.env.SHA256_SECRET)
-      .update(plainPassword)
+      .update(password)
       .digest("hex");
 
-    if (encryptedPassword === user.password) {
+    if (hashedPassword === user.password) {
       const { user_id, is_admin, is_confirmed } = user;
 
       if (!is_confirmed) {
-        throw new ApiError(403, "The email was not confirmed");
+        sendConfirmationEmail(email, {
+          user_id,
+          is_admin,
+        });
+
+        throw new ApiError(
+          403,
+          "Your email has not been confirmed. We have just re-sent the confirmation email."
+        );
       }
 
       const token = jwt.sign({ user_id, is_admin }, process.env.JWT_SECRET);
@@ -66,15 +76,17 @@ const handler = (req: ExtendedApiRequest, res: NextApiResponse) => {
 
   switch (method) {
     case "POST":
-      if (!email) {
-        throw new ApiError(422, 'Required argument "email" was not provided');
-      }
+      const [areErrorsPresent, errors] = validateInputs.auth({
+        email,
+        password,
+        passwordConfirmation: "",
+        formType: "login",
+      });
 
-      if (!plainPassword) {
-        throw new ApiError(
-          422,
-          'Required argument "password" was not provided'
-        );
+      if (areErrorsPresent) {
+        return res.status(422).json({
+          errors,
+        });
       }
 
       return authenticate();

@@ -24,9 +24,10 @@ const getUserData = async (userId: number): Promise<GeneralUserData> => {
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const {
     cookies: { token },
+    query: { token: queryToken },
     method,
   } = req;
-  const { user_id } = parseJwt(token);
+  const { user_id } = parseJwt(token || (queryToken as string));
 
   switch (method) {
     case "GET":

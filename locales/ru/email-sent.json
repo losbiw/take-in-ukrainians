@@ -1,0 +1,6 @@
+{
+  "emailConfirmation-title": "Подтвердите свой email",
+  "emailConfirmation-description": "Мы отправили ссылку для подтверждения на ваш email",
+  "passwordRecovery-title": "Восстановление пароля",
+  "passwordRecovery-description": "Мы отправили ссылку для восстановления пароля на ваш email"
+}

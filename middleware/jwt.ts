@@ -1,10 +1,12 @@
 import { NextApiRequest } from "next";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 import { ApiError } from "next/dist/server/api-utils";
+import sql from "@/db";
 
 const urlsWithoutAuth = [
   "/api/auth/login",
   "/api/auth/signup",
+  "/api/auth/recovery",
   "/api/posts",
   "/api/posts/pages",
   {
@@ -13,9 +15,10 @@ const urlsWithoutAuth = [
   },
 ];
 
-const jwtMiddleware = (req: NextApiRequest) => {
+const jwtMiddleware = async (req: NextApiRequest) => {
   const {
-    cookies: { token },
+    cookies: { token: cookieToken },
+    query: { token: queryToken },
     method,
   } = req;
 
@@ -30,7 +33,20 @@ const jwtMiddleware = (req: NextApiRequest) => {
   }
 
   try {
-    jwt.verify(token, process.env.JWT_SECRET);
+    const { user_id } = jwt.verify(
+      cookieToken || (queryToken as string),
+      process.env.JWT_SECRET
+    ) as JwtPayload;
+
+    const [user] = await sql`
+      SELECT email
+      FROM users
+      WHERE user_id=${user_id as number}
+    `;
+
+    if (!user?.email) {
+      throw new ApiError(401, "Authentication failed");
+    }
   } catch {
     throw new ApiError(401, "Authentication failed");
   }

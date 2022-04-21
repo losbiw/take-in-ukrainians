@@ -7,7 +7,7 @@ const apiHandler =
   (handler: NextApiHandler) =>
   async (req: NextApiRequest, res: NextApiResponse) => {
     try {
-      jwtMiddleware(req);
+      await jwtMiddleware(req);
 
       await handler(req, res);
     } catch (e) {
