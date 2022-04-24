@@ -1,6 +1,7 @@
 import useTranslation from "next-translate/useTranslation";
 import styled from "styled-components";
 import React, { FC } from "react";
+import Head from "next/head";
 import { Title } from "@/components/general/title";
 import Description from "@/components/general/description";
 
@@ -20,14 +21,21 @@ const Container = styled.div`
 
 const Information: FC<Props> = ({ namespace, type, children }) => {
   const { t } = useTranslation(namespace);
+  const title = `${type ? `${type}-` : ""}title`;
 
   return (
-    <Container>
-      <Title>{t(`${type ? `${type}-` : ""}title`)}</Title>
-      <Description>{t(`${type ? `${type}-` : ""}description`)}</Description>
+    <>
+      <Head>
+        <title>{t(title)} | Take in Ukrainians</title>
+      </Head>
 
-      {children}
-    </Container>
+      <Container>
+        <Title>{t(title)}</Title>
+        <Description>{t(`${type ? `${type}-` : ""}description`)}</Description>
+
+        {children}
+      </Container>
+    </>
   );
 };
 

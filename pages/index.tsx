@@ -3,6 +3,7 @@ import type { NextPage } from "next";
 import useTranslation from "next-translate/useTranslation";
 import styled from "styled-components";
 import Link from "next/link";
+import Head from "next/head";
 import Nav from "@/components/nav/nav";
 import Banner from "@/components/banner/Banner";
 import Page from "@/components/general/page";
@@ -83,6 +84,10 @@ const Home: NextPage = () => {
 
   return (
     <div>
+      <Head>
+        <title>Take in Ukrainians</title>
+      </Head>
+
       <Nav />
       <Banner />
 

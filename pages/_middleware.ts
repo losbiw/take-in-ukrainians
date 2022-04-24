@@ -18,7 +18,11 @@ const middleware: NextMiddleware = (req: NextRequest) => {
   const queryToken = searchParams.get("token") as string;
   const token = req.cookies.token || queryToken;
 
-  if (pathname.startsWith("/api") || pathname.startsWith("/assets")) {
+  if (
+    pathname.startsWith("/api") ||
+    pathname.startsWith("/assets") ||
+    pathname.startsWith("/favicon")
+  ) {
     return NextResponse.next();
   }
 

@@ -4,6 +4,7 @@ import useTranslation from "next-translate/useTranslation";
 import styled from "styled-components";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import Head from "next/head";
 import Page from "@/components/general/page";
 import { Title } from "@/components/general/title";
 import Post from "@/types/post";
@@ -47,30 +48,38 @@ const Dashboard: NextPage<Props> = ({ usersPosts }: Props) => {
   };
 
   return (
-    <Page isNavIncluded>
-      {!!usersPosts.length && (
-        <>
-          <Title>{t("posts")}</Title>
-          <PostsContainer areControlsEnabled posts={usersPosts} />
-        </>
-      )}
+    <>
+      <Head>
+        <title>{t("general:dashboard")} | Take in Ukrainians</title>
+      </Head>
 
-      <ButtonsContainer>
-        <Link href="/dashboard/create">
-          <Button href="/dashboard/create">{t("create_offer")}</Button>
-        </Link>
+      <Page isNavIncluded>
+        {!!usersPosts.length && (
+          <>
+            <Title>{t("posts")}</Title>
+            <PostsContainer areControlsEnabled posts={usersPosts} />
+          </>
+        )}
 
-        <DangerousButton onClick={handleLogout}>{t("logout")}</DangerousButton>
+        <ButtonsContainer>
+          <Link href="/dashboard/create">
+            <Button href="/dashboard/create">{t("create_offer")}</Button>
+          </Link>
 
-        {error && <Error>{error}</Error>}
-
-        <Link href="/auth/delete">
-          <DangerousButton href="/auth/delete">
-            {t("delete_account")}
+          <DangerousButton onClick={handleLogout}>
+            {t("logout")}
           </DangerousButton>
-        </Link>
-      </ButtonsContainer>
-    </Page>
+
+          {error && <Error>{error}</Error>}
+
+          <Link href="/auth/delete">
+            <DangerousButton href="/auth/delete">
+              {t("delete_account")}
+            </DangerousButton>
+          </Link>
+        </ButtonsContainer>
+      </Page>
+    </>
   );
 };
 

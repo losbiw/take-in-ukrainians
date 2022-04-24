@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 import useTranslation from "next-translate/useTranslation";
+import Head from "next/head";
 import PostType from "@/types/post";
 import PostsContainer from "@/components/posts/posts-container";
 import Page from "@/components/general/page";
@@ -37,6 +38,7 @@ const Filters = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
+  align-items: start;
   flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 3rem;
@@ -63,10 +65,14 @@ const Feed: NextPage<Props> = ({ posts, pageData }: Props) => {
   const { t } = useTranslation("feed");
   const [city, setCity] = useState<City>();
 
+  const isResidencesOnly = router.query.offersOnly === "true";
+
   useEffect(() => {
     if (city) {
-      router.query.cityId = city.city_id;
-      router.push(router);
+      router.push({
+        pathname: router.pathname,
+        query: { ...router.query, cityId: city.city_id },
+      });
     }
   }, [city]);
 
@@ -76,35 +82,43 @@ const Feed: NextPage<Props> = ({ posts, pageData }: Props) => {
   };
 
   return (
-    <Page isNavIncluded>
-      <Title>Posts</Title>
+    <>
+      <Head>
+        <title>
+          {isResidencesOnly ? t("residences") : t("refugees")}
+          {city ? ` ${t("in")} ${city.city_name}` : ""} | Take in Ukrainians
+        </title>
+      </Head>
+      <Page isNavIncluded>
+        <Title>Posts</Title>
 
-      <Filters>
-        <CitySearchBar setCity={setCity} />
+        <Filters>
+          <CitySearchBar setCity={setCity} />
 
-        <RadioContainer>
-          <Radio
-            onClick={() => pushOfferFilterToQuery(true)}
-            isActive={router.query.offersOnly === "true"}
-          >
-            {t("residences")}
-          </Radio>
+          <RadioContainer>
+            <Radio
+              onClick={() => pushOfferFilterToQuery(true)}
+              isActive={isResidencesOnly}
+            >
+              {t("residences")}
+            </Radio>
 
-          <Radio
-            onClick={() => pushOfferFilterToQuery(false)}
-            isActive={router.query.offersOnly === "false"}
-          >
-            {t("refugees")}
-          </Radio>
-        </RadioContainer>
-      </Filters>
+            <Radio
+              onClick={() => pushOfferFilterToQuery(false)}
+              isActive={router.query.offersOnly === "false"}
+            >
+              {t("refugees")}
+            </Radio>
+          </RadioContainer>
+        </Filters>
 
-      <PostsContainer posts={posts} />
+        <PostsContainer posts={posts} />
 
-      <ButtonsContainer>
-        <PageButtons pageData={pageData} />
-      </ButtonsContainer>
-    </Page>
+        <ButtonsContainer>
+          <PageButtons pageData={pageData} />
+        </ButtonsContainer>
+      </Page>
+    </>
   );
 };
 

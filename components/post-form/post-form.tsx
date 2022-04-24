@@ -32,7 +32,10 @@ const CharacterLimitationWrapper = styled.div`
   position: relative;
 `;
 
-const CharacterLimitation = styled.p<{ isInTextarea?: boolean }>`
+const CharacterLimitation = styled.p<{
+  isOverLimit: boolean;
+  isInTextarea?: boolean;
+}>`
   margin: 0;
   position: absolute;
   ${({ isInTextarea }) =>
@@ -41,7 +44,7 @@ const CharacterLimitation = styled.p<{ isInTextarea?: boolean }>`
       : "top: 50%; transform: translate(0, -50%);"}
   right: 2rem;
   font-size: 0.9rem;
-  color: ${colors.grey};
+  color: ${({ isOverLimit }) => (isOverLimit ? colors.red : colors.grey)};
 `;
 
 const Container = styled.div`
@@ -197,7 +200,9 @@ const PostForm: FC<Props> = ({ post, contacts }) => {
               onChange={(e) => setTitle(e.target.value)}
             />
 
-            <CharacterLimitation>{50 - title.length}/50</CharacterLimitation>
+            <CharacterLimitation isOverLimit={50 - title.length < 0}>
+              {50 - title.length}/50
+            </CharacterLimitation>
           </CharacterLimitationWrapper>
 
           {errors &&
@@ -211,7 +216,10 @@ const PostForm: FC<Props> = ({ post, contacts }) => {
               onChange={(e) => setDescription(e.target.value)}
             />
 
-            <CharacterLimitation isInTextarea>
+            <CharacterLimitation
+              isOverLimit={300 - description.length < 0}
+              isInTextarea
+            >
               {300 - description.length}/300
             </CharacterLimitation>
           </CharacterLimitationWrapper>

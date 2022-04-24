@@ -1,5 +1,7 @@
 import { GetServerSideProps } from "next";
 import React, { FC } from "react";
+import useTranslation from "next-translate/useTranslation";
+import Head from "next/head";
 import PostForm from "@/components/post-form/post-form";
 import Post from "@/types/post";
 import { getPost } from "@/pages/api/post/[pid]";
@@ -12,9 +14,18 @@ interface Props {
   contacts: ContactData;
 }
 
-const EditPost: FC<Props> = ({ post, contacts }) => (
-  <PostForm post={post} contacts={contacts} />
-);
+const EditPost: FC<Props> = ({ post, contacts }) => {
+  const { t } = useTranslation("create-post");
+
+  return (
+    <>
+      <Head>
+        <title>{t("edit_the_offer")} | Take in Ukrainians</title>
+      </Head>
+      <PostForm post={post} contacts={contacts} />
+    </>
+  );
+};
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const {

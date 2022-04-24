@@ -3,6 +3,7 @@ import useTranslation from "next-translate/useTranslation";
 import React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import Head from "next/head";
 import Information from "@/components/information";
 import { Button, DangerousButton } from "@/components/buttons/buttons";
 import server from "@/constants/server";
@@ -26,15 +27,21 @@ const DeleteAccount: NextPage = () => {
   };
 
   return (
-    <Information namespace="delete-account">
-      <Link href="/dashboard">
-        <Button href="/dashboard">{t("discard")}</Button>
-      </Link>
+    <>
+      <Head>
+        <title>{t("delete account")} | Take in Ukrainians</title>
+      </Head>
 
-      <DangerousButton onClick={deleteAccount}>
-        {t("delete account")}
-      </DangerousButton>
-    </Information>
+      <Information namespace="delete-account">
+        <Link href="/dashboard">
+          <Button href="/dashboard">{t("discard")}</Button>
+        </Link>
+
+        <DangerousButton onClick={deleteAccount}>
+          {t("delete account")}
+        </DangerousButton>
+      </Information>
+    </>
   );
 };
 

@@ -4,6 +4,7 @@ import styled from "styled-components";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import useTranslation from "next-translate/useTranslation";
 import Link from "next/link";
+import Head from "next/head";
 import Page from "@/components/general/page";
 import Post from "@/types/post";
 import { Title } from "@/components/general/title";
@@ -46,29 +47,35 @@ const Button = styled(RawButton)`
 
 const PostPage: FC<Props> = ({ post, contacts, isEditable }) => {
   const { t } = useTranslation("create-post");
-  const { title, description } = post;
+  const { title, description, city_name } = post;
 
   return (
-    <Page isNavIncluded>
-      <Container>
-        <PostInfo>
-          <Title>{title}</Title>
-          {description && <Description>{description}</Description>}
+    <>
+      <Head>
+        <title>{`${title}, ${city_name}`} | Take in Ukrainians</title>
+      </Head>
 
-          <PostInformation {...post} />
+      <Page isNavIncluded>
+        <Container>
+          <PostInfo>
+            <Title>{title}</Title>
+            {description && <Description>{description}</Description>}
 
-          {isEditable && (
-            <Link href={`/dashboard/edit/${post.post_id}`}>
-              <Button href={`/dashboard/edit/${post.post_id}`}>
-                {t("edit_the_offer")}
-              </Button>
-            </Link>
-          )}
-        </PostInfo>
+            <PostInformation {...post} />
 
-        <ContactForm isEditable={false} contacts={contacts} />
-      </Container>
-    </Page>
+            {isEditable && (
+              <Link href={`/dashboard/edit/${post.post_id}`}>
+                <Button href={`/dashboard/edit/${post.post_id}`}>
+                  {t("edit_the_offer")}
+                </Button>
+              </Link>
+            )}
+          </PostInfo>
+
+          <ContactForm isEditable={false} contacts={contacts} />
+        </Container>
+      </Page>
+    </>
   );
 };
 

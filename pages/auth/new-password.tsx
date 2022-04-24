@@ -2,6 +2,7 @@ import React from "react";
 import { GetServerSideProps, NextPage } from "next";
 import useTranslation from "next-translate/useTranslation";
 import jwt from "jsonwebtoken";
+import Head from "next/head";
 import AuthForm from "@/components/auth-form/auth-form";
 import SplitScreen from "@/components/auth-form/split-screen";
 
@@ -13,26 +14,32 @@ const NewPassword: NextPage<Props> = ({ token }: Props) => {
   const { t } = useTranslation("new-password");
 
   return (
-    <SplitScreen>
-      <AuthForm
-        formType="new-password"
-        title={t("new password")}
-        description={t("dont forget your password")}
-        token={token}
-        fields={[
-          {
-            type: "password",
-            placeholder: t("enter your new password"),
-            key: "password",
-          },
-          {
-            type: "password",
-            placeholder: t("confirm your new password"),
-            key: "passwordConfirmation",
-          },
-        ]}
-      />
-    </SplitScreen>
+    <>
+      <Head>
+        <title>{t("new password")} | Take in Ukrainians</title>
+      </Head>
+
+      <SplitScreen>
+        <AuthForm
+          formType="new-password"
+          title={t("new password")}
+          description={t("dont forget your password")}
+          token={token}
+          fields={[
+            {
+              type: "password",
+              placeholder: t("enter your new password"),
+              key: "password",
+            },
+            {
+              type: "password",
+              placeholder: t("confirm your new password"),
+              key: "passwordConfirmation",
+            },
+          ]}
+        />
+      </SplitScreen>
+    </>
   );
 };
 
