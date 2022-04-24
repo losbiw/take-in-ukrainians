@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 import useTranslation from "next-translate/useTranslation";
+import Link from "next/link";
 import PostType from "@/types/post";
 import PostsContainer from "@/components/posts/posts-container";
 import Page from "@/components/general/page";
@@ -15,6 +16,9 @@ import PageButtons from "@/components/feed/page-buttons";
 import breakpoints from "@/constants/breakpoints";
 import RawRadio from "@/components/inputs/radio";
 import MetaTags from "@/components/general/meta";
+import Description from "@/components/general/description";
+import { Button } from "@/components/buttons/buttons";
+import colors from "@/constants/colors";
 
 export interface PageData {
   current: number;
@@ -60,12 +64,34 @@ const Radio = styled(RawRadio)`
   font-weight: 500;
 `;
 
+const CreateOfferSuggestion = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 3rem 2rem;
+  margin: 3rem 0;
+  border-radius: 2rem;
+  border: 1px solid ${colors.grey};
+
+  ${breakpoints.lg} {
+    margin: 3rem 7rem;
+  }
+`;
+
 const Feed: NextPage<Props> = ({ posts, pageData }: Props) => {
   const router = useRouter();
+  const {
+    query: { offersOnly },
+  } = router;
   const { t } = useTranslation("feed");
   const [city, setCity] = useState<City>();
 
-  const isResidencesOnly = router.query.offersOnly === "true";
+  const isResidencesOnly = offersOnly === "true";
+
+  const createOfferHref = `/dashboard/create${
+    offersOnly && !isResidencesOnly ? `?offerType=residence` : ""
+  }`;
 
   useEffect(() => {
     if (city) {
@@ -76,8 +102,8 @@ const Feed: NextPage<Props> = ({ posts, pageData }: Props) => {
     }
   }, [city]);
 
-  const pushOfferFilterToQuery = (offersOnly: boolean) => {
-    router.query.offersOnly = `${offersOnly}`;
+  const pushOfferFilterToQuery = (offersOnlyParam: boolean) => {
+    router.query.offersOnly = `${offersOnlyParam}`;
     router.push(router);
   };
 
@@ -104,7 +130,7 @@ const Feed: NextPage<Props> = ({ posts, pageData }: Props) => {
 
             <Radio
               onClick={() => pushOfferFilterToQuery(false)}
-              isActive={router.query.offersOnly === "false"}
+              isActive={offersOnly === "false"}
             >
               {t("refugees")}
             </Radio>
@@ -112,6 +138,17 @@ const Feed: NextPage<Props> = ({ posts, pageData }: Props) => {
         </Filters>
 
         <PostsContainer posts={posts} />
+
+        {pageData.current === pageData.total && (
+          <CreateOfferSuggestion>
+            <Title>{t("cant find anything")}</Title>
+            <Description>{t("try to create a publication")}</Description>
+
+            <Link href="/dashboard/create" as={createOfferHref}>
+              <Button href={createOfferHref}>{t("create an offer")}</Button>
+            </Link>
+          </CreateOfferSuggestion>
+        )}
 
         <ButtonsContainer>
           <PageButtons pageData={pageData} />

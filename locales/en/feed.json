@@ -1,5 +1,8 @@
 {
   "residences": "Residences",
   "refugees": "Refugees",
-  "in": "in"
+  "in": "in",
+  "cant find anything": "Can't seem to find anything?",
+  "try to create a publication": "Create your own offer and wait until someone reaches out to you.",
+  "create an offer": "Create an offer"
 }
