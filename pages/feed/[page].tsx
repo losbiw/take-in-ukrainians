@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 import useTranslation from "next-translate/useTranslation";
-import Head from "next/head";
 import PostType from "@/types/post";
 import PostsContainer from "@/components/posts/posts-container";
 import Page from "@/components/general/page";
@@ -15,6 +14,7 @@ import City from "@/types/city";
 import PageButtons from "@/components/feed/page-buttons";
 import breakpoints from "@/constants/breakpoints";
 import RawRadio from "@/components/inputs/radio";
+import MetaTags from "@/components/general/meta";
 
 export interface PageData {
   current: number;
@@ -83,12 +83,11 @@ const Feed: NextPage<Props> = ({ posts, pageData }: Props) => {
 
   return (
     <>
-      <Head>
-        <title>
-          {isResidencesOnly ? t("residences") : t("refugees")}
-          {city ? ` ${t("in")} ${city.city_name}` : ""} | Take in Ukrainians
-        </title>
-      </Head>
+      <MetaTags
+        title={`${isResidencesOnly ? t("residences") : t("refugees")} ${
+          city ? ` ${t("in")} ${city.city_name}` : ""
+        } | Take in Ukrainians`}
+      />
       <Page isNavIncluded>
         <Title>Posts</Title>
 

@@ -1,13 +1,13 @@
 import { GetServerSideProps } from "next";
 import React, { FC } from "react";
 import useTranslation from "next-translate/useTranslation";
-import Head from "next/head";
 import PostForm from "@/components/post-form/post-form";
 import Post from "@/types/post";
 import { getPost } from "@/pages/api/post/[pid]";
 import parseJwt from "@/helpers/parseJwt";
 import { getContactInfo } from "@/pages/api/user/contact";
 import { ContactData } from "@/components/post-form/contact-form";
+import MetaTags from "@/components/general/meta";
 
 interface Props {
   post: Post;
@@ -19,9 +19,7 @@ const EditPost: FC<Props> = ({ post, contacts }) => {
 
   return (
     <>
-      <Head>
-        <title>{t("edit_the_offer")} | Take in Ukrainians</title>
-      </Head>
+      <MetaTags title={`${t("edit_the_offer")} | Take in Ukrainians`} />
       <PostForm post={post} contacts={contacts} />
     </>
   );

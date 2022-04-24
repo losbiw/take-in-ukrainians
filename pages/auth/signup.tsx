@@ -2,12 +2,12 @@ import React, { memo } from "react";
 import { NextPage, GetServerSideProps } from "next";
 import useTranslation from "next-translate/useTranslation";
 import styled from "styled-components";
-import Head from "next/head";
 import SplitScreen from "@/components/auth-form/split-screen";
 import Information from "@/components/auth-form/information";
 import AuthForm from "@/components/auth-form/auth-form";
 import Description from "@/components/general/description";
 import colors from "@/constants/colors";
+import MetaTags from "@/components/general/meta";
 
 const StyledLink = styled.a`
   color: ${colors.blue};
@@ -19,9 +19,7 @@ const Signup: NextPage = () => {
 
   return (
     <>
-      <Head>
-        <title>{t("signup")} | Take in Ukrainians</title>
-      </Head>
+      <MetaTags title={`${t("signup")} | Take in Ukrainians`} />
 
       <SplitScreen>
         <AuthForm

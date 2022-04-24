@@ -1,9 +1,9 @@
 import useTranslation from "next-translate/useTranslation";
 import styled from "styled-components";
 import React, { FC } from "react";
-import Head from "next/head";
 import { Title } from "@/components/general/title";
 import Description from "@/components/general/description";
+import MetaTags from "./general/meta";
 
 interface Props {
   namespace: string;
@@ -25,9 +25,7 @@ const Information: FC<Props> = ({ namespace, type, children }) => {
 
   return (
     <>
-      <Head>
-        <title>{t(title)} | Take in Ukrainians</title>
-      </Head>
+      <MetaTags title={`${t(title)} | Take in Ukrainians`} />
 
       <Container>
         <Title>{t(title)}</Title>

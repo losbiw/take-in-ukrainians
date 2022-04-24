@@ -2,9 +2,9 @@ import React from "react";
 import { GetServerSideProps, NextPage } from "next";
 import useTranslation from "next-translate/useTranslation";
 import jwt from "jsonwebtoken";
-import Head from "next/head";
 import AuthForm from "@/components/auth-form/auth-form";
 import SplitScreen from "@/components/auth-form/split-screen";
+import MetaTags from "@/components/general/meta";
 
 interface Props {
   token: string;
@@ -15,9 +15,7 @@ const NewPassword: NextPage<Props> = ({ token }: Props) => {
 
   return (
     <>
-      <Head>
-        <title>{t("new password")} | Take in Ukrainians</title>
-      </Head>
+      <MetaTags title={`${t("new password")} | Take in Ukrainians`} />
 
       <SplitScreen>
         <AuthForm

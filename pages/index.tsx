@@ -3,7 +3,6 @@ import type { NextPage } from "next";
 import useTranslation from "next-translate/useTranslation";
 import styled from "styled-components";
 import Link from "next/link";
-import Head from "next/head";
 import Nav from "@/components/nav/nav";
 import Banner from "@/components/banner/Banner";
 import Page from "@/components/general/page";
@@ -16,6 +15,7 @@ import PostsContainer from "@/components/posts/posts-container";
 import Post from "@/types/post";
 import Error from "@/components/general/error";
 import breakpoints from "@/constants/breakpoints";
+import MetaTags from "@/components/general/meta";
 
 const Title = styled(RawTitle)`
   margin: 5rem 0 2rem;
@@ -84,9 +84,7 @@ const Home: NextPage = () => {
 
   return (
     <div>
-      <Head>
-        <title>Take in Ukrainians</title>
-      </Head>
+      <MetaTags title="Take in Ukrainians" />
 
       <Nav />
       <Banner />

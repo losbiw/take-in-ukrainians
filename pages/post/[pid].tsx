@@ -4,7 +4,6 @@ import styled from "styled-components";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import useTranslation from "next-translate/useTranslation";
 import Link from "next/link";
-import Head from "next/head";
 import Page from "@/components/general/page";
 import Post from "@/types/post";
 import { Title } from "@/components/general/title";
@@ -15,6 +14,7 @@ import { getContactInfo } from "../api/user/contact";
 import ContactForm, { ContactData } from "@/components/post-form/contact-form";
 import breakpoints from "@/constants/breakpoints";
 import { Button as RawButton } from "@/components/buttons/buttons";
+import MetaTags from "@/components/general/meta";
 
 interface Props {
   post: Post;
@@ -51,9 +51,7 @@ const PostPage: FC<Props> = ({ post, contacts, isEditable }) => {
 
   return (
     <>
-      <Head>
-        <title>{`${title}, ${city_name}`} | Take in Ukrainians</title>
-      </Head>
+      <MetaTags title={`${title}, ${city_name} | Take in Ukrainians`} />
 
       <Page isNavIncluded>
         <Container>

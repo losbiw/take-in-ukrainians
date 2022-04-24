@@ -4,7 +4,6 @@ import useTranslation from "next-translate/useTranslation";
 import styled from "styled-components";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import Head from "next/head";
 import Page from "@/components/general/page";
 import { Title } from "@/components/general/title";
 import Post from "@/types/post";
@@ -14,6 +13,7 @@ import parseJwt from "@/helpers/parseJwt";
 import server from "@/constants/server";
 import Error from "@/components/general/error";
 import { Button, DangerousButton } from "@/components/buttons/buttons";
+import MetaTags from "@/components/general/meta";
 
 interface Props {
   usersPosts: Post[];
@@ -49,9 +49,7 @@ const Dashboard: NextPage<Props> = ({ usersPosts }: Props) => {
 
   return (
     <>
-      <Head>
-        <title>{t("general:dashboard")} | Take in Ukrainians</title>
-      </Head>
+      <MetaTags title={`${t("general:dashboard")} | Take in Ukrainians`} />
 
       <Page isNavIncluded>
         {!!usersPosts.length && (

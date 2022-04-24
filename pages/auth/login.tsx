@@ -1,20 +1,18 @@
 import React, { memo } from "react";
 import { NextPage, GetServerSideProps } from "next";
 import useTranslation from "next-translate/useTranslation";
-import Head from "next/head";
 import SplitScreen from "@/components/auth-form/split-screen";
 import Information from "@/components/auth-form/information";
 import AuthForm from "@/components/auth-form/auth-form";
 import Description from "@/components/general/description";
+import MetaTags from "@/components/general/meta";
 
 const Login: NextPage = () => {
   const { t } = useTranslation("login");
 
   return (
     <>
-      <Head>
-        <title>{t("login")} | Take in Ukrainians</title>
-      </Head>
+      <MetaTags title={`${t("login")} | Take in Ukrainians`} />
 
       <SplitScreen>
         <AuthForm

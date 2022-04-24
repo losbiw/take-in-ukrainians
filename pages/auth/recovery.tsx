@@ -1,18 +1,17 @@
 import { NextPage } from "next";
 import useTranslation from "next-translate/useTranslation";
 import React from "react";
-import Head from "next/head";
 import AuthForm from "@/components/auth-form/auth-form";
 import SplitScreen from "@/components/auth-form/split-screen";
+import MetaTags from "@/components/general/meta";
 
 const PasswordRecovery: NextPage = () => {
   const { t } = useTranslation("recovery");
 
   return (
     <>
-      <Head>
-        <title>{t("password recovery")} | Take in Ukrainians</title>
-      </Head>
+      <MetaTags title={`${t("password recovery")} | Take in Ukrainians`} />
+
       <SplitScreen>
         <AuthForm
           formType="recovery"

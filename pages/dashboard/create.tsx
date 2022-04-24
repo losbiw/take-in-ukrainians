@@ -1,11 +1,11 @@
 import { GetServerSideProps, NextPage } from "next";
 import React from "react";
-import Head from "next/head";
 import useTranslation from "next-translate/useTranslation";
 import PostForm from "@/components/post-form/post-form";
 import parseJwt from "@/helpers/parseJwt";
 import { getContactInfo } from "../api/user/contact";
 import { ContactData } from "@/components/post-form/contact-form";
+import MetaTags from "@/components/general/meta";
 
 interface Props {
   contacts: ContactData;
@@ -16,9 +16,7 @@ const CreatePost: NextPage<Props> = ({ contacts }: Props) => {
 
   return (
     <>
-      <Head>
-        <title>{t("create_an_offer")} | Take in Ukrainians</title>
-      </Head>
+      <MetaTags title={`${t("create_an_offer")} | Take in Ukrainians`} />
       <PostForm contacts={contacts} />
     </>
   );
