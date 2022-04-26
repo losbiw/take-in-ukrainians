@@ -1,6 +1,6 @@
 {
   "login": "Login",
-  "login_to_publish": "Log into your account to publish a housing offer",
+  "login_to_publish": "Log into your account to create a publication",
   "email": "Email",
   "password": "Password",
   "dont_have_account": "Don't have an account yet?",
@@ -8,6 +8,6 @@
   "forgot your password": "Forgot your password?",
   "couple_of_clicks": "Just a couple more clicks",
   "give_a_chance": "It won't take long, but you'll give another family a chance to live happily again.",
-  "link_social_media": "You can link almost any social media accounts or messengers here",
+  "link_social_media": "You can link your social media or messenger of choice here",
   "people_can_get_in_touch": "So that other people can get in touch with you easily."
 }

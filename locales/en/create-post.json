@@ -6,15 +6,15 @@
   "title": "Title",
   "description": "Description",
   "what_are_you_looking_to_do": "What are you looking to do?",
-  "offer_my_residence": "Offer my residence to someone",
-  "find_a_place": "Find a place to stay at",
+  "offer_my_residence": "Offer someone an accommodation",
+  "find_a_place": "Find an accommodation",
   "offer_warning": "Due to most countries implementing their own policies on taking in Ukrainian refugees, we strongly recommend you to consult your local authorities first.",
-  "max_people": "How many people is your residence capable of taking in?",
-  "how_many_people": "How many people are in your family/group?",
-  "estimated_number": "An estimated number",
+  "max_people": "How many people is it capable of accommodating?",
+  "how_many_people": "How many people are you trying to find an accommodation for?",
+  "estimated_number": "An estimation",
   "publish": "Publish",
   "title_below_limit": "The title must be at least 5 characters long",
-  "title_above_limit": "The title must not exceed the 300 characters limit",
+  "title_above_limit": "The title must not exceed the 50 characters limit",
   "description_above_limit": "The description must not exceed the 300 characters limit",
   "people_number_below_limit": "The maximum people limitation must not be lower than 1",
   "people_number_above_limit": "You cannot take in more than 10 people at once",
@@ -23,5 +23,5 @@
   "is_in_russia": "We do not work with terrorists. Russian warship, go fuck yourself.",
   "isnt_a_facebook_link": "The link you entered is a not a valid facebook profile link.",
   "incorrect_phone_format": "Incorrent phone number format",
-  "You must have set at least one way of contacting you before publishing": "You must have set at least one way of contacting you before publishing"
+  "You must have set at least one way of contacting you before publishing": "You must set at least one way of contacting you before publishing"
 }
