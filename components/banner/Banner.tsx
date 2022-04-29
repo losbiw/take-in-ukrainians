@@ -94,6 +94,7 @@ const YellowLink = styled(StyledLink)`
   background-color: ${colors.yellow};
   box-shadow: 2px 3px 21px rgba(255, 210, 47, 0.4);
   text-shadow: 1px 2px 3px #ffc700;
+  text-align: center;
 `;
 
 const Banner: FC = () => {
