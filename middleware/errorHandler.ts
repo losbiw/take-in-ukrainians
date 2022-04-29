@@ -1,7 +1,7 @@
 import { NextApiResponse } from "next";
 import { ApiError } from "next/dist/server/api-utils";
 
-const errorHandler = (e: ApiError, res: NextApiResponse) => {
+const errorHandler = async (e: ApiError, res: NextApiResponse) => {
   const { statusCode, message } = e;
 
   if (message === "Authentication failed") {
