@@ -102,8 +102,10 @@ const Feed: NextPage<Props> = ({ posts, pageData, isResidenceOnly }: Props) => {
   }, [city]);
 
   const pushOfferFilterToQuery = (offersOnlyParam: boolean) => {
-    router.query.offersOnly = `${offersOnlyParam}`;
-    router.push(router);
+    router.push({
+      pathname: router.pathname,
+      query: { ...router.query, offersOnly: offersOnlyParam },
+    });
   };
 
   return (
