@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import useTranslation from "next-translate/useTranslation";
 import styled from "styled-components";
 import { useRouter } from "next/router";
@@ -108,6 +108,13 @@ const PostForm: FC<Props> = ({ post, contacts }) => {
       : undefined
   );
   const [errors, setErrors] = useState<Partial<Errors>>();
+
+  useEffect(() => {
+    const { offerType } = router.query;
+    if (offerType && typeof isOfferingResidence === "undefined") {
+      setIsOfferingResidence(getQueryBasedState(offerType));
+    }
+  }, [router]);
 
   // eslint-disable-next-line consistent-return
   const handleSubmit = async () => {
