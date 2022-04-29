@@ -70,7 +70,7 @@ const handler: NextApiHandler = async (
       transport.sendMail({
         from: '"Email Confirmation" <confirmation@take-in-ukrainians.com>',
         to: returnedEmail,
-        subject: "Confirm your email to access full functionality",
+        subject: t("confirm to access functionality"),
         html: generateEmailTemplate(
           t("confirm your email"),
           t("it is required to access"),
