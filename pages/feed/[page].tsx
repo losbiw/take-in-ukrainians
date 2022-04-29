@@ -19,6 +19,7 @@ import MetaTags from "@/components/general/meta";
 import Description from "@/components/general/description";
 import { Button } from "@/components/buttons/buttons";
 import colors from "@/constants/colors";
+import Input from "@/components/inputs/input";
 
 export interface PageData {
   current: number;
@@ -138,6 +139,8 @@ const Feed: NextPage<Props> = ({ posts, pageData, isResidenceOnly }: Props) => {
               {t("refugees")}
             </Radio>
           </RadioContainer>
+
+          <Input placeholder={t("")} />
         </Filters>
 
         <PostsContainer posts={posts} />
@@ -169,6 +172,16 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 
   const page = params?.page;
   const currentPage = parseInt(page as string, 10);
+
+  if (!offersOnly) {
+    return {
+      redirect: {
+        permanent: true,
+        destination: `/feed/${currentPage || 1}?offersOnly=true`,
+      },
+    };
+  }
+
   const pagesTotal = await getPagesTotal();
 
   const isResidenceOnly = offersOnly === "true";
