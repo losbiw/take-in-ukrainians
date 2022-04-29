@@ -114,6 +114,7 @@ const Controls: FC<Props> = ({ postId }) => {
     <>
       <VisibilityButton
         onClick={() => setIsControlPanelVisible(!isControlPanelVisible)}
+        type="button"
         ref={buttonRef}
       >
         <StyledIcon />

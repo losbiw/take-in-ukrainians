@@ -132,6 +132,7 @@ const CitySearchBar: FC<Props> = ({ setCity, defaultValue }) => {
           cities.map(({ city_name, city_id }) => (
             <CityButton
               key={city_name}
+              type="button"
               onClick={() => handleClick(city_name, city_id)}
             >
               <Icon src="/assets/icons/geolocation.png" />

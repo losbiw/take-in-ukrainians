@@ -180,7 +180,10 @@ const ContactForm: FC<Props> = ({ contacts: contactsProps, isEditable }) => {
               </Field>
 
               {isEditable && fieldValue && (
-                <DeleteButton onClick={() => handleDelete(nameKey)}>
+                <DeleteButton
+                  onClick={() => handleDelete(nameKey)}
+                  type="button"
+                >
                   <CrossIcon src="/assets/icons/close.png" />
                 </DeleteButton>
               )}

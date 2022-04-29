@@ -28,6 +28,7 @@ export interface PageData {
 interface Props {
   posts: PostType[];
   pageData: PageData;
+  isResidenceOnly: boolean;
 }
 
 const ButtonsContainer = styled.div`
@@ -79,7 +80,7 @@ const CreateOfferSuggestion = styled.div`
   }
 `;
 
-const Feed: NextPage<Props> = ({ posts, pageData }: Props) => {
+const Feed: NextPage<Props> = ({ posts, pageData, isResidenceOnly }: Props) => {
   const router = useRouter();
   const {
     query: { offersOnly },
@@ -87,10 +88,8 @@ const Feed: NextPage<Props> = ({ posts, pageData }: Props) => {
   const { t } = useTranslation("feed");
   const [city, setCity] = useState<City>();
 
-  const isResidencesOnly = offersOnly === "true";
-
   const createOfferHref = `/dashboard/create${
-    offersOnly && !isResidencesOnly ? `?offerType=residence` : ""
+    offersOnly && !isResidenceOnly ? `?offerType=residence` : ""
   }`;
 
   useEffect(() => {
@@ -110,7 +109,7 @@ const Feed: NextPage<Props> = ({ posts, pageData }: Props) => {
   return (
     <>
       <MetaTags
-        title={`${isResidencesOnly ? t("residences") : t("refugees")} ${
+        title={`${isResidenceOnly ? t("residences") : t("refugees")} ${
           city ? ` ${t("in")} ${city.city_name}` : ""
         } | Take in Ukrainians`}
       />
@@ -123,13 +122,15 @@ const Feed: NextPage<Props> = ({ posts, pageData }: Props) => {
           <RadioContainer>
             <Radio
               onClick={() => pushOfferFilterToQuery(true)}
-              isActive={isResidencesOnly}
+              type="button"
+              isActive={isResidenceOnly}
             >
               {t("residences")}
             </Radio>
 
             <Radio
               onClick={() => pushOfferFilterToQuery(false)}
+              type="button"
               isActive={offersOnly === "false"}
             >
               {t("refugees")}
@@ -168,12 +169,15 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const currentPage = parseInt(page as string, 10);
   const pagesTotal = await getPagesTotal();
 
+  const isResidenceOnly = offersOnly === "true";
+
   const returnData = {
     props: {
       pageData: {
         current: currentPage,
         total: pagesTotal,
       },
+      isResidenceOnly,
       posts: [],
     },
   };
@@ -181,7 +185,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   try {
     const posts = await getPosts(
       currentPage || 1,
-      offersOnly ? offersOnly === "true" : undefined,
+      isResidenceOnly,
       cityId as string | undefined
     );
 

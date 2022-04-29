@@ -236,6 +236,7 @@ const AuthForm: FC<Props> = ({
                   e.preventDefault();
                   setIsPasswordVisible(!isPasswordVisible);
                 }}
+                type="button"
               >
                 {isPasswordVisible ? <HidePassword /> : <ShowPassword />}
               </PasswordVisibilityButton>

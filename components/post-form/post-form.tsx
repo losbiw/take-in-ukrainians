@@ -169,6 +169,7 @@ const PostForm: FC<Props> = ({ post, contacts }) => {
 
           <Radio
             isActive={isOfferingResidence}
+            type="button"
             onClick={(e) => {
               e.preventDefault();
               setIsOfferingResidence(true);
@@ -181,6 +182,7 @@ const PostForm: FC<Props> = ({ post, contacts }) => {
 
           <Radio
             isActive={!isOfferingResidence && isOfferingResidence !== undefined}
+            type="button"
             onClick={(e) => {
               e.preventDefault();
               setIsOfferingResidence(false);
