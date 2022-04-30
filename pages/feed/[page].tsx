@@ -19,7 +19,6 @@ import MetaTags from "@/components/general/meta";
 import Description from "@/components/general/description";
 import { Button } from "@/components/buttons/buttons";
 import colors from "@/constants/colors";
-import Input from "@/components/inputs/input";
 
 export interface PageData {
   current: number;
@@ -139,8 +138,6 @@ const Feed: NextPage<Props> = ({ posts, pageData, isResidenceOnly }: Props) => {
               {t("refugees")}
             </Radio>
           </RadioContainer>
-
-          <Input placeholder={t("")} />
         </Filters>
 
         <PostsContainer posts={posts} />
