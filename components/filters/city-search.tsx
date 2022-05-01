@@ -4,7 +4,7 @@ import Script from "next/script";
 import React, { FC, useState } from "react";
 import styled from "styled-components";
 import colors from "@/constants/colors";
-import Input, { InputStyles } from "./inputs/input";
+import Input, { InputStyles } from "../inputs/input";
 import City from "@/types/city";
 
 interface Props {
@@ -24,6 +24,8 @@ const StyledInput = styled(Input)<{ areCitiesFound: boolean }>`
 `;
 
 const Container = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 100%;
   position: relative;
 `;
@@ -38,23 +40,16 @@ const CityButton = styled.button`
   margin: 0;
   text-align: start;
   font-weight: 500;
+  gap: 1.1rem;
 
   &:last-of-type {
     border-radius: 0 0 1.5rem 1.5rem;
   }
 `;
 
-const Icon = styled.img`
+export const Icon = styled.img`
   width: 1.2rem;
   height: 1.2rem;
-  margin-right: 1.1rem;
-`;
-
-const SearchIcon = styled(Icon)`
-  margin: 0;
-  position: absolute;
-  top: 1.5rem;
-  right: 2rem;
 `;
 
 const CitySearchBar: FC<Props> = ({ setCity, defaultValue }) => {
@@ -125,8 +120,6 @@ const CitySearchBar: FC<Props> = ({ setCity, defaultValue }) => {
           onChange={handleChange}
           areCitiesFound={cities.length > 0}
         />
-
-        <SearchIcon src="/assets/icons/search.png" />
 
         {cities.length > 0 &&
           cities.map(({ city_name, city_id }) => (

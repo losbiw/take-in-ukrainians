@@ -1,5 +1,5 @@
 import { GetServerSideProps, NextPage } from "next";
-import React, { useCallback, useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 import useTranslation from "next-translate/useTranslation";
@@ -10,14 +10,12 @@ import Page from "@/components/general/page";
 import { Title } from "@/components/general/title";
 import { getPosts } from "../api/posts";
 import { getPagesTotal } from "../api/posts/pages";
-import City from "@/types/city";
 import PageButtons from "@/components/feed/buttons";
 import breakpoints from "@/constants/breakpoints";
-import MetaTags from "@/components/general/meta";
 import Description from "@/components/general/description";
 import { Button } from "@/components/buttons/buttons";
 import colors from "@/constants/colors";
-import Filters from "@/components/feed/filters";
+import Filters from "@/components/filters/filters";
 
 export interface PageData {
   current: number;
@@ -59,58 +57,34 @@ const Feed: NextPage<Props> = ({ posts, pageData, isResidenceOnly }: Props) => {
     query: { offersOnly },
   } = router;
   const { t } = useTranslation("feed");
-  const [city, setCity] = useState<City>();
 
-  const createOfferHref = `/dashboard/create${
+  const publicationCreationHref = `/dashboard/create${
     offersOnly && !isResidenceOnly ? `?offerType=residence` : ""
   }`;
 
-  const pushQueryToRouter = useCallback(
-    (queryObj: any) => {
-      router.push({
-        pathname: router.pathname,
-        query: { ...router.query, ...queryObj },
-      });
-    },
-    [router]
-  );
-
-  useEffect(() => {
-    if (city) {
-      pushQueryToRouter({ cityId: city.city_id });
-    }
-  }, [city]);
-
   return (
-    <>
-      <MetaTags
-        title={`${isResidenceOnly ? t("residences") : t("refugees")} ${
-          city ? ` ${t("in")} ${city.city_name}` : ""
-        } | Take in Ukrainians`}
-      />
-      <Page isNavIncluded>
-        <Title>Posts</Title>
+    <Page isNavIncluded>
+      <Filters isResidenceOnly={isResidenceOnly} />
 
-        {/* <Filters setCity={setCity} /> */}
+      <PostsContainer posts={posts} />
 
-        <PostsContainer posts={posts} />
+      {pageData.current === pageData.total && (
+        <CreateOfferSuggestion>
+          <Title>{t("cant find anything")}</Title>
+          <Description>{t("try to create a publication")}</Description>
 
-        {pageData.current === pageData.total && (
-          <CreateOfferSuggestion>
-            <Title>{t("cant find anything")}</Title>
-            <Description>{t("try to create a publication")}</Description>
+          <Link href="/dashboard/create" as={publicationCreationHref}>
+            <Button href={publicationCreationHref}>
+              {t("create an offer")}
+            </Button>
+          </Link>
+        </CreateOfferSuggestion>
+      )}
 
-            <Link href="/dashboard/create" as={createOfferHref}>
-              <Button href={createOfferHref}>{t("create an offer")}</Button>
-            </Link>
-          </CreateOfferSuggestion>
-        )}
-
-        <ButtonsContainer>
-          <PageButtons pageData={pageData} />
-        </ButtonsContainer>
-      </Page>
-    </>
+      <ButtonsContainer>
+        <PageButtons {...pageData} />
+      </ButtonsContainer>
+    </Page>
   );
 };
 

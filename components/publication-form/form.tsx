@@ -11,7 +11,7 @@ import Subtitle from "@/components/general/subtitle";
 import { Title } from "@/components/general/title";
 import Input, { InputStyles } from "@/components/inputs/input";
 import Submit from "@/components/inputs/submit";
-import CitySearchBar from "@/components/city-search";
+import CitySearchBar from "@/components/filters/city-search";
 import City from "@/types/city";
 import Post from "@/types/post";
 import ContactForm from "./contact-form";
@@ -30,6 +30,8 @@ interface Errors extends PostErrors {
 }
 
 const CharacterLimitationWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
   position: relative;
 `;
 
