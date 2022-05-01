@@ -14,7 +14,7 @@ const StyledNav = styled.nav`
   box-shadow: 0px 6px 20px rgba(47, 47, 47, 0.05);
 `;
 
-const InnerContainer = styled.div`
+const PaddingContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -33,7 +33,7 @@ const InnerContainer = styled.div`
   }
 `;
 
-const TitleLink = styled.a`
+const Logo = styled.a`
   font-size: 1.2rem;
   margin: 0 1rem 0 0;
   font-weight: 600;
@@ -45,12 +45,13 @@ const Yellow = styled.span`
 `;
 
 const DonateLink = styled.a`
+  font-size: 0.95rem;
   font-weight: 500;
   color: ${colors.blue} !important;
   display: block;
-  padding: 0.35rem 2rem;
+  padding: 0.25rem 2rem;
   border-radius: 999px;
-  border: 1px solid ${colors.blue};
+  border: 2px solid ${colors.blue};
   transition: 0.3s;
 
   &:hover {
@@ -135,12 +136,12 @@ const Nav: FC = () => {
 
   return (
     <StyledNav>
-      <InnerContainer>
+      <PaddingContainer>
         <div>
           <Link href="/">
-            <TitleLink href="/">
+            <Logo href="/">
               Take in <Yellow>Ukrainians</Yellow>
-            </TitleLink>
+            </Logo>
           </Link>
         </div>
 
@@ -158,7 +159,7 @@ const Nav: FC = () => {
         )}
 
         <Donate />
-      </InnerContainer>
+      </PaddingContainer>
     </StyledNav>
   );
 };

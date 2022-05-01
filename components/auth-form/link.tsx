@@ -1,12 +1,12 @@
 import styled from "styled-components";
 import colors from "@/constants/colors";
 
-const AuthLink = styled.a`
+const AlternateAuth = styled.a`
   font-size: 0.9rem;
   color: ${colors.grey};
   margin: 1.2rem 0 0;
   transition: 0.1s;
-  display: block;
+  display: inline-block;
 
   &:hover {
     color: ${colors.darkGrey};
@@ -18,4 +18,4 @@ const AuthLink = styled.a`
   }
 `;
 
-export default AuthLink;
+export default AlternateAuth;

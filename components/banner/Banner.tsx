@@ -5,6 +5,17 @@ import Link from "next/link";
 import colors from "@/constants/colors";
 import breakpoints from "@/constants/breakpoints";
 import { WhiteTitle } from "../general/title";
+import { WhiteDescription } from "../general/description";
+import { Button } from "../buttons/buttons";
+import Overlay from "../general/overlay";
+
+type Color = "blue" | "yellow";
+
+interface LinkInterface {
+  href: string;
+  title: string;
+  color: Color;
+}
 
 const Container = styled.div`
   position: relative;
@@ -26,12 +37,9 @@ const Container = styled.div`
   }
 `;
 
-const Overlay = styled.div`
+const Fade = styled(Overlay)`
   position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+
   background: linear-gradient(
     180deg,
     rgba(53, 55, 62, 0.5) 30.62%,
@@ -39,13 +47,10 @@ const Overlay = styled.div`
   );
 `;
 
-const Description = styled.p`
-  color: ${colors.white};
-  text-align: center;
-  font-size: 1rem;
-  margin: 0 0 2.5rem;
+const StyledDescription = styled(WhiteDescription)`
+  margin-top: 0.5rem;
   max-width: 90%;
-  line-height: 160%;
+  text-align: center;
 
   ${breakpoints.lg} {
     max-width: 50%;
@@ -55,70 +60,59 @@ const Description = styled.p`
 const LinksContainer = styled.div`
   display: flex;
   flex-direction: column;
+  margin-top: 1rem;
 
   ${breakpoints.md} {
+    gap: 1rem;
     flex-direction: row;
   }
 `;
 
-const StyledLink = styled.a`
-  color: white;
-  padding: 0.7rem 3rem;
-  margin: 0 0.5rem;
-  font-size: 1rem;
-  border: none;
-  border-radius: 999px;
-  transition: 0.3s;
+const StyledLink = styled(Button)<{ color: Color }>`
+  ${({ color }) =>
+    color === "blue"
+      ? `background-color: ${colors.blue};
+  box-shadow: 2px 3px 21px rgba(1, 84, 189, 0.5);`
+      : `background-color: ${colors.yellow};
+  box-shadow: 2px 3px 21px rgba(255, 210, 47, 0.4);
+  text-shadow: 1px 2px 3px #ffc700;`}
 
   &:hover {
     transform: scale(1.05);
   }
-
-  &:first-child {
-    margin-bottom: 1rem;
-  }
-
-  ${breakpoints.md} {
-    &:first-child {
-      margin-bottom: 0;
-    }
-  }
 `;
 
-const BlueLink = styled(StyledLink)`
-  background-color: ${colors.blue};
-  box-shadow: 2px 3px 21px rgba(1, 84, 189, 0.5);
-`;
-
-const YellowLink = styled(StyledLink)`
-  background-color: ${colors.yellow};
-  box-shadow: 2px 3px 21px rgba(255, 210, 47, 0.4);
-  text-shadow: 1px 2px 3px #ffc700;
-  text-align: center;
-`;
+const links: LinkInterface[] = [
+  {
+    title: "offer_residence",
+    href: "/dashboard/create?offerType=residence",
+    color: "blue",
+  },
+  {
+    title: "find_a_place",
+    href: "/feed/1?offersOnly=true",
+    color: "yellow",
+  },
+];
 
 const Banner: FC = () => {
   const { t } = useTranslation("home");
 
   return (
     <Container>
-      <Overlay />
+      <Fade />
 
       <WhiteTitle>{t("never_too_late")}</WhiteTitle>
-      <Description>{t("during_europes_war")}</Description>
+      <StyledDescription>{t("during_europes_war")}</StyledDescription>
 
       <LinksContainer>
-        <Link href="/dashboard/create?offerType=residence">
-          <BlueLink href="/dashboard/create?offerType=residence">
-            {t("offer_residence")}
-          </BlueLink>
-        </Link>
-
-        <Link href="/feed/1?offersOnly=true">
-          <YellowLink href="/feed/1?offersnly=true">
-            {t("find_a_place")}
-          </YellowLink>
-        </Link>
+        {links.map(({ title, href, color }) => (
+          <Link key={title} href={href}>
+            <StyledLink href={href} color={color}>
+              {t(title)}
+            </StyledLink>
+          </Link>
+        ))}
       </LinksContainer>
     </Container>
   );

@@ -2,8 +2,8 @@ import React from "react";
 import { GetServerSideProps, NextPage } from "next";
 import useTranslation from "next-translate/useTranslation";
 import jwt from "jsonwebtoken";
-import AuthForm from "@/components/auth-form/auth-form";
-import SplitScreen from "@/components/auth-form/split-screen";
+import AuthForm from "@/components/auth-form/form";
+import SplitContainer from "@/components/auth-form/split-screen";
 import MetaTags from "@/components/general/meta";
 
 interface Props {
@@ -17,7 +17,7 @@ const NewPassword: NextPage<Props> = ({ token }: Props) => {
     <>
       <MetaTags title={`${t("new password")} | Take in Ukrainians`} />
 
-      <SplitScreen>
+      <SplitContainer>
         <AuthForm
           formType="new-password"
           title={t("new password")}
@@ -36,7 +36,7 @@ const NewPassword: NextPage<Props> = ({ token }: Props) => {
             },
           ]}
         />
-      </SplitScreen>
+      </SplitContainer>
     </>
   );
 };

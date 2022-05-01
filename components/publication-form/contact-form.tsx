@@ -2,15 +2,14 @@
 import useTranslation from "next-translate/useTranslation";
 import React, { FC, useState } from "react";
 import styled from "styled-components";
-import socialMedia, { SocialMediaName } from "@/constants/socials";
+import contactMethods from "@/constants/contacts";
 import { InputStyles } from "../inputs/input";
 import { Title } from "../general/title";
 import Subtitle from "../general/subtitle";
 import colors from "@/constants/colors";
 import ContactPopup from "./contact-popup";
 import server from "@/constants/server";
-
-export type ContactData = Partial<Record<SocialMediaName, string>>;
+import { ContactData, ContactMethod } from "@/types/contacts";
 
 interface Props {
   contacts: ContactData;
@@ -99,10 +98,10 @@ const CrossIcon = styled.img`
 const ContactForm: FC<Props> = ({ contacts: contactsProps, isEditable }) => {
   const { t } = useTranslation("contact");
 
-  const [popupKey, setPopupKey] = useState<SocialMediaName | null>(null);
+  const [popupKey, setPopupKey] = useState<ContactMethod | null>(null);
   const [contacts, setContants] = useState(contactsProps);
 
-  const updateContactsKey = (key: SocialMediaName, value: string) => {
+  const updateContactsKey = (key: ContactMethod, value: string) => {
     const copy = {
       ...contactsProps,
       [key]: value,
@@ -111,19 +110,19 @@ const ContactForm: FC<Props> = ({ contacts: contactsProps, isEditable }) => {
     setContants(copy);
   };
 
-  const handleClick = (key: SocialMediaName) => {
+  const handleClick = (key: ContactMethod) => {
     setPopupKey(key);
   };
 
   const closePopup = (value?: string) => {
     if (value) {
-      updateContactsKey(popupKey as SocialMediaName, value);
+      updateContactsKey(popupKey as ContactMethod, value);
     }
 
     setPopupKey(null);
   };
 
-  const handleDelete = async (key: SocialMediaName) => {
+  const handleDelete = async (key: ContactMethod) => {
     const res = await fetch(`${server}/api/user/contact`, {
       method: "DELETE",
       body: JSON.stringify({
@@ -139,6 +138,7 @@ const ContactForm: FC<Props> = ({ contacts: contactsProps, isEditable }) => {
   return (
     <Container>
       <Title>{t("contact information")}</Title>
+
       <Subtitle>
         {t(
           isEditable
@@ -147,10 +147,10 @@ const ContactForm: FC<Props> = ({ contacts: contactsProps, isEditable }) => {
         )}
       </Subtitle>
 
-      {Object.keys(socialMedia).map((key) => {
-        const nameKey = key as SocialMediaName;
+      {Object.keys(contactMethods).map((key) => {
+        const nameKey = key as ContactMethod;
         const fieldValue = contacts[nameKey];
-        const { name, baseUrl } = socialMedia[nameKey];
+        const { name, baseUrl } = contactMethods[nameKey];
 
         if (isEditable || fieldValue) {
           return (
@@ -197,9 +197,9 @@ const ContactForm: FC<Props> = ({ contacts: contactsProps, isEditable }) => {
       {popupKey && (
         <ContactPopup
           name={popupKey}
-          title={socialMedia[popupKey].name}
+          title={contactMethods[popupKey].name}
           defaultValue={contacts[popupKey]}
-          placeholder={t(socialMedia[popupKey].placeholder)}
+          placeholder={t(contactMethods[popupKey].placeholder)}
           closePopup={closePopup}
         />
       )}

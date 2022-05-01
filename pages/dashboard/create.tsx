@@ -1,11 +1,11 @@
 import { GetServerSideProps, NextPage } from "next";
 import React from "react";
 import useTranslation from "next-translate/useTranslation";
-import PostForm from "@/components/post-form/post-form";
+import PostForm from "@/components/publication-form/form";
 import parseJwt from "@/helpers/parseJwt";
 import { getContactInfo } from "../api/user/contact";
-import { ContactData } from "@/components/post-form/contact-form";
 import MetaTags from "@/components/general/meta";
+import { ContactData } from "@/types/contacts";
 
 interface Props {
   contacts: ContactData;

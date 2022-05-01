@@ -4,7 +4,7 @@ import Link from "next/link";
 import colors from "@/constants/colors";
 import PostType from "@/types/post";
 import Subtitle from "../general/subtitle";
-import PostInformation from "./post-information";
+import PostInformation from "./information";
 import Controls from "./controls";
 
 interface Props extends PostType {

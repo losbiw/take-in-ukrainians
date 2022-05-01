@@ -1,6 +1,6 @@
-import { FormType } from "@/components/auth-form/auth-form";
-import { ContactData } from "@/components/post-form/contact-form";
+import { FormType } from "@/components/auth-form/form";
 import Post from "@/types/post";
+import { ContactData } from "@/types/contacts";
 
 type PostWithoutIDs = Omit<Post, "user_id" | "post_id">;
 

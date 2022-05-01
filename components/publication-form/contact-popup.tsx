@@ -7,12 +7,13 @@ import Submit from "../inputs/submit";
 import server from "@/constants/server";
 import Subtitle from "../general/subtitle";
 import breakpoints from "@/constants/breakpoints";
-import { SocialMediaName } from "@/constants/socials";
 import validateInputs, { ContactErrors } from "@/helpers/validateInputs";
 import renderErrors from "@/helpers/renderErrors";
+import { ContactMethod } from "@/types/contacts";
+import Overlay from "../general/overlay";
 
 interface Props {
-  name: SocialMediaName;
+  name: ContactMethod;
   title: string;
   placeholder: string;
   defaultValue?: string;
@@ -35,12 +36,7 @@ const OuterContainer = styled.div`
   }
 `;
 
-const Overlay = styled.div`
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+const OutsideHandler = styled(Overlay)`
   background-color: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(5px);
   z-index: 5;
@@ -92,7 +88,7 @@ const ContactPopup: FC<Props> = ({
 
   return (
     <OuterContainer>
-      <Overlay onClick={() => closePopup()} />
+      <OutsideHandler onClick={() => closePopup()} />
 
       <Container>
         <Subtitle>{title}</Subtitle>

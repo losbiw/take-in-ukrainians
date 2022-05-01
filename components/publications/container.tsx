@@ -2,7 +2,7 @@ import styled from "styled-components";
 import React, { FC } from "react";
 import breakpoints from "@/constants/breakpoints";
 import PostType from "@/types/post";
-import Post from "./post";
+import Post from "./publication";
 
 interface Props {
   posts: PostType[];
@@ -14,7 +14,7 @@ const Container = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   gap: 2rem;
-  margin-top: 1.5rem;
+  margin-top: 3rem;
 
   ${breakpoints.md} {
     grid-template-columns: 1fr 1fr;

@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import Page from "@/components/general/page";
 import { Title } from "@/components/general/title";
 import Post from "@/types/post";
-import PostsContainer from "@/components/posts/posts-container";
+import PostsContainer from "@/components/publications/container";
 import { getUsersPosts } from "../api/user/posts";
 import parseJwt from "@/helpers/parseJwt";
 import server from "@/constants/server";

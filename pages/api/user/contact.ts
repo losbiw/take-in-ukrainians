@@ -2,13 +2,13 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { ApiError } from "next/dist/server/api-utils";
 import parseJwt from "@/helpers/parseJwt";
 import sql from "@/db";
-import socialMedia from "@/constants/socials";
-import { ContactData } from "@/components/post-form/contact-form";
+import contactMethods from "@/constants/contacts";
+import { ContactData } from "@/types/contacts";
 
 const findInvalidKeys = (contacts: ContactData) => {
   // eslint-disable-next-line no-restricted-syntax
   for (const key of Object.keys(contacts)) {
-    if (!socialMedia[key as keyof typeof socialMedia]) {
+    if (!contactMethods[key as keyof typeof contactMethods]) {
       return key;
     }
   }
@@ -35,13 +35,10 @@ export const getContactInfo = async (userId: number): Promise<ContactData> => {
   return filteredContact as ContactData;
 };
 
-const updateContact = async (
-  userId: number,
-  socialMediaRecord: ContactData
-) => {
+const updateContact = async (userId: number, contactMethod: ContactData) => {
   const [user] = await sql`
     UPDATE users
-    SET ${sql(socialMediaRecord)}
+    SET ${sql(contactMethod)}
     WHERE user_id=${userId}
     RETURNING user_id
   `;
@@ -49,7 +46,7 @@ const updateContact = async (
   if (user.user_id) {
     return {
       user_id: userId,
-      ...socialMediaRecord,
+      ...contactMethod,
     };
   }
 

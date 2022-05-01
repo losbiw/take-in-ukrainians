@@ -6,14 +6,13 @@ import sql from "@/db";
 import parseJwt from "@/helpers/parseJwt";
 import apiHandler from "@/middleware/api";
 import { getContactInfo } from "../user/contact";
-import { ContactData } from "@/components/post-form/contact-form";
-import { SocialMediaName } from "@/constants/socials";
 import validateInputs from "@/helpers/validateInputs";
+import { ContactData, ContactMethod } from "@/types/contacts";
 
 const isContactInfoEmpty = async (contactInfo: ContactData) => {
   // eslint-disable-next-line no-restricted-syntax
   for (const key of Object.keys(contactInfo)) {
-    if (contactInfo[key as SocialMediaName]) return false;
+    if (contactInfo[key as ContactMethod]) return false;
   }
 
   return true;

@@ -1,8 +1,8 @@
 import { NextPage } from "next";
 import useTranslation from "next-translate/useTranslation";
 import React from "react";
-import AuthForm from "@/components/auth-form/auth-form";
-import SplitScreen from "@/components/auth-form/split-screen";
+import AuthForm from "@/components/auth-form/form";
+import SplitContainer from "@/components/auth-form/split-screen";
 import MetaTags from "@/components/general/meta";
 
 const PasswordRecovery: NextPage = () => {
@@ -12,7 +12,7 @@ const PasswordRecovery: NextPage = () => {
     <>
       <MetaTags title={`${t("password recovery")} | Take in Ukrainians`} />
 
-      <SplitScreen>
+      <SplitContainer>
         <AuthForm
           formType="recovery"
           title={t("password recovery")}
@@ -25,7 +25,7 @@ const PasswordRecovery: NextPage = () => {
             },
           ]}
         />
-      </SplitScreen>
+      </SplitContainer>
     </>
   );
 };

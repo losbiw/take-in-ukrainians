@@ -1,9 +1,9 @@
 import React, { memo } from "react";
 import { NextPage, GetServerSideProps } from "next";
 import useTranslation from "next-translate/useTranslation";
-import SplitScreen from "@/components/auth-form/split-screen";
+import SplitContainer from "@/components/auth-form/split-screen";
 import Information from "@/components/auth-form/information";
-import AuthForm from "@/components/auth-form/auth-form";
+import AuthForm from "@/components/auth-form/form";
 import Description from "@/components/general/description";
 import MetaTags from "@/components/general/meta";
 
@@ -14,7 +14,7 @@ const Login: NextPage = () => {
     <>
       <MetaTags title={`${t("login")} | Take in Ukrainians`} />
 
-      <SplitScreen>
+      <SplitContainer>
         <AuthForm
           title={t("login")}
           description={t("login_to_publish")}
@@ -37,7 +37,7 @@ const Login: NextPage = () => {
         <Information
           title={t("couple_of_clicks")}
           description={t("give_a_chance")}
-          innerCardInfo={{
+          bubblesData={{
             title: t("link_social_media"),
             images: [
               "/assets/social-media/facebook.png",
@@ -49,7 +49,7 @@ const Login: NextPage = () => {
             )),
           }}
         />
-      </SplitScreen>
+      </SplitContainer>
     </>
   );
 };

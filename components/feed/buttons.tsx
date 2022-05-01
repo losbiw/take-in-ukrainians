@@ -6,10 +6,6 @@ import { ParsedUrlQuery } from "querystring";
 import colors from "@/constants/colors";
 import { PageData } from "@/pages/feed/[page]";
 
-interface Props {
-  pageData: PageData;
-}
-
 const PageButton = styled.a<{ isActive?: boolean }>`
   display: flex;
   align-items: center;
@@ -52,12 +48,12 @@ const stringifyQuery = (query: ParsedUrlQuery) => {
   }, "");
 };
 
-const PageButtons: FC<Props> = ({ pageData }) => {
+const PageButtons: FC<PageData> = (props) => {
   const { query } = useRouter();
-  const { current, total } = pageData;
+  const { current, total } = props;
   const buttons = [];
 
-  const initialIndex = getInitialIndex(pageData);
+  const initialIndex = getInitialIndex(props);
   const finalIndex = total < 3 ? total : initialIndex + 2;
 
   const queryKeys = Object.keys(query);

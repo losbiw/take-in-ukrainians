@@ -10,7 +10,7 @@ import renderErrors from "@/helpers/renderErrors";
 import { Title } from "../general/title";
 import ShowPasswordIcon from "../../public/assets/icons/show-password.svg";
 import HidePasswordIcon from "../../public/assets/icons/hide-password.svg";
-import AuthLink from "./auth-link";
+import AlternateAuth from "./link";
 
 export type FormType = "login" | "signup" | "recovery" | "new-password";
 
@@ -289,11 +289,11 @@ const AuthForm: FC<Props> = ({
 
         {formType === "login" && (
           <Link href="/auth/recovery">
-            <AuthLink className="margin-top" href="/auth/recovery">
+            <AlternateAuth className="margin-top" href="/auth/recovery">
               <span className="highlited">
                 {t("login:forgot your password")}
               </span>
-            </AuthLink>
+            </AlternateAuth>
           </Link>
         )}
 
@@ -301,10 +301,10 @@ const AuthForm: FC<Props> = ({
 
         {authLink && (
           <Link href={authLink.href}>
-            <AuthLink href={authLink.href}>
+            <AlternateAuth href={authLink.href}>
               {authLink.text}{" "}
               <span className="highlited">{authLink.highlited}</span>
-            </AuthLink>
+            </AlternateAuth>
           </Link>
         )}
       </form>

@@ -2,13 +2,13 @@ import React, { FC } from "react";
 import styled from "styled-components";
 import colors from "@/constants/colors";
 import { WhiteTitle } from "../general/title";
-import Card, { CardProps } from "./card";
+import Bubbles, { CardProps } from "./bubbles";
 import breakpoints from "@/constants/breakpoints";
 
 interface Props {
   title: string;
   description: string;
-  innerCardInfo: CardProps;
+  bubblesData: CardProps;
 }
 
 const Container = styled.div`
@@ -59,9 +59,13 @@ const Description = styled.p`
   line-height: 170%;
 `;
 
-const Information: FC<Props> = ({ title, description, innerCardInfo }) => (
+const Information: FC<Props> = ({
+  title,
+  description,
+  bubblesData: innerCardInfo,
+}) => (
   <Container>
-    <Card {...innerCardInfo} />
+    <Bubbles {...innerCardInfo} />
 
     <TextContainer>
       <WhiteTitle>{title}</WhiteTitle>

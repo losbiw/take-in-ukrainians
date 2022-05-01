@@ -6,7 +6,6 @@ import Document, {
   NextScript,
   DocumentContext,
 } from "next/document";
-import MetaTags from "@/components/general/meta";
 
 class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {

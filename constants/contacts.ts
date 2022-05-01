@@ -1,17 +1,12 @@
-interface SocialMediaData {
+import { ContactMethod } from "@/types/contacts";
+
+interface ContactMethodInterface {
   name: string;
   placeholder: string;
   baseUrl: string;
 }
 
-export type SocialMediaName =
-  | "facebook"
-  | "instagram"
-  | "telegram"
-  | "whatsapp"
-  | "viber";
-
-const socialMedia: Record<SocialMediaName, SocialMediaData> = {
+const contactMethods: Record<ContactMethod, ContactMethodInterface> = {
   facebook: {
     name: "Facebook",
     placeholder: "facebook link",
@@ -39,4 +34,4 @@ const socialMedia: Record<SocialMediaName, SocialMediaData> = {
   },
 };
 
-export default socialMedia;
+export default contactMethods;

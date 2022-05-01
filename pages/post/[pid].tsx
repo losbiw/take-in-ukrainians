@@ -8,13 +8,14 @@ import Page from "@/components/general/page";
 import Post from "@/types/post";
 import { Title } from "@/components/general/title";
 import Description from "@/components/general/description";
-import PostInformation from "@/components/posts/post-information";
+import PostInformation from "@/components/publications/information";
 import { getPost } from "../api/post/[pid]";
 import { getContactInfo } from "../api/user/contact";
-import ContactForm, { ContactData } from "@/components/post-form/contact-form";
 import breakpoints from "@/constants/breakpoints";
 import { Button as RawButton } from "@/components/buttons/buttons";
 import MetaTags from "@/components/general/meta";
+import { ContactData } from "@/types/contacts";
+import ContactForm from "@/components/publication-form/contact-form";
 
 interface Props {
   post: Post;

@@ -11,7 +11,7 @@ import { Title as RawTitle } from "@/components/general/title";
 import RawDescription from "@/components/general/description";
 import { InputStyles } from "@/components/inputs/input";
 import colors from "@/constants/colors";
-import PostsContainer from "@/components/posts/posts-container";
+import PostsContainer from "@/components/publications/container";
 import Post from "@/types/post";
 import Error from "@/components/general/error";
 import breakpoints from "@/constants/breakpoints";
@@ -55,12 +55,6 @@ const SeeMoreLink = styled.a`
   }
 `;
 
-const PostsWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  margin-top: 2rem;
-`;
-
 const Home: NextPage = () => {
   const { t } = useTranslation("home");
   const [posts, setPosts] = useState<Post[]>([]);
@@ -93,11 +87,9 @@ const Home: NextPage = () => {
         <Title>{t("if_youre_looking_for_a_place")}</Title>
         <Description>{t("youre_not_alone")}</Description>
 
-        <PostsWrapper>
-          <PostsContainer
-            posts={posts.filter(({ is_offering }) => is_offering).slice(0, 6)}
-          />
-        </PostsWrapper>
+        <PostsContainer
+          posts={posts.filter(({ is_offering }) => is_offering).slice(0, 6)}
+        />
 
         {error && <Error>{error}</Error>}
 
@@ -109,11 +101,9 @@ const Home: NextPage = () => {
 
         <Title>{t("if_youre_looking_to_take_in")}</Title>
 
-        <PostsWrapper>
-          <PostsContainer
-            posts={posts.filter(({ is_offering }) => !is_offering).slice(0, 6)}
-          />
-        </PostsWrapper>
+        <PostsContainer
+          posts={posts.filter(({ is_offering }) => !is_offering).slice(0, 6)}
+        />
 
         {error && <Error>{error}</Error>}
 

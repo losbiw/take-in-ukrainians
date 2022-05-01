@@ -2,7 +2,7 @@ import React, { FC } from "react";
 import styled from "styled-components";
 import breakpoints from "@/constants/breakpoints";
 
-const SplitContainer = styled.div`
+const Container = styled.div`
   display: flex;
 
   & > * {
@@ -16,8 +16,6 @@ const SplitContainer = styled.div`
   }
 `;
 
-const SplitScreen: FC = ({ children }) => (
-  <SplitContainer>{children}</SplitContainer>
-);
+const SplitContainer: FC = ({ children }) => <Container>{children}</Container>;
 
-export default SplitScreen;
+export default SplitContainer;

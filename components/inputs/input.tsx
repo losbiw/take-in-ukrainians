@@ -2,7 +2,6 @@ import styled from "styled-components";
 import colors from "@/constants/colors";
 
 export const InputStyles = `
-  width: 100%;
   padding: 0.8rem 1.8rem;
   margin: 0.6rem 0;
   background-color: ${colors.white};

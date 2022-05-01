@@ -9,7 +9,7 @@ export interface CardProps {
   Description: MemoExoticComponent<() => JSX.Element>;
 }
 
-const CardContainer = styled.div`
+const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -68,8 +68,8 @@ const Image = styled.img`
   max-height: 60%;
 `;
 
-const Card: FC<CardProps> = ({ images, title, Description }) => (
-  <CardContainer>
+const Bubbles: FC<CardProps> = ({ images, title, Description }) => (
+  <Container>
     {images.map((image) => (
       <ImageContainer key={image}>
         <Image src={image} />
@@ -78,7 +78,7 @@ const Card: FC<CardProps> = ({ images, title, Description }) => (
 
     <Subtitle>{title}</Subtitle>
     <Description />
-  </CardContainer>
+  </Container>
 );
 
-export default Card;
+export default Bubbles;

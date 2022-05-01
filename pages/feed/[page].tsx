@@ -1,24 +1,23 @@
 import { GetServerSideProps, NextPage } from "next";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useRouter } from "next/router";
 import useTranslation from "next-translate/useTranslation";
 import Link from "next/link";
 import PostType from "@/types/post";
-import PostsContainer from "@/components/posts/posts-container";
+import PostsContainer from "@/components/publications/container";
 import Page from "@/components/general/page";
 import { Title } from "@/components/general/title";
 import { getPosts } from "../api/posts";
 import { getPagesTotal } from "../api/posts/pages";
-import CitySearchBar from "@/components/city-search-bar";
 import City from "@/types/city";
-import PageButtons from "@/components/feed/page-buttons";
+import PageButtons from "@/components/feed/buttons";
 import breakpoints from "@/constants/breakpoints";
-import RawRadio from "@/components/inputs/radio";
 import MetaTags from "@/components/general/meta";
 import Description from "@/components/general/description";
 import { Button } from "@/components/buttons/buttons";
 import colors from "@/constants/colors";
+import Filters from "@/components/feed/filters";
 
 export interface PageData {
   current: number;
@@ -37,32 +36,6 @@ const ButtonsContainer = styled.div`
   align-items: center;
   justify-content: center;
   margin-top: 2rem;
-`;
-
-const Filters = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: start;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 3rem;
-
-  ${breakpoints.sm} {
-    gap: 1.5rem;
-    flex-direction: row;
-    margin-bottom: 0;
-  }
-`;
-
-const RadioContainer = styled.div`
-  display: flex;
-  gap: 0.5rem;
-`;
-
-const Radio = styled(RawRadio)`
-  width: auto;
-  font-weight: 500;
 `;
 
 const CreateOfferSuggestion = styled.div`
@@ -92,21 +65,21 @@ const Feed: NextPage<Props> = ({ posts, pageData, isResidenceOnly }: Props) => {
     offersOnly && !isResidenceOnly ? `?offerType=residence` : ""
   }`;
 
-  useEffect(() => {
-    if (city) {
+  const pushQueryToRouter = useCallback(
+    (queryObj: any) => {
       router.push({
         pathname: router.pathname,
-        query: { ...router.query, cityId: city.city_id },
+        query: { ...router.query, ...queryObj },
       });
+    },
+    [router]
+  );
+
+  useEffect(() => {
+    if (city) {
+      pushQueryToRouter({ cityId: city.city_id });
     }
   }, [city]);
-
-  const pushOfferFilterToQuery = (offersOnlyParam: boolean) => {
-    router.push({
-      pathname: router.pathname,
-      query: { ...router.query, offersOnly: offersOnlyParam },
-    });
-  };
 
   return (
     <>
@@ -118,27 +91,7 @@ const Feed: NextPage<Props> = ({ posts, pageData, isResidenceOnly }: Props) => {
       <Page isNavIncluded>
         <Title>Posts</Title>
 
-        <Filters>
-          <CitySearchBar setCity={setCity} />
-
-          <RadioContainer>
-            <Radio
-              onClick={() => pushOfferFilterToQuery(true)}
-              type="button"
-              isActive={isResidenceOnly}
-            >
-              {t("residences")}
-            </Radio>
-
-            <Radio
-              onClick={() => pushOfferFilterToQuery(false)}
-              type="button"
-              isActive={offersOnly === "false"}
-            >
-              {t("refugees")}
-            </Radio>
-          </RadioContainer>
-        </Filters>
+        {/* <Filters setCity={setCity} /> */}
 
         <PostsContainer posts={posts} />
 

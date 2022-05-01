@@ -5,6 +5,7 @@ import useTranslation from "next-translate/useTranslation";
 import { useRouter } from "next/router";
 import breakpoints from "@/constants/breakpoints";
 import colors from "@/constants/colors";
+import Overlay from "../general/overlay";
 
 interface Props {
   closeMenu: () => void;
@@ -14,16 +15,11 @@ interface Props {
   }[];
 }
 
-const Container = styled.div`
+const Container = styled(Overlay)`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
   z-index: 2;
   background-color: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(3px);

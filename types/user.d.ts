@@ -1,7 +1,7 @@
-import { SocialMediaName } from "@/constants/socials";
+import { ContactMethod } from "./contacts";
 
 // eslint-disable-next-line no-unused-vars
-type Contact = { [key in SocialMediaName]: string | null };
+type Contact = { [key in ContactMethod]: string | null };
 
 interface User extends Contact {
   email: string;

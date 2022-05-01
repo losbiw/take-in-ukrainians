@@ -17,13 +17,13 @@ const SharedStyles = `
     transform: scale(1.03);
   }
 
-  ${breakpoints.md} {
-    width: 50%;
-  }
+  // ${breakpoints.md} {
+  //   width: 50%;
+  // }
 
-  ${breakpoints.lg} {
-    width: 35%;
-  }
+  // ${breakpoints.lg} {
+  //   width: 35%;
+  // }
 `;
 
 export const Button = styled.a`

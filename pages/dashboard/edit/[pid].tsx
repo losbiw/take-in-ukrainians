@@ -1,13 +1,13 @@
 import { GetServerSideProps } from "next";
 import React, { FC } from "react";
 import useTranslation from "next-translate/useTranslation";
-import PostForm from "@/components/post-form/post-form";
+import PostForm from "@/components/publication-form/form";
 import Post from "@/types/post";
 import { getPost } from "@/pages/api/post/[pid]";
 import parseJwt from "@/helpers/parseJwt";
 import { getContactInfo } from "@/pages/api/user/contact";
-import { ContactData } from "@/components/post-form/contact-form";
 import MetaTags from "@/components/general/meta";
+import { ContactData } from "@/types/contacts";
 
 interface Props {
   post: Post;

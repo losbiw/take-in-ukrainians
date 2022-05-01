@@ -11,11 +11,12 @@ import Subtitle from "@/components/general/subtitle";
 import { Title } from "@/components/general/title";
 import Input, { InputStyles } from "@/components/inputs/input";
 import Submit from "@/components/inputs/submit";
-import CitySearchBar from "@/components/city-search-bar";
+import CitySearchBar from "@/components/city-search";
 import City from "@/types/city";
 import Post from "@/types/post";
-import ContactForm, { ContactData } from "./contact-form";
+import ContactForm from "./contact-form";
 import Radio from "../inputs/radio";
+import { ContactData } from "@/types/contacts";
 
 interface Props {
   post?: Post;
