@@ -16,6 +16,7 @@ import Description from "@/components/general/description";
 import { Button } from "@/components/buttons/buttons";
 import colors from "@/constants/colors";
 import Filters from "@/components/filters/filters";
+import stringifyQuery from "@/helpers/stringifyQuery";
 
 export interface PageData {
   current: number;
@@ -89,11 +90,9 @@ const Feed: NextPage<Props> = ({ posts, pageData, isResidenceOnly }: Props) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const {
-    params,
-    query: { offersOnly, cityId },
-  } = ctx;
+  const { params, query } = ctx;
 
+  const { offersOnly, cityId, peopleNumber } = query;
   const page = params?.page;
   const currentPage = parseInt(page as string, 10);
 
@@ -101,7 +100,9 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     return {
       redirect: {
         permanent: true,
-        destination: `/feed/${currentPage || 1}?offersOnly=true`,
+        destination: `/feed/${
+          currentPage || 1
+        }?offersOnly=true&${stringifyQuery(query)}`,
       },
     };
   }
@@ -122,11 +123,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   };
 
   try {
-    const posts = await getPosts(
-      currentPage || 1,
-      isResidenceOnly,
-      cityId as string | undefined
-    );
+    const posts = await getPosts(currentPage || 1, {
+      offersOnly: isResidenceOnly,
+      cityId: cityId as string | undefined,
+      peopleNumber: parseInt((peopleNumber as string) || "0", 10),
+    });
 
     (returnData.props.posts as any[]) = posts;
 

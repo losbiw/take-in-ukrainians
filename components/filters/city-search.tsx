@@ -1,7 +1,7 @@
 /* global google */
 import useTranslation from "next-translate/useTranslation";
 import Script from "next/script";
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import styled from "styled-components";
 import colors from "@/constants/colors";
 import Input, { InputStyles } from "../inputs/input";
@@ -9,7 +9,7 @@ import City from "@/types/city";
 
 interface Props {
   // eslint-disable-next-line no-unused-vars
-  setCity: (city: City) => void;
+  setCity: (city: City | undefined) => void;
   defaultValue?: string;
 }
 
@@ -59,6 +59,12 @@ const CitySearchBar: FC<Props> = ({ setCity, defaultValue }) => {
     useState<google.maps.places.AutocompleteService>();
   const [cities, setCities] = useState<City[]>([]);
   const [input, setInput] = useState(defaultValue || "");
+
+  useEffect(() => {
+    if (!input) {
+      setCity(undefined);
+    }
+  }, [input]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;

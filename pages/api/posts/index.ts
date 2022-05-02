@@ -4,36 +4,29 @@ import sql from "@/db";
 import ITEMS_PER_PAGE from "@/constants/posts";
 import apiHandler from "@/middleware/api";
 import Post from "@/types/post";
+import Filters from "@/types/filters";
 
 export const getPosts = async (
   page: number,
-  offersOnly: boolean | undefined,
-  cityId?: string
+  { peopleNumber, cityId, offersOnly }: Filters
 ): Promise<Post[]> => {
-  const getCondition = () => {
-    const isCityUndefined = typeof cityId === "undefined";
-    const isOffersOnlyUndefined = typeof offersOnly === "undefined";
-
-    if (!isOffersOnlyUndefined && !isCityUndefined) {
-      return sql`WHERE city_id=${cityId} AND is_offering=${offersOnly}`;
-    }
-
-    if (!isCityUndefined) {
-      return sql`WHERE city_id=${cityId}`;
-    }
-
-    if (!isOffersOnlyUndefined) {
-      return sql`WHERE is_offering=${offersOnly}`;
-    }
-
-    return sql``;
-  };
-
-  const condition = getCondition();
+  const isOffersOnlyUndefined = typeof offersOnly === "undefined";
+  const isCityUndefined = typeof cityId === "undefined";
+  const isPeopleNumberUndefined = typeof peopleNumber === "undefined";
 
   const posts = await sql`
     SELECT * FROM posts
-    ${condition}
+    WHERE 1=1
+      AND (true=${isOffersOnlyUndefined} OR is_offering=${
+    offersOnly as boolean
+  })
+    AND (true=${isCityUndefined} OR city_id=${cityId || "1"})
+    AND (true=${
+      !isPeopleNumberUndefined && !(offersOnly as boolean)
+    } OR people_number >= ${peopleNumber || 0})
+    AND (true=${
+      !isPeopleNumberUndefined && (offersOnly as boolean)
+    } OR people_number <= ${peopleNumber || 0})
     ORDER BY post_id DESC
     LIMIT ${ITEMS_PER_PAGE}
     OFFSET ${(page - 1) * ITEMS_PER_PAGE}
@@ -72,10 +65,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   switch (method) {
     case "GET":
       return res.json({
-        posts: await getPosts(
-          parseQueryPage(),
-          offersOnly ? offersOnly === "true" : undefined
-        ),
+        posts: await getPosts(parseQueryPage(), {
+          offersOnly: offersOnly ? offersOnly === "true" : undefined,
+        }),
       });
     default:
       throw new ApiError(405, "Method not allowed");

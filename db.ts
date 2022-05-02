@@ -8,6 +8,7 @@ const sql = postgres({
   database: PSQL_DB,
   username: PSQL_USER,
   password: PSQL_PASS,
+  debug: true,
 });
 
 export default sql;
