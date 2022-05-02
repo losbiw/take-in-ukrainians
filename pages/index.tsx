@@ -1,12 +1,11 @@
-import React, { useCallback, useEffect, useState } from "react";
-import type { NextPage } from "next";
+import React from "react";
+import type { GetServerSideProps, NextPage } from "next";
 import useTranslation from "next-translate/useTranslation";
 import styled from "styled-components";
 import Link from "next/link";
 import Nav from "@/components/nav/nav";
 import Banner from "@/components/banner/Banner";
 import Page from "@/components/general/page";
-import server from "@/constants/server";
 import { Title as RawTitle } from "@/components/general/title";
 import RawDescription from "@/components/general/description";
 import { InputStyles } from "@/components/inputs/input";
@@ -16,6 +15,13 @@ import Post from "@/types/post";
 import Error from "@/components/general/error";
 import breakpoints from "@/constants/breakpoints";
 import MetaTags from "@/components/general/meta";
+import { getPosts } from "./api/posts";
+
+interface Props {
+  offers: Post[];
+  refugees: Post[];
+  error?: string;
+}
 
 const Title = styled(RawTitle)`
   margin: 5rem 0 2rem;
@@ -55,26 +61,8 @@ const SeeMoreLink = styled.a`
   }
 `;
 
-const Home: NextPage = () => {
+const Home: NextPage<Props> = ({ offers, refugees, error }: Props) => {
   const { t } = useTranslation("home");
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [error, setError] = useState("");
-
-  // eslint-disable-next-line consistent-return
-  const fetchPosts = useCallback(async () => {
-    const res = await fetch(`${server}/api/posts?page=1`);
-    const json = await res.json();
-
-    if (res.ok) {
-      return setPosts(json.posts);
-    }
-
-    setError(json.message);
-  }, []);
-
-  useEffect(() => {
-    fetchPosts();
-  }, []);
 
   return (
     <div>
@@ -87,9 +75,7 @@ const Home: NextPage = () => {
         <Title>{t("if_youre_looking_for_a_place")}</Title>
         <Description>{t("youre_not_alone")}</Description>
 
-        <PostsContainer
-          posts={posts.filter(({ is_offering }) => is_offering).slice(0, 6)}
-        />
+        <PostsContainer posts={offers} />
 
         {error && <Error>{error}</Error>}
 
@@ -101,9 +87,7 @@ const Home: NextPage = () => {
 
         <Title>{t("if_youre_looking_to_take_in")}</Title>
 
-        <PostsContainer
-          posts={posts.filter(({ is_offering }) => !is_offering).slice(0, 6)}
-        />
+        <PostsContainer posts={refugees} />
 
         {error && <Error>{error}</Error>}
 
@@ -115,6 +99,28 @@ const Home: NextPage = () => {
       </Page>
     </div>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  try {
+    const offers = await getPosts(1, { offersOnly: true });
+    const refugees = await getPosts(1, { offersOnly: false });
+
+    return {
+      props: {
+        offers: offers.slice(0, 6),
+        refugees: refugees.slice(0, 6),
+      },
+    };
+  } catch {
+    return {
+      props: {
+        offers: [],
+        refugees: [],
+        error: "Something went wrong, please try again later",
+      },
+    };
+  }
 };
 
 export default Home;
