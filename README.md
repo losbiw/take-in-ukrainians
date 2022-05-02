@@ -10,6 +10,12 @@ The project serves a simple goal of connecting Ukrainians who need accommodation
 
 ### TLDR; Please contact the local government first and make sure they cannot arrange accommodation for you before resorting to this website!
 
+## Screenshots
+
+| ![Home page](screenshots/home.png)      | ![Feed page](screenshots/feed.png)       |
+| --------------------------------------- | ---------------------------------------- |
+| ![Dashboard](screenshots/dashboard.png) | ![Create a post](screenshots/create.png) |
+
 ## Stack
 
 Main technologies used in the project:
