@@ -1,34 +1,30 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<div align="center">
+  <img src="public/favicon/android-chrome-512x512.png" height="200" />
+  <h1>Take in Ukrainians</h1>
+  <p>Service for people who want to provide accommodation for people fleeing the war in Ukraine.</p>
+</div>
 
-## Getting Started
+## Goal
 
-First, run the development server:
+The project serves a simple goal of connecting Ukrainians who need accommodation and those willing to provide it for free. The project has been developed and maintained by one person, therefore it took a while to get it to its production-ready state. Meanwhile, most of the EU-member countries have implemented policies that essentially ban locals from taking in refugees without notifying the government, which is supposedly going to lower the risk of refugees becoming subjects to slave labor and all kinds of abuse. That said, this project is more of an attempt to help those who are rather desperate and must not be considered a go-to option for everyone.
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+### TLDR; Please contact the local government first and make sure they cannot arrange accommodation for you before resorting to this website!
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Stack
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+Main technologies used in the project:
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+- Typescript
+- Next.js
+- Styled-components
+- PostgreSQL
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## FAQ
 
-## Learn More
+> How is this different from dozens of other projects that do the same thing?
 
-To learn more about Next.js, take a look at the following resources:
+To be fair, it's more of an attempt at making things the way I think is right. The other projects I've seen so far have extremely unintuitive interfaces and lack some of the features this website has, the most important one amongst which being, in my opinion, giving people who are in need of accommodation the ability to make publications themselves instead of having to constantly refresh the website to see if someone's offering accommodation in their city.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+> How secure is it?
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+I tried my best to make it as secure as I possibly could, but I'm pretty sure it could be hijacked by anyone who has a semi-decent knowledge of hacking.
