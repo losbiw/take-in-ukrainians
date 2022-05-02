@@ -203,7 +203,9 @@ const Filters: FC<Props> = ({ isResidenceOnly }) => {
             <Input
               type="number"
               placeholder={t(
-                `post:${isResidenceOnly ? "max_people" : "people_number"}`
+                isResidenceOnly
+                  ? "how many people are you looking for"
+                  : "max number you can take in"
               )}
               onChange={(e) => setPeopleNumber(parseInt(e.target.value, 10))}
             />
