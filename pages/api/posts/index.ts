@@ -26,7 +26,7 @@ export const getPosts = async (
     } OR people_number >= ${peopleNumber || 0})
     AND (true=${
       !isPeopleNumberUndefined && (offersOnly as boolean)
-    } OR people_number <= ${peopleNumber || 0})
+    } OR people_number <= ${peopleNumber || 100})
     ORDER BY post_id DESC
     LIMIT ${ITEMS_PER_PAGE}
     OFFSET ${(page - 1) * ITEMS_PER_PAGE}
